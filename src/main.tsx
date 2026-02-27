@@ -7,5 +7,5 @@ createRoot(document.getElementById("root")!).render(
     <div className="bg-neutral-100 w-screen h-screen">
       <App />
     </div>
-  </StrictMode>
+  </StrictMode>,
 );
