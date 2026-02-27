@@ -1,5 +1,5 @@
-import type { ClientInfo } from "./types/Client";
-import type { Session } from "./types/Session";
+import type { ClientInfo } from "./src/types/Client";
+import type { Session } from "./src/types/Session";
 
 // Example client objects
 export const exampleClients: ClientInfo[] = [

@@ -1,7 +1,6 @@
-import React from "react";
 import ClientCard from "../components/ClientCard";
 import SessionsCard from "../components/SessionsCard";
-import { exampleClients, exampleSession } from "../mock_data";
+import { exampleClients, exampleSession } from "../../mock_data";
 import type { ClientInfo } from "../types/Client";
 import type { Session } from "../types/Session";
 
