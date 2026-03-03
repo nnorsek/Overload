@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	"github.com/nnorsek/overload-backend/internal/handlers"
+	"github.com/nnorsek/overload-backend/handlers"
 )
 
 func RegisteredRoutes() {
