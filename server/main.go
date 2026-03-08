@@ -1,23 +1,18 @@
 package main
 
 import (
-	"log"
-	"net/http"
-
+	"github.com/gin-gonic/gin"
 	"github.com/nnorsek/overload-backend/config"
-	"github.com/nnorsek/overload-backend/routes"
+	"github.com/nnorsek/overload-backend/handlers"
 )
 
 func main() {
-	config.LoadEnv()
+
 	config.Connect()
-	routes.RegisteredRoutes()
 
-	port := config.Get("APP_PORT")
-	log.Println("Server running on port", port)
+	r := gin.Default()
 
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	r.POST("/create", handlers.CreateClient)
 
-
-	
+	r.Run(":8080")
 }
