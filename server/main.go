@@ -12,7 +12,10 @@ func main() {
 
 	r := gin.Default()
 
-	r.POST("/create", handlers.CreateClient)
+	client := r.Group("client") 
+	{
+	client.POST("/create", handlers.CreateClient)
+	}
 
 	r.Run(":8080")
 }

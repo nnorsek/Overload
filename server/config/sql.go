@@ -28,8 +28,18 @@ func Connect() {
 		log.Fatal("Failed to connect to PostgreSQL:", err)
 	}
 
-	err = db.AutoMigrate(&models.Client{})
-	if err != nil {
+	if err := db.AutoMigrate(
+		&models.Session{},
+		&models.ProgressLog{},
+		&models.WorkoutExercise{},
+		&models.Client{},
+		&models.Trainer{},
+		&models.Workout{},
+		&models.Exercise{},
+
+
+
+	); err != nil {
 		log.Fatal("Failed to auto-migrate models:", err)
 	}
 
