@@ -1,13 +1,13 @@
+import { useState } from "react";
 import ClientCard from "../components/ClientCard";
 import SessionsCard from "../components/SessionsCard";
-import { exampleClients, exampleSession } from "../../mock_data";
-import type { ClientInfo } from "../types/Client";
+import { exampleSession } from "../../mock_data";
+import type { Client } from "../types/Client";
 import type { Session } from "../types/Session";
+import { useClientHooks } from "../hooks/ClientHooks";
 
 const Dashboard = () => {
-  // Pull All Session Information
-
-  // Pull All Client Information
+  const { clients, refresh, error, loading } = useClientHooks();
 
   return (
     <div className="">
@@ -21,19 +21,27 @@ const Dashboard = () => {
         <div className="mt-5">
           <div className="flex gap-x-20">
             {/* Clients Section */}
-            <div className="flex flex-col gap-y-5 flex-2">
-              {exampleClients.map((client: ClientInfo) => (
-                <ClientCard key={client.id} client={client} />
-              ))}
-            </div>
-            <div className="border border-gray-400/80 rounded-lg p-5 flex-1">
-              <h1 className="pb-5 font-semibold text-lg">Today's Sessions</h1>
-              <div className="flex flex-col gap-y-5">
-                {exampleSession.map((session: Session) => (
-                  <SessionsCard session={session} />
-                ))}
-              </div>
-            </div>
+            {!clients || clients.length === 0 ? (
+              <div className="">No clients</div>
+            ) : (
+              <>
+                <div className="flex flex-col gap-y-5 flex-2">
+                  {clients.map((client: Client) => (
+                    <ClientCard key={client.client_id} client={client} />
+                  ))}
+                </div>
+                <div className="border border-gray-400/80 rounded-lg p-5 flex-1">
+                  <h1 className="pb-5 font-semibold text-lg">
+                    Today's Sessions
+                  </h1>
+                  <div className="flex flex-col gap-y-5">
+                    {exampleSession.map((session: Session, idx: number) => (
+                      <SessionsCard key={idx} session={session} />
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

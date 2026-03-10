@@ -1,3 +1,4 @@
+import { useState, useCallback } from "react";
 import type { SessionStatus } from "../types/Session";
 
 export const sessionColor = (status: SessionStatus) => {
@@ -13,4 +14,11 @@ export const sessionColor = (status: SessionStatus) => {
     default:
       return { base: "bg-gray-500", hover: "hover:bg-gray-500/80" };
   }
+};
+const useClientHooks = () => {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false);
+
+  useCallback();
 };

@@ -9,10 +9,10 @@ import {
   faFireFlameSimple,
 } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "../utils/time.utils";
-import type { ClientInfo } from "../types/Client";
+import type { Client } from "../types/Client";
 
 type ClientCardProps = {
-  client: ClientInfo;
+  client: Client;
 };
 
 const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
@@ -47,7 +47,9 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
     <div className="border rounded-xl border-gray-400/80 p-3 pl-5">
       <div className="flex justify-between">
         {/* <image/> */}
-        <h3 className="font-semibold text-lg py-2">{client.name}</h3>
+        <h3 className="font-semibold text-lg py-2">
+          {client.first_name + " " + client.last_name}
+        </h3>
         <button
           className="hover:bg-gray-200/90 hover:cursor-pointer rounded-lg px-2 py-1"
           onClick={() => console.log("button clicked")}
@@ -56,7 +58,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
         </button>
       </div>
       <p className="text-sm text-gray-600">
-        Client since: {formatDate(client.startedDate)}
+        Client since: {formatDate(client.started_at)}
       </p>
       <p className="text-sm text-gray-700 pt-2 font-semibold">{client.goal}</p>
       {/* Clients Display Stats */}
