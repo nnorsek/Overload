@@ -1,33 +1,33 @@
 package com.overload.server.model;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "clients")
-public class Client {
+@Table(name = "trainers")
+public class Trainer {
     
     @Id
     @GeneratedValue
-    private Long client_id;
+    private Long trainer_id;
 
     @Column(nullable = false)
     @NotBlank
@@ -38,43 +38,17 @@ public class Client {
     private String last_name;
 
     @Column(nullable = false)
-    @NotBlank
-    private String email;
-
-    @Column(nullable = false)
     @NotNull
-    private LocalDate date_of_birth;
+    private LocalDateTime date_of_birth;
 
     @Column(nullable = false)
     @NotBlank
     private String gender;
 
-    @Column(nullable = false)
-    @NotNull
-    @Positive
-    private Float starting_weight;
-
-    @Column(nullable = false, columnDefinition = "float default 1.0")
-    @NotNull
-    @Positive
-    private Float current_weight;
-
-    @Column(nullable = false)
-    @NotNull
-    @Positive
-    private Integer height;
-
-    @Column(nullable = false)
-    @NotBlank
-    private String goal;
-
     private String photo_url;
-
-    @ManyToOne
-    @JoinColumn(name = "trainer_id")
-    private Trainer trainer;
-
-    private LocalDateTime started_at;
+    
+    @OneToMany(mappedBy = "trainer")
+    private List<Client> clients = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private Instant created_at;
@@ -93,6 +67,5 @@ public class Client {
     public void onUpdate() {
         updated_at = Instant.now();
     }
-
 
 }
