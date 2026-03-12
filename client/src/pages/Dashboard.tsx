@@ -13,11 +13,10 @@ const Dashboard = () => {
     <div className="">
       <div className="px-5">
         <h1 className="text-3xl bold py-5 font-bold">Dashboard</h1>
-        <p className="text-lg text-gray-500">
-          Overview of all your clients and their progress
+        <p className="text-gray-500 pt-2">
+          Placeholder description tag Placeholder description tag Placeholder
+          description tag Placeholder description tag
         </p>
-        <h2 className="text-2xl my-2 mt-10 font-semibold">Clients</h2>
-        <p className="text-gray-500">View Client Details and History</p>
         <div className="mt-5">
           <div className="flex gap-x-20">
             {/* Clients Section */}
@@ -26,14 +25,17 @@ const Dashboard = () => {
             ) : (
               <>
                 <div className="flex flex-col gap-y-5 flex-2">
+                  <h1 className="font-semibold text-3xl">Clients</h1>
+                  <p className="text-gray-500">
+                    View Client Details and History
+                  </p>
                   {clients.map((client: Client) => (
                     <ClientCard key={client.client_id} client={client} />
                   ))}
                 </div>
-                <div className="border border-gray-400/80 rounded-lg p-5 flex-1">
-                  <h1 className="pb-5 font-semibold text-lg">
-                    Today's Sessions
-                  </h1>
+                <div className="flex-1 flex flex-col gap-y-5">
+                  <h1 className="font-semibold text-3xl">Sessions</h1>
+                  <p className="text-gray-500">View Today's Sessions</p>
                   <div className="flex flex-col gap-y-5">
                     {exampleSession.map((session: Session, idx: number) => (
                       <SessionsCard key={idx} session={session} />
