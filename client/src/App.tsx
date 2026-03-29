@@ -10,6 +10,10 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/clients/details/:id" element={<ClientDetails />} />
+          <Route
+            path="/session/:clientName/:sessionId"
+            element={<ClientDetails />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

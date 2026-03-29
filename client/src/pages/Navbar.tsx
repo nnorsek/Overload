@@ -44,7 +44,7 @@ const Navbar = ({
       <aside
         ref={navRef}
         className={`
-          z-50 h-screen bg-white border-r border-gray-200
+          z-50 h-screen bg-alabaster border-r border-gray-200
           transition-all duration-300
           ${open ? "w-64" : "w-16"}
         `}
@@ -53,7 +53,9 @@ const Navbar = ({
         <div className="flex flex-col h-full px-3 py-6">
           <div className="flex items-center justify-between mb-10">
             <h1 className="text-2xl font-bold pl-2">
-              {open ? "Overload" : <FontAwesomeIcon icon={faDumbbell} />}
+              <button onClick={() => navigate("/")}>
+                {open ? "Overload" : <FontAwesomeIcon icon={faDumbbell} />}
+              </button>
             </h1>
 
             {/* Not Done */}

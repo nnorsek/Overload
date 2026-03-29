@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ClientCard from "../components/ClientCard";
 import SessionsCard from "../components/SessionsCard";
 import { exampleSession } from "../../mock_data";
@@ -7,7 +7,16 @@ import type { Session } from "../types/Session";
 import { useClientHooks } from "../hooks/ClientHooks";
 
 const Dashboard = () => {
-  const { clients, refresh, error, loading } = useClientHooks();
+  const { clients, fetchAllClients, error, loading } = useClientHooks();
+
+  useEffect(() => {
+    if (!clients) {
+      fetchAllClients();
+    }
+  }, [clients, fetchAllClients]);
+
+  // TODO: Add loading spinner
+  // TODO: Add error screen
 
   return (
     <div className="">
@@ -19,7 +28,6 @@ const Dashboard = () => {
         </p>
         <div className="mt-5">
           <div className="flex gap-x-20">
-            {/* Clients Section */}
             {!clients || clients.length === 0 ? (
               <div className="">No clients</div>
             ) : (

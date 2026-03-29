@@ -31,9 +31,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
           alt="profile"
           className="w-12 h-12 rounded-full object-cover"
         />
-        {/* LEFT CONTENT */}
         <div className="flex flex-col pl-2">
-          {/* TOP ROW */}
           <div className="flex items-center gap-3">
             <h3 className="font-semibold text-lg">
               {client.first_name + " " + client.last_name}
@@ -47,10 +45,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
               <span>{streak}</span>
             </div>
           </div>
-
-          {/* BOTTOM ROW */}
           <div className="flex items-center gap-4 text-sm text-gray-700 pt-2">
-            {/* weight change */}
             <span className="flex items-center gap-1">
               {weightChange > 0 ? (
                 <FontAwesomeIcon icon={faArrowTrendUp} />
@@ -60,22 +55,17 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
             </span>
 
             <span className="text-gray-400">•</span>
-
-            {/* current weight */}
             <span>
               {client.current_weight} {weightDisplayMetric}
             </span>
 
             <span className="text-gray-400">•</span>
 
-            {/* workouts */}
             <span>{numberOfWorkouts} workouts this week</span>
           </div>
         </div>
-
-        {/* RIGHT BUTTON */}
         <button
-          className="ml-auto hover:bg-gray-200/90 rounded-lg px-2 py-1"
+          className="ml-auto hover:bg-gray-200 rounded-lg px-2 py-1"
           onClick={() => navigate(`/clients/details/${client.client_id}`)}
         >
           <FontAwesomeIcon icon={faChevronRight} />
