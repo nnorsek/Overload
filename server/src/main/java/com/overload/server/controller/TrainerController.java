@@ -31,6 +31,11 @@ public class TrainerController {
 
         return ResponseEntity.ok(res);
     }
-    
+
+    @PostMapping("/assignTrainer")
+    public ResponseEntity<?> clientToTrainer(@Valid @RequestBody long client_id, long trainer_id){
+        trainerService.assignClientToTrainer(client_id, trainer_id);
+        return ResponseEntity.ok().build();
+    }
 
 }

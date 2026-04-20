@@ -24,7 +24,7 @@ const useClientHooks = () => {
     } finally {
       setLoading(false);
     }
-    fetchAllClients();
+   // fetchAllClients();
   }, []);
 
   const fetchClientByID = useCallback;

@@ -7,5 +7,4 @@ import com.overload.server.model.Client;
 
 @Repository
 public interface ClientRepo extends JpaRepository<Client, Long> {
-    
 }

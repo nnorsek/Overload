@@ -2,6 +2,7 @@ package com.overload.server.controller;
 
 import java.util.List;
 
+import com.overload.server.DTOs.ClientDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,9 +42,9 @@ public class ClientController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Client>> getAllClients() {
+    public ResponseEntity<List<ClientDTO>> getAllClients() {
 
-        List<Client> res = clientService.getAllClients();
+        List<ClientDTO> res = clientService.getAllClients();
 
         return ResponseEntity.ok(res);
     }
@@ -54,6 +55,12 @@ public class ClientController {
 
         return ResponseEntity.ok(res);
     }
+
+
+
+
+
+
     
     
 

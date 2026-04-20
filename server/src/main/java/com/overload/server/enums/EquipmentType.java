@@ -1,11 +1,11 @@
 package com.overload.server.enums;
 
-public enum ExerciseCategory {
-    Barbell,
-    Dumbbell,
-    Kettlebell,
-    Cable,
-    Body_Weight,
-    Machine,
-    Resistance_Band
+public enum EquipmentType {
+    BARBELL,
+    DUMBBELL,
+    KETTLEBELL,
+    CABLE,
+    BODY_WEIGHT,
+    MACHINE,
+    RESISTANCE_BAND
 }

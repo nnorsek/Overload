@@ -3,6 +3,7 @@ package com.overload.server.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.overload.server.DTOs.ClientDTO;
 import org.springframework.stereotype.Service;
 
 import com.overload.server.model.Client;
@@ -22,8 +23,19 @@ public class ClientService {
         return clientRepo.save(client);
     }
 
-    public List<Client> getAllClients(){
-        return clientRepo.findAll();
+
+
+    public List<ClientDTO> getAllClients(){
+        return clientRepo.findAll()
+                .stream().map(c -> new ClientDTO(
+                        c.getClient_id(),
+                        c.getEmail(),
+                        c.getFirst_name(),
+                        c.getLast_name(),
+                        c.getHeight(),
+                        c.getCurrent_weight(),
+                        c.getStarted_at()
+                )).toList();
     }
 
     public Client getClient(Long id){

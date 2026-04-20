@@ -1,7 +1,5 @@
 package com.overload.server.model;
 
-import org.hibernate.annotations.Collate;
-
 import com.overload.server.enums.EquipmentType;
 import com.overload.server.enums.MuscleGroup;
 
@@ -38,6 +36,6 @@ public class Exercise {
     @Column(nullable = false)
     private MuscleGroup muscle_group;
 
-    
+
     private String description;
 }

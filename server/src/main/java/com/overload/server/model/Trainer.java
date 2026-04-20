@@ -47,8 +47,14 @@ public class Trainer {
 
     private String photo_url;
     
-    @OneToMany(mappedBy = "trainer")
+    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
     private List<Client> clients = new ArrayList<>();
+
+    // Relationship logic to add a client to a trainer and vice versa
+    public void addClient(Client client) {
+        clients.add(client);
+        client.setTrainer(this);
+    }
 
     @Column(nullable = false, updatable = false)
     private Instant created_at;

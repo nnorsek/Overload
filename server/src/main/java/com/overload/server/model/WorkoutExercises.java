@@ -8,15 +8,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Builder.Default;
 
 @Getter
 @Setter
@@ -32,7 +28,7 @@ public class WorkoutExercises {
     @JoinColumn(name = "exercise_id", nullable = false)
     private ArrayList<Exercise> exercise;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "workout_id", nullable = false)
     private Workout workout;
 
