@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -70,6 +71,7 @@ public class Client {
 
     private String photoUrl;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;

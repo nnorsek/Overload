@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import type { Client } from "../types/Client";
 
 const useClientHooks = () => {
@@ -24,10 +24,15 @@ const useClientHooks = () => {
     } finally {
       setLoading(false);
     }
-   // fetchAllClients();
   }, []);
 
-  const fetchClientByID = useCallback;
+  // const fetchClientByID = useCallback(async () => {
+  //   setLoading(true);
+  //   setError("");
+  //   try {
+  //     const res = await fetch("http://localhost:8080/clients/")
+  //   }
+  // })
 
   return { clients, fetchAllClients, error, loading };
 };

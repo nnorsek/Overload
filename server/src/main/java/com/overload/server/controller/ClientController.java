@@ -2,7 +2,7 @@ package com.overload.server.controller;
 
 import java.util.List;
 
-import com.overload.server.DTOs.ClientDTO;
+import com.overload.server.DTOs.ClientDTOs.ClientDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +18,6 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -56,6 +55,13 @@ public class ClientController {
 
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/all/{trainerId}")
+    public ResponseEntity<List<Client>> getClientsByTrainerId(@PathVariable("trainerId") long trainerId) {
+        return ResponseEntity.ok(clientService.allClientsAssignedToTrainer(trainerId));
+    }
+
+
 
 
 

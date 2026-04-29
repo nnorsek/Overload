@@ -15,17 +15,17 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.Setter; 
 
 @Entity
 @Getter
 @Setter
 @Table(name = "sessions")
 public class Session {
-
+    
     @Id
     @GeneratedValue
-    private long sessionId;
+    private long session_id;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
@@ -37,15 +37,15 @@ public class Session {
 
     @OneToOne
     @JoinColumn(name = "workout_id", nullable = false)
-    private Workout workout;
+    private Workout workout_id;
 
     @Column(nullable = false)
     @NotNull
-    private LocalDateTime scheduledStart;
+    private LocalDateTime scheduled_start;
 
     @Column(nullable = false)
     @NotNull
-    private LocalDateTime scheduledEnd;
+    private LocalDateTime scheduled_end;
 
     @Column(nullable = false)
     @NotBlank

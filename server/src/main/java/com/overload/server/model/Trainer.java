@@ -14,8 +14,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -74,4 +76,12 @@ public class Trainer {
         updatedAt = Instant.now();
     }
 
+    @Email
+    @Column(nullable = false, unique = true)
+    @NotNull
+    private String email;
+
+    @Size(min = 8, max = 72)
+    @NotNull
+    private String passwordHash;
 }

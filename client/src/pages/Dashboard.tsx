@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ClientCard from "../components/ClientCard";
 import SessionsCard from "../components/SessionsCard";
 import { exampleSession } from "../../mock_data";
@@ -7,7 +7,7 @@ import type { Session } from "../types/Session";
 import { useClientHooks } from "../hooks/ClientHooks";
 
 const Dashboard = () => {
-  const { clients, fetchAllClients, error, loading } = useClientHooks();
+  const { clients, fetchAllClients } = useClientHooks();
 
   useEffect(() => {
     if (!clients) {

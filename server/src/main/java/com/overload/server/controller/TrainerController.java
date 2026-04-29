@@ -1,16 +1,17 @@
 package com.overload.server.controller;
 
-import com.overload.server.DTOs.sessions.responses.TrainerSessionsResponse;
-import com.overload.server.service.SessionService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.overload.server.model.Trainer;
 import com.overload.server.service.TrainerService;
 
 import jakarta.validation.Valid;
 
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
