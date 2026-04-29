@@ -24,18 +24,18 @@ import lombok.Setter;
 @Setter
 @Table(name = "clients")
 public class Client {
-    
+
     @Id
     @GeneratedValue
-    private Long client_id;
+    private Long clientId;
 
     @Column(nullable = false)
     @NotBlank
-    private String first_name;
+    private String firstName;
 
     @Column(nullable = false)
     @NotBlank
-    private String last_name;
+    private String lastName;
 
     @Column(nullable = false)
     @NotBlank
@@ -43,7 +43,7 @@ public class Client {
 
     @Column(nullable = false)
     @NotNull
-    private LocalDate date_of_birth;
+    private LocalDate dateOfBirth;
 
     @Column(nullable = false)
     @NotBlank
@@ -52,12 +52,12 @@ public class Client {
     @Column(nullable = false)
     @NotNull
     @Positive
-    private Float starting_weight;
+    private Float startingWeight;
 
     @Column(nullable = false, columnDefinition = "float default 1.0")
     @NotNull
     @Positive
-    private Float current_weight;
+    private Float currentWeight;
 
     @Column(nullable = false)
     @NotNull
@@ -68,31 +68,29 @@ public class Client {
     @NotBlank
     private String goal;
 
-    private String photo_url;
+    private String photoUrl;
 
     @ManyToOne
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
 
-    private LocalDateTime started_at;
+    private LocalDateTime startedAt;
 
     @Column(nullable = false, updatable = false)
-    private Instant created_at;
+    private Instant createdAt;
 
     @PrePersist
     public void onCreate(){
         Instant now = Instant.now();
-        created_at = now;
-        updated_at = now;
+        createdAt = now;
+        updatedAt = now;
     }
-    
+
     @Column(nullable = false)
-    private Instant updated_at;
+    private Instant updatedAt;
 
     @PreUpdate
     public void onUpdate() {
-        updated_at = Instant.now();
+        updatedAt = Instant.now();
     }
-
-
 }

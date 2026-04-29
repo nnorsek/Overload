@@ -1,9 +1,11 @@
 package com.overload.server.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import com.overload.server.DTOs.ClientDTO;
+import com.overload.server.DTOs.TrainerDTO;
 import org.springframework.stereotype.Service;
 
 import com.overload.server.model.Client;
@@ -28,13 +30,13 @@ public class ClientService {
     public List<ClientDTO> getAllClients(){
         return clientRepo.findAll()
                 .stream().map(c -> new ClientDTO(
-                        c.getClient_id(),
+                        c.getClientId(),
                         c.getEmail(),
-                        c.getFirst_name(),
-                        c.getLast_name(),
+                        c.getFirstName(),
+                        c.getLastName(),
                         c.getHeight(),
-                        c.getCurrent_weight(),
-                        c.getStarted_at()
+                        c.getCurrentWeight(),
+                        c.getStartedAt()
                 )).toList();
     }
 

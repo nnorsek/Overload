@@ -27,25 +27,25 @@ public class Trainer {
     
     @Id
     @GeneratedValue
-    private Long trainer_id;
+    private Long trainerId;
 
     @Column(nullable = false)
     @NotBlank
-    private String first_name;
+    private String firstName;
 
     @Column(nullable = false)
     @NotBlank
-    private String last_name;
+    private String lastName;
 
     @Column(nullable = false)
     @NotNull
-    private LocalDateTime date_of_birth;
+    private LocalDateTime dateOfBirth;
 
     @Column(nullable = false)
     @NotBlank
     private String gender;
 
-    private String photo_url;
+    private String photoUrl;
     
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
     private List<Client> clients = new ArrayList<>();
@@ -57,21 +57,21 @@ public class Trainer {
     }
 
     @Column(nullable = false, updatable = false)
-    private Instant created_at;
+    private Instant createdAt;
 
     @PrePersist
     public void onCreate(){
         Instant now = Instant.now();
-        created_at = now;
-        updated_at = now;
+        createdAt = now;
+        updatedAt = now;
     }
     
     @Column(nullable = false)
-    private Instant updated_at;
+    private Instant updatedAt;
 
     @PreUpdate
     public void onUpdate() {
-        updated_at = Instant.now();
+        updatedAt = Instant.now();
     }
 
 }

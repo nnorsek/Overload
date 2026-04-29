@@ -18,11 +18,10 @@ import lombok.Setter;
 @Setter
 @Table(name = "exercises")
 public class Exercise {
-    
+
     @Id
     @GeneratedValue
-    private long exercise_id;
-
+    private long exerciseId;
 
     @NotBlank
     @Column(nullable = false)
@@ -30,12 +29,11 @@ public class Exercise {
 
     @NotNull
     @Column(nullable = false)
-    private EquipmentType equipment_type;
+    private EquipmentType equipmentType;
 
     @NotNull
     @Column(nullable = false)
-    private MuscleGroup muscle_group;
-
+    private MuscleGroup muscleGroup;
 
     private String description;
 }

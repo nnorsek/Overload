@@ -7,5 +7,5 @@ import com.overload.server.model.Trainer;
 
 @Repository
 public interface TrainerRepo extends JpaRepository<Trainer, Long> {
-    
+
 }

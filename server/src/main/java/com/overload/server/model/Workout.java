@@ -20,11 +20,10 @@ import lombok.Setter;
 @Setter
 @Table(name = "workouts")
 public class Workout {
-    
-    
+
     @Id
     @GeneratedValue
-    private long workout_id;
+    private long workoutId;
 
     @NotBlank
     @Column(nullable = false)
@@ -36,27 +35,27 @@ public class Workout {
 
     @NotBlank
     @Column(nullable = false)
-    private DifficultyLevel difficulty_level;
+    private DifficultyLevel difficultyLevel;
 
     @NotBlank
     @Column(nullable = false)
-    private int estimated_duration;
+    private int estimatedDuration;
 
     @Column(nullable = false, updatable = false)
-    private Instant created_at;
+    private Instant createdAt;
 
     @PrePersist
     public void onCreate(){
         Instant now = Instant.now();
-        created_at = now;
-        updated_at = now;
+        createdAt = now;
+        updatedAt = now;
     }
-    
+
     @Column(nullable = false)
-    private Instant updated_at;
+    private Instant updatedAt;
 
     @PreUpdate
     public void onUpdate() {
-        updated_at = Instant.now();
+        updatedAt = Instant.now();
     }
 }

@@ -20,7 +20,7 @@ public class SessionExercises {
 
     @Id
     @GeneratedValue
-    private long session_exercise_id;
+    private long sessionExerciseId;
 
     @OneToOne
     @NotNull

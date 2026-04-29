@@ -19,10 +19,10 @@ import lombok.Setter;
 @Entity
 @Table(name = "workout_exercises")
 public class WorkoutExercises {
-    
+
     @Id
     @GeneratedValue
-    private long workout_exercises_id;
+    private long workoutExercisesId;
 
     @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false)
@@ -34,21 +34,20 @@ public class WorkoutExercises {
 
     @NotNull
     @Column(nullable = false)
-    private ArrayList<Integer> exercise_order;
-
-
-    @NotNull
-    @PositiveOrZero
-    @Column(nullable = false)
-    private Float default_weight;
+    private ArrayList<Integer> exerciseOrder;
 
     @NotNull
     @PositiveOrZero
     @Column(nullable = false)
-    private int default_reps;
+    private Float defaultWeight;
 
     @NotNull
     @PositiveOrZero
     @Column(nullable = false)
-    private int default_sets;
+    private int defaultReps;
+
+    @NotNull
+    @PositiveOrZero
+    @Column(nullable = false)
+    private int defaultSets;
 }
