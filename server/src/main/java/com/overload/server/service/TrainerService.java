@@ -2,7 +2,9 @@ package com.overload.server.service;
 
 import com.overload.server.DTOs.clients.requests.AssignClientRequest;
 import com.overload.server.DTOs.trainers.requests.CreateTrainerRequest;
+import com.overload.server.DTOs.trainers.requests.LoginTrainerRequest;
 import com.overload.server.DTOs.trainers.responses.CreateTrainerResponse;
+import com.overload.server.DTOs.trainers.responses.LoginTrainerResponse;
 import com.overload.server.model.Client;
 import com.overload.server.repo.ClientRepo;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,5 +59,10 @@ public class TrainerService {
         trainerRepo.save(trainer);
     }
 
+//    public LoginTrainerResponse loginTrainer(LoginTrainerRequest req){
+//        Trainer found = trainerRepo.findByEmail(req.email);
+//
+//
+//   }
 
     }

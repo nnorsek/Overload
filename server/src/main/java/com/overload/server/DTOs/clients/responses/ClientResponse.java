@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class AllClientsResponse {
+public class ClientResponse {
 
     private Long id;
     private String firstName;
@@ -22,6 +22,6 @@ public class AllClientsResponse {
     private LocalDateTime startedAt;
     private TrainerDTO trainer;
 
-    public AllClientsResponse(Long clientId, @NotBlank String email, @NotBlank String firstName, @NotBlank String lastName, @NotNull @Positive Integer height, @NotNull @Positive Float currentWeight, LocalDateTime startedAt) {
+    public ClientResponse(Long clientId, @NotBlank String email, @NotBlank String firstName, @NotBlank String lastName, @NotNull @Positive Integer height, @NotNull @Positive Float currentWeight, LocalDateTime startedAt) {
     }
 }
