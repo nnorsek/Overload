@@ -5,6 +5,8 @@ import com.overload.server.enums.MuscleGroup;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -21,20 +23,22 @@ public class Exercise {
     
     @Id
     @GeneratedValue
-    private long exercise_id;
+    private long exerciseId;
 
 
     @NotBlank
     @Column(nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     @Column(nullable = false)
-    private EquipmentType equipment_type;
+    private EquipmentType equipmentType;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     @Column(nullable = false)
-    private MuscleGroup muscle_group;
+    private MuscleGroup muscleGroup;
 
 
     private String description;

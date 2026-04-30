@@ -1,4 +1,4 @@
-package com.overload.server.DTOs.TrainerDTOs;
+package com.overload.server.DTOs.trainers;
 
 public class TrainerDTO {
         private Long id;

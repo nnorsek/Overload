@@ -1,4 +1,4 @@
-package com.overload.server.DTOs.TrainerDTOs;
+package com.overload.server.DTOs.trainers.responses;
 
 import com.overload.server.model.Trainer;
 import lombok.Getter;

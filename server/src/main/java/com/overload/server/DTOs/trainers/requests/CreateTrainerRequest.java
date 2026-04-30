@@ -1,4 +1,4 @@
-package com.overload.server.DTOs.TrainerDTOs;
+package com.overload.server.DTOs.trainers.requests;
 
 import java.time.LocalDateTime;
 

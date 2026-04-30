@@ -1,7 +1,5 @@
 package com.overload.server.model;
 
-import java.util.ArrayList;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +24,7 @@ public class WorkoutExercises {
 
     @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false)
-    private ArrayList<Exercise> exercise;
+    private Exercise exercise;
 
     @ManyToOne
     @JoinColumn(name = "workout_id", nullable = false)
@@ -34,7 +32,7 @@ public class WorkoutExercises {
 
     @NotNull
     @Column(nullable = false)
-    private ArrayList<Integer> exerciseOrder;
+    private Integer exerciseOrder;
 
     @NotNull
     @PositiveOrZero

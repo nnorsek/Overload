@@ -2,7 +2,8 @@ package com.overload.server.controller;
 
 import java.util.List;
 
-import com.overload.server.DTOs.ClientDTOs.ClientDTO;
+import com.overload.server.DTOs.clients.responses.AllClientsResponse;
+import com.overload.server.DTOs.clients.responses.ClientsByTrainerIdResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,13 +39,13 @@ public class ClientController {
 
         Client saved = clientService.createClient(client);
 
-        return ResponseEntity.ok(saved);
+        return ResponseEntity.ok(saved); // add message here
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ClientDTO>> getAllClients() {
+    public ResponseEntity<List<AllClientsResponse>> getAllClients() {
 
-        List<ClientDTO> res = clientService.getAllClients();
+        List<AllClientsResponse> res = clientService.getAllClients();
 
         return ResponseEntity.ok(res);
     }
@@ -57,8 +58,8 @@ public class ClientController {
     }
 
     @GetMapping("/all/{trainerId}")
-    public ResponseEntity<List<Client>> getClientsByTrainerId(@PathVariable("trainerId") long trainerId) {
-        return ResponseEntity.ok(clientService.allClientsAssignedToTrainer(trainerId));
+    public ResponseEntity<List<ClientsByTrainerIdResponse>> getClientsByTrainerId(@PathVariable("trainerId") long trainerId) {
+        return ResponseEntity.ok(clientService.getAllClientByTrainerId(trainerId));
     }
 
 

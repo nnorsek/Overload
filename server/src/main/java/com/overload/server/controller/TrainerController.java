@@ -1,17 +1,18 @@
 package com.overload.server.controller;
 
+import com.overload.server.DTOs.clients.requests.AssignClientRequest;
+import com.overload.server.DTOs.trainers.requests.CreateTrainerRequest;
+import com.overload.server.DTOs.trainers.responses.CreateTrainerResponse;
+import com.overload.server.DTOs.sessions.responses.TrainerSessionsResponse;
+import com.overload.server.service.SessionService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.overload.server.model.Trainer;
 import com.overload.server.service.TrainerService;
 
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import java.util.List;
 
 
 @RestController
@@ -28,16 +29,15 @@ public class TrainerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Trainer> createTrainer(@Valid @RequestBody Trainer trainer) {
-        Trainer res = trainerService.createTrainer(trainer);
+    public ResponseEntity<CreateTrainerResponse> createTrainer(@Valid @RequestBody CreateTrainerRequest trainer) {
+        return ResponseEntity.ok(trainerService.createTrainer(trainer));
 
-        return ResponseEntity.ok(res);
     }
 
     @PostMapping("/assignTrainer")
-    public ResponseEntity<?> clientToTrainer(@Valid @RequestBody long client_id, long trainer_id){
-        trainerService.assignClientToTrainer(client_id, trainer_id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> clientToTrainer(@Valid @RequestBody AssignClientRequest req){
+        trainerService.assignClientToTrainer(req);
+        return ResponseEntity.ok().build(); // add response message here
     }
 
     @GetMapping("/sessions/{trainerId}")

@@ -1,8 +1,8 @@
 package com.overload.server.service;
 
-import com.overload.server.DTOs.ClientDTOs.AssignClientRequest;
-import com.overload.server.DTOs.TrainerDTOs.CreateTrainerRequest;
-import com.overload.server.DTOs.TrainerDTOs.CreateTrainerResponse;
+import com.overload.server.DTOs.clients.requests.AssignClientRequest;
+import com.overload.server.DTOs.trainers.requests.CreateTrainerRequest;
+import com.overload.server.DTOs.trainers.responses.CreateTrainerResponse;
 import com.overload.server.model.Client;
 import com.overload.server.repo.ClientRepo;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -58,8 +58,4 @@ public class TrainerService {
     }
 
 
-
-
-
-
-}
+    }

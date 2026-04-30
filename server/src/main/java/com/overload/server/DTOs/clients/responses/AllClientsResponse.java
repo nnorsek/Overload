@@ -1,6 +1,6 @@
-package com.overload.server.DTOs.ClientDTOs;
+package com.overload.server.DTOs.clients.responses;
 
-import com.overload.server.DTOs.TrainerDTOs.TrainerDTO;
+import com.overload.server.DTOs.trainers.TrainerDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class ClientDTO {
+public class AllClientsResponse {
 
     private Long id;
     private String firstName;
@@ -22,6 +22,6 @@ public class ClientDTO {
     private LocalDateTime startedAt;
     private TrainerDTO trainer;
 
-    public ClientDTO(Long clientId, @NotBlank String email, @NotBlank String firstName, @NotBlank String lastName, @NotNull @Positive Integer height, @NotNull @Positive Float currentWeight, LocalDateTime startedAt) {
+    public AllClientsResponse(Long clientId, @NotBlank String email, @NotBlank String firstName, @NotBlank String lastName, @NotNull @Positive Integer height, @NotNull @Positive Float currentWeight, LocalDateTime startedAt) {
     }
 }

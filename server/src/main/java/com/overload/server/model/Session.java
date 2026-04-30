@@ -6,6 +6,8 @@ import com.overload.server.enums.SessionStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -25,7 +27,7 @@ public class Session {
     
     @Id
     @GeneratedValue
-    private long session_id;
+    private long sessionId;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
@@ -37,18 +39,19 @@ public class Session {
 
     @OneToOne
     @JoinColumn(name = "workout_id", nullable = false)
-    private Workout workout_id;
+    private Workout workoutId;
 
     @Column(nullable = false)
     @NotNull
-    private LocalDateTime scheduled_start;
+    private LocalDateTime scheduledStart;
 
     @Column(nullable = false)
     @NotNull
-    private LocalDateTime scheduled_end;
+    private LocalDateTime scheduledEnd;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @NotBlank
+    @NotNull
     private SessionStatus status;
 
     @Column(nullable = false)

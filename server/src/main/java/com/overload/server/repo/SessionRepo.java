@@ -1,5 +1,6 @@
 package com.overload.server.repo;
 
+import com.overload.server.DTOs.sessions.responses.TrainerSessionsResponse;
 import com.overload.server.model.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
 
