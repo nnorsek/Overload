@@ -24,9 +24,9 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    private String generateToken(String email, String role) {
+    public String generateToken(String email, String role) {
         return Jwts.builder()
-                .subject(email) // stores the email inside of the token to see who it belongs to
+                .subject(email) // stores the email inside the token to see who it belongs to
                 // stores the role as "ROLE_TRAINER" or "ROLE_CLIENT" to verify if they have access to certain endpoints
                 .claim("role", role)
                 .issuedAt(new Date()) // timestamp of when token was created

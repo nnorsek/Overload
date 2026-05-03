@@ -1,4 +1,4 @@
-package com.overload.server.DTOs.trainers.requests;
+package com.overload.server.DTOs.clients.requests;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class LoginTrainerRequest {
+public class ClientLoginRequest {
 
     @Email
     @NotNull

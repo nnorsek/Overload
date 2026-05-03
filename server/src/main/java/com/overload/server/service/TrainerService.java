@@ -7,6 +7,7 @@ import com.overload.server.DTOs.trainers.responses.CreateTrainerResponse;
 import com.overload.server.DTOs.trainers.responses.LoginTrainerResponse;
 import com.overload.server.model.Client;
 import com.overload.server.repo.ClientRepo;
+import com.overload.server.utils.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,14 @@ public class TrainerService {
 
     private final TrainerRepo trainerRepo;
     private final ClientRepo clientRepo;
+    private final JwtUtil jwtUtil;
 
     private final PasswordEncoder passwordEncoder;
 
-    public TrainerService(TrainerRepo trainerRepo, ClientRepo clientRepo, PasswordEncoder passwordEncoder){
+    public TrainerService(TrainerRepo trainerRepo, ClientRepo clientRepo, JwtUtil jwtUtil, PasswordEncoder passwordEncoder){
         this.trainerRepo = trainerRepo;
         this.clientRepo = clientRepo;
+        this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -59,10 +62,18 @@ public class TrainerService {
         trainerRepo.save(trainer);
     }
 
-//    public LoginTrainerResponse loginTrainer(LoginTrainerRequest req){
-//        Trainer found = trainerRepo.findByEmail(req.email);
-//
-//
-//   }
+    public LoginTrainerResponse loginTrainer(LoginTrainerRequest req){
+        Trainer found = trainerRepo.findByEmail(req.getEmail())
+                .orElseThrow(() -> new RuntimeException("Failed to find email: " + req.getEmail()));
+
+        if (!passwordEncoder.matches(req.getPassword(), found.getPasswordHash())) {
+            throw new RuntimeException("Password is incorrect");
+        }
+
+        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_TRAINER");
+
+        return new LoginTrainerResponse(found.getTrainerId(), found.getFirstName(), found.getLastName(), found.getEmail(), found.getGender(),
+                 found.getPhotoUrl(), token);
+   }
 
     }

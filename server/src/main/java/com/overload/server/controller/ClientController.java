@@ -2,8 +2,9 @@ package com.overload.server.controller;
 
 import java.util.List;
 
-import com.overload.server.DTOs.clients.responses.ClientResponse;
-import com.overload.server.DTOs.clients.responses.ClientsByTrainerIdResponse;
+import com.overload.server.DTOs.clients.requests.ClientLoginRequest;
+import com.overload.server.DTOs.clients.requests.CreateClientRequest;
+import com.overload.server.DTOs.clients.responses.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.overload.server.model.Client;
 import com.overload.server.service.ClientService;
 
 import jakarta.validation.Valid;
@@ -35,11 +35,8 @@ public class ClientController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createClient(@Valid @RequestBody Client client) {
-
-        Client saved = clientService.createClient(client);
-
-        return ResponseEntity.ok(saved); // add message here
+    public ResponseEntity<CreateClientResponse> createClient(@Valid @RequestBody CreateClientRequest req) {
+        return ResponseEntity.ok(clientService.createClient(req));
     }
 
     @GetMapping("/all")
@@ -51,15 +48,18 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Client> getClientByID(@Valid @PathVariable Long id) {
-        Client res = clientService.getClient(id);
-
-        return ResponseEntity.ok(res);
+    public ResponseEntity<ClientByIdResponse> getClientByID(@PathVariable Long id) {
+        return ResponseEntity.ok(clientService.getClientById(id));
     }
 
     @GetMapping("/all/{trainerId}")
     public ResponseEntity<List<ClientsByTrainerIdResponse>> getClientsByTrainerId(@PathVariable("trainerId") long trainerId) {
         return ResponseEntity.ok(clientService.getAllClientByTrainerId(trainerId));
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<ClientLoginResponse> loginClient(@RequestBody @Valid ClientLoginRequest req){
+        return ResponseEntity.ok(clientService.loginClient(req));
     }
 
 
