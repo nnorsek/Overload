@@ -49,7 +49,7 @@ public class TrainerController {
         return ResponseEntity.ok(sessionService.getSessions(trainerId));
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<LoginTrainerResponse> loginTrainer(@Valid @RequestBody LoginTrainerRequest req){
         return ResponseEntity.ok(trainerService.loginTrainer(req));
     }

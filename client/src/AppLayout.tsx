@@ -10,7 +10,7 @@ export const AppLayout = () => {
       <Navbar open={navOpen} setOpen={setNavOpen} />
 
       {/* Page content */}
-      <main className="flex-1 p-6">
+      <main className="flex-1">
         <Outlet />
       </main>
     </div>
