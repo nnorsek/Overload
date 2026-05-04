@@ -8,11 +8,13 @@ import com.overload.server.DTOs.trainers.responses.LoginTrainerResponse;
 import com.overload.server.model.Client;
 import com.overload.server.repo.ClientRepo;
 import com.overload.server.utils.JwtUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.overload.server.model.Trainer;
 import com.overload.server.repo.TrainerRepo;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class TrainerService {
@@ -64,10 +66,10 @@ public class TrainerService {
 
     public LoginTrainerResponse loginTrainer(LoginTrainerRequest req){
         Trainer found = trainerRepo.findByEmail(req.getEmail())
-                .orElseThrow(() -> new RuntimeException("Failed to find email: " + req.getEmail()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
 
         if (!passwordEncoder.matches(req.getPassword(), found.getPasswordHash())) {
-            throw new RuntimeException("Password is incorrect");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
         String token = jwtUtil.generateToken(req.getEmail(), "ROLE_TRAINER");
