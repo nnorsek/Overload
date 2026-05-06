@@ -2,7 +2,8 @@ import 'react'
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faClock, faEye, faEyeSlash, faCheck, faStar} from "@fortawesome/free-solid-svg-icons";
+import {faClock, faCheck, faStar} from "@fortawesome/free-solid-svg-icons";
+import InputForm from "../components/InputForm";
 
 type LoginForm = {
     email: string,
@@ -19,7 +20,6 @@ const Login = () => {
     const [loginForm, setLoginForm] = useState<LoginForm>({ email: "", password: ""});
     const navigate = useNavigate();
     const [error, setError] = useState("");
-    const [passwordShow, setPasswordShow] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLoginForm(prev => ({ ...prev, [e.target.name]: e.target.value}));
@@ -62,49 +62,8 @@ const Login = () => {
 
                 <div className="flex flex-col w-80 gap-4">
 
-                    {/* Email */}
-                    <div className="relative">
-                        <input
-                            type="text"
-                            name="email"
-                            id="email"
-                            onChange={handleChange}
-                            placeholder=" "
-                            className="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500"
-                        />
-                        <label
-                            htmlFor="email"
-                            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base transition-all duration-200 pointer-events-none
-                                peer-focus:top-3 peer-focus:text-xs peer-focus:text-gray-500
-                                peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500"
-                        >
-                            Email
-                        </label>
-                    </div>
-
-                    {/* Password */}
-                    <div className="relative">
-                        <input
-                            type={passwordShow ? "text" : "password"}
-                            name="password"
-                            id="password"
-                            placeholder=" "
-                            onChange={handleChange}
-                            className="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500"
-                        />
-                        <span className="absolute right-3 top-4 cursor-pointer text-gray-400" onClick={() => setPasswordShow(!passwordShow)}>
-                            {passwordShow ? <FontAwesomeIcon icon={faEye}/> : <FontAwesomeIcon icon={faEyeSlash} />}</span>
-                        <label
-                            htmlFor="password"
-                            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base transition-all duration-200 pointer-events-none
-                                peer-focus:top-3 peer-focus:text-xs peer-focus:text-gray-500
-                                peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500"
-                        >
-                            Password
-                        </label>
-
-
-                    </div>
+                    <InputForm name="email" type="text" label="Email" onChange={handleChange} />
+                    <InputForm name="password" type="password" label="Password" onChange={handleChange} />
                     <button type="submit" className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200" onClick={SubmitLogin}>
                         Sign in
                     </button>
