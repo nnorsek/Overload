@@ -1,14 +1,18 @@
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import InputForm from "../components/InputForm"
+import {useState} from "react";
 
 type SignUpForm = {
     firstName: string
+    middleName: string
     lastName: string
+    gender: "male" | "female"
+    dob: string
     email: string
     password: string
     confirmPassword: string
-    gender: "male" | "female"
+
     weight: number
     height: number
     dateOfBirth: string
@@ -16,9 +20,9 @@ type SignUpForm = {
     goal?: string
     trainerId?: number
 }
-// TODO: Update to linear sign up
 export default function Register() {
     const navigate = useNavigate()
+    const [step, setStep] = useState<number>(1)
     const {
         register,
         handleSubmit,
@@ -41,11 +45,20 @@ export default function Register() {
         }
     }
 
+    const nextStep = () => {
+        setStep(step + 1)
+    }
+
+    const prevStep = () => {
+        setStep(step - 1)
+    }
     return (
         <div className="flex h-screen justify-center items-center">
-            <form className="flex flex-col items-center w-80 gap-4" onSubmit={handleSubmit(onSubmit)}>
-                <h1 className="text-2xl font-bold mb-2">Create account</h1>
+            <form className="grid grid-cols-2 gap-4 w-[900px]" onSubmit={handleSubmit(onSubmit)}>
 
+                {step === 1 && (
+                <div className="flex flex-col w-full gap-y-5">
+                    <h1 className="col-span-2 text-4xl mb-2">Let's get to know you...</h1>
                 <InputForm
                     {...register("firstName", { required: "First name is required" })}
                     type="text"
@@ -58,15 +71,65 @@ export default function Register() {
                     label="Last Name"
                     error={errors.lastName?.message}
                 />
-                <InputForm
-                    {...register("email", {
-                        required: "Email is required",
-                        pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email" },
-                    })}
-                    type="text"
-                    label="Email"
-                    error={errors.email?.message}
-                />
+                        <InputForm
+                            {...register("dateOfBirth", { required: "Date of birth is required" })}
+                            type="date"
+                            label="Date of Birth"
+                            error={errors.dateOfBirth?.message}
+                        />
+                        {/* Gender */}
+                        <div>
+                            <select
+                                {...register("gender", { required: "Gender is required" })}
+                                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-gray-500 text-gray-600 ${
+                                    errors.gender ? "border-red-400" : "border-gray-300"
+                                }`}
+                            >
+                                <option value="">Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                            {errors.gender && <p className="mt-1 text-xs text-red-500">{errors.gender.message}</p>}
+                        </div>
+                    </div>
+            )}
+                {step === 2 && (
+                    <div className="flex flex-col w-full justify-center gap-y-5">
+                        <InputForm
+                            {...register("weight", { required: "Weight is required", min: { value: 1, message: "Invalid weight" } })}
+                            type="number"
+                            label="Weight (lbs)"
+                            error={errors.weight?.message}
+                        />
+                        <InputForm
+                            {...register("height", { required: "Height is required", min: { value: 1, message: "Invalid height" } })}
+                            type="number"
+                            label="Height (in)"
+                            error={errors.height?.message}
+                        />
+                        <div className="col-span-2">
+                            <InputForm
+                                {...register("goal")}
+                                type="text"
+                                label="Goal (optional)"
+                            />
+                        </div>
+                    </div>
+                )}
+                {step === 3 && (
+                    <div className="flex flex-col w-full justify-center gap-y-5">
+                <div className="col-span-2">
+                    <InputForm
+                        {...register("email", {
+                            required: "Email is required",
+                            pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email" },
+                        })}
+                        type="text"
+                        label="Email"
+                        error={errors.email?.message}
+                    />
+                </div>
+
                 <InputForm
                     {...register("password", {
                         required: "Password is required",
@@ -85,65 +148,50 @@ export default function Register() {
                     label="Confirm Password"
                     error={errors.confirmPassword?.message}
                 />
-
-                {/* Gender */}
-                <div className="w-full">
-                    <select
-                        {...register("gender", { required: "Gender is required" })}
-                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-gray-500 text-gray-600 ${
-                            errors.gender ? "border-red-400" : "border-gray-300"
-                        }`}
-                    >
-                        <option value="">Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                    </select>
-                    {errors.gender && <p className="mt-1 text-xs text-red-500">{errors.gender.message}</p>}
-                </div>
-
-                <InputForm
-                    {...register("weight", { required: "Weight is required", min: { value: 1, message: "Invalid weight" } })}
-                    type="number"
-                    label="Weight (lbs)"
-                    error={errors.weight?.message}
-                />
-                <InputForm
-                    {...register("height", { required: "Height is required", min: { value: 1, message: "Invalid height" } })}
-                    type="number"
-                    label="Height (in)"
-                    error={errors.height?.message}
-                />
-                <InputForm
-                    {...register("dateOfBirth", { required: "Date of birth is required" })}
-                    type="date"
-                    label="Date of Birth"
-                    error={errors.dateOfBirth?.message}
-                />
-                <InputForm
-                    {...register("goal")}
-                    type="text"
-                    label="Goal (optional)"
-                />
                 <InputForm
                     {...register("trainerId")}
                     type="text"
                     label="Trainer ID (optional)"
                 />
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50"
+                        >
+                            {isSubmitting ? "Creating account..." : "Sign up"}
+                        </button>
+                    </div>
+            )}
+                <div className="col-span-2 flex flex-row justify-center w-1/2 mt-2 gap-x-5">
+                {(step == 2 || step == 3) && (
+                    <button
+                        type="button"
+                        onClick={() => prevStep()}
+                        className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50"
+                    >
+                        Back
+                    </button>
+                )}
 
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50"
-                >
-                    {isSubmitting ? "Creating account..." : "Sign up"}
-                </button>
+                {(step == 1 || step == 2) && (
+                            <button
+                                type="button"
+                                onClick={() => nextStep()}
+                                className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50"
+                                >
+                                Next
+                            </button>
+                )}
 
-                <p className="text-sm text-gray-500">
+                </div>
+                <p className="col-span-2 text-sm text-gray-500 text-center">
                     Already have an account?{" "}
                     <span className="cursor-pointer underline" onClick={() => navigate("/login")}>
                         Sign in
                     </span>
                 </p>
+
+
             </form>
         </div>
     )
