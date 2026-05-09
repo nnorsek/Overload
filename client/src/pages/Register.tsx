@@ -33,9 +33,10 @@ export default function Register() {
     const onSubmit = async (data: SignUpForm) => {
         const { confirmPassword, ...payload } = data
         try {
+            console.log(payload)
             const res = await fetch("http://localhost:8080/trainer/register", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": "Bearer " + localStorage.getItem('token')},
                 body: JSON.stringify(payload),
             })
             if (!res.ok) return
@@ -54,11 +55,11 @@ export default function Register() {
     }
     return (
         <div className="flex h-screen justify-center items-center">
-            <form className="grid grid-cols-2 gap-4 w-[900px]" onSubmit={handleSubmit(onSubmit)}>
+            <form className="flex flex-col justify-center items-center gap-4 w-lg" onSubmit={handleSubmit(onSubmit)}>
 
                 {step === 1 && (
                 <div className="flex flex-col w-full gap-y-5">
-                    <h1 className="col-span-2 text-4xl mb-2">Let's get to know you...</h1>
+                    <h1 className="text-4xl mb-2">Let's get to know you...</h1>
                 <InputForm
                     {...register("firstName", { required: "First name is required" })}
                     type="text"
@@ -95,6 +96,7 @@ export default function Register() {
             )}
                 {step === 2 && (
                     <div className="flex flex-col w-full justify-center gap-y-5">
+                        <h1 className="text-4xl mb-2">Now for your Body Metrics</h1>
                         <InputForm
                             {...register("weight", { required: "Weight is required", min: { value: 1, message: "Invalid weight" } })}
                             type="number"
@@ -107,18 +109,18 @@ export default function Register() {
                             label="Height (in)"
                             error={errors.height?.message}
                         />
-                        <div className="col-span-2">
+
                             <InputForm
                                 {...register("goal")}
                                 type="text"
                                 label="Goal (optional)"
                             />
-                        </div>
+
                     </div>
                 )}
                 {step === 3 && (
                     <div className="flex flex-col w-full justify-center gap-y-5">
-                <div className="col-span-2">
+                        <h1 className="text-4xl mb-2">Account Information</h1>
                     <InputForm
                         {...register("email", {
                             required: "Email is required",
@@ -128,7 +130,7 @@ export default function Register() {
                         label="Email"
                         error={errors.email?.message}
                     />
-                </div>
+
 
                 <InputForm
                     {...register("password", {
@@ -153,21 +155,16 @@ export default function Register() {
                     type="text"
                     label="Trainer ID (optional)"
                 />
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50"
-                        >
-                            {isSubmitting ? "Creating account..." : "Sign up"}
-                        </button>
+
                     </div>
             )}
-                <div className="col-span-2 flex flex-row justify-center w-1/2 mt-2 gap-x-5">
+
+                <div className="flex flex-row justify-center w-full mt-2 gap-x-5">
                 {(step == 2 || step == 3) && (
                     <button
                         type="button"
                         onClick={() => prevStep()}
-                        className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50"
+                        className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 hover:cursor-pointer transition-colors duration-200 disabled:opacity-50"
                     >
                         Back
                     </button>
@@ -177,14 +174,23 @@ export default function Register() {
                             <button
                                 type="button"
                                 onClick={() => nextStep()}
-                                className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50"
+                                className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 hover:cursor-pointer transition-colors duration-200 disabled:opacity-50"
                                 >
                                 Next
                             </button>
                 )}
+                    {step == 3 && (
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="w-full bg-blue-500 border text-white py-2 rounded-lg hover:bg-blue-400 hover:cursor-pointer transition-colors duration-200 disabled:opacity-50"
+                        >
+                            {isSubmitting ? "Creating account..." : "Sign up"}
+                        </button>
+                        )}
 
                 </div>
-                <p className="col-span-2 text-sm text-gray-500 text-center">
+                <p className="text-sm text-gray-500 text-center">
                     Already have an account?{" "}
                     <span className="cursor-pointer underline" onClick={() => navigate("/login")}>
                         Sign in
