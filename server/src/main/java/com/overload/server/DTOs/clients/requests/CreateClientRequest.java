@@ -14,6 +14,8 @@ public class CreateClientRequest {
     @NotBlank
     private String firstName;
 
+    private String middleName;
+
     @NotBlank
     private String lastName;
 
@@ -22,8 +24,6 @@ public class CreateClientRequest {
 
     @NotBlank
     private String gender;
-
-    private String photoUrl;
 
     @Email
     @NotBlank
@@ -41,4 +41,7 @@ public class CreateClientRequest {
     @Positive
     private Integer height;
 
+    private String goal;
+
+    private String trainerId;
 }

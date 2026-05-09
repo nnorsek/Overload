@@ -8,17 +8,19 @@ type Props = {
     label: string
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     error?: string
+    required?: boolean
 }
 
 const InputForm = forwardRef<HTMLInputElement, Props>(
-    ({ name, type, label, onChange, error, ...rest }, ref) => {
+    ({ name, type, label, onChange, error, required, ...rest }, ref) => {
         const [showPassword, setShowPassword] = useState(false)
         const isPassword = type === "password"
         const inputType = isPassword ? (showPassword ? "text" : "password") : type
 
         return (
             <div className="relative">
-                <input
+
+                    <input
                     {...rest}
                     ref={ref}
                     type={inputType}
@@ -45,6 +47,9 @@ const InputForm = forwardRef<HTMLInputElement, Props>(
                         peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500"
                 >
                     {label}
+                    {required && (
+                        <span className="pl-1 pb-1 text-red-500">*</span>
+                    )}
                 </label>
                 {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
             </div>

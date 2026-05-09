@@ -36,6 +36,8 @@ public class Client {
     @NotBlank
     private String lastName;
 
+    private String middleName;
+
     @Column(nullable = false, unique = true)
     @NotBlank
     @Email
@@ -68,8 +70,6 @@ public class Client {
     @Positive
     private Integer height;
 
-    @Column(nullable = false)
-    @NotBlank
     private String goal;
 
     private String photoUrl;

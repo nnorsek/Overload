@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import InputForm from "../components/InputForm"
 import {useState} from "react";
+import SelectForm from "../components/SelectForm.tsx";
 
 type SignUpForm = {
     firstName: string
@@ -12,13 +13,11 @@ type SignUpForm = {
     email: string
     password: string
     confirmPassword: string
-
-    weight: number
+    startingWeight: number
     height: number
     dateOfBirth: string
     photoURL?: string
     goal?: string
-    trainerId?: number
 }
 export default function Register() {
     const navigate = useNavigate()
@@ -34,9 +33,9 @@ export default function Register() {
         const { confirmPassword, ...payload } = data
         try {
             console.log(payload)
-            const res = await fetch("http://localhost:8080/trainer/register", {
+            const res = await fetch("http://localhost:8080/client/create", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", "Authorization": "Bearer " + localStorage.getItem('token')},
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             })
             if (!res.ok) return
@@ -62,49 +61,54 @@ export default function Register() {
                     <h1 className="text-4xl mb-2">Let's get to know you...</h1>
                 <InputForm
                     {...register("firstName", { required: "First name is required" })}
+                    required={true}
                     type="text"
                     label="First Name"
                     error={errors.firstName?.message}
                 />
                 <InputForm
+                    {...register("middleName")}
+                    type="text"
+                    label="Middle Name"
+                    error={errors.firstName?.message}
+                />
+                <InputForm
                     {...register("lastName", { required: "Last name is required" })}
+                    required={true}
                     type="text"
                     label="Last Name"
                     error={errors.lastName?.message}
                 />
                         <InputForm
                             {...register("dateOfBirth", { required: "Date of birth is required" })}
+                            required={true}
                             type="date"
                             label="Date of Birth"
                             error={errors.dateOfBirth?.message}
                         />
-                        {/* Gender */}
-                        <div>
-                            <select
+                            {/* TODO: Fix chevron position */}
+                            <SelectForm
                                 {...register("gender", { required: "Gender is required" })}
-                                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-gray-500 text-gray-600 ${
-                                    errors.gender ? "border-red-400" : "border-gray-300"
-                                }`}
+                                options={["Gender", "male", "female"]}
+                                error={errors.gender?.message}
                             >
-                                <option value="">Gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select>
-                            {errors.gender && <p className="mt-1 text-xs text-red-500">{errors.gender.message}</p>}
-                        </div>
+                            </SelectForm>
                     </div>
             )}
                 {step === 2 && (
                     <div className="flex flex-col w-full justify-center gap-y-5">
-                        <h1 className="text-4xl mb-2">Now for your Body Metrics</h1>
+                        <h1 className="text-4xl mb-2">Body Metrics</h1>
                         <InputForm
-                            {...register("weight", { required: "Weight is required", min: { value: 1, message: "Invalid weight" } })}
+                            {...register("startingWeight", { required: "Weight is required", min: { value: 1, message: "Invalid weight" } })}
+                            required={true}
                             type="number"
                             label="Weight (lbs)"
-                            error={errors.weight?.message}
+                            error={errors.startingWeight?.message}
                         />
+                        {/* TODO: Change to incremental */}
                         <InputForm
                             {...register("height", { required: "Height is required", min: { value: 1, message: "Invalid height" } })}
+                            required={true}
                             type="number"
                             label="Height (in)"
                             error={errors.height?.message}
@@ -126,6 +130,7 @@ export default function Register() {
                             required: "Email is required",
                             pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email" },
                         })}
+                        required={true}
                         type="text"
                         label="Email"
                         error={errors.email?.message}
@@ -137,6 +142,7 @@ export default function Register() {
                         required: "Password is required",
                         minLength: { value: 8, message: "Minimum 8 characters" },
                     })}
+                    required={true}
                     type="password"
                     label="Password"
                     error={errors.password?.message}
@@ -146,16 +152,11 @@ export default function Register() {
                         required: "Please confirm your password",
                         validate: val => val === watch("password") || "Passwords do not match",
                     })}
+                    required={true}
                     type="password"
                     label="Confirm Password"
                     error={errors.confirmPassword?.message}
                 />
-                <InputForm
-                    {...register("trainerId")}
-                    type="text"
-                    label="Trainer ID (optional)"
-                />
-
                     </div>
             )}
 

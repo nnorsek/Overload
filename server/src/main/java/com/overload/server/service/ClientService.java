@@ -34,13 +34,21 @@ public class ClientService {
     public CreateClientResponse createClient(CreateClientRequest req) {
         Client client = new Client();
 
+
+
         client.setPasswordHash(passwordEncoder.encode(req.getPassword()));
         client.setFirstName(req.getFirstName());
+        client.setMiddleName(req.getMiddleName());
         client.setLastName(req.getLastName());
         client.setEmail(req.getEmail());
         client.setGender(req.getGender());
         client.setDateOfBirth(req.getDateOfBirth());
-        client.setPhotoUrl(req.getPhotoUrl());
+        client.setGoal(req.getGoal());
+        client.setCurrentWeight(req.getStartingWeight());
+        client.setStartingWeight(req.getStartingWeight());
+        client.setHeight(req.getHeight());
+
+
 
         Client saved = clientRepo.save(client);
         return new CreateClientResponse(saved);
