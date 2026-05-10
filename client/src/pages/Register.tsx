@@ -4,7 +4,7 @@ import InputForm from "../components/InputForm"
 import {useState} from "react";
 import SelectForm from "../components/SelectForm.tsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCheck} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faCheck} from "@fortawesome/free-solid-svg-icons";
 
 
 type SignUpForm = {
@@ -23,14 +23,19 @@ type SignUpForm = {
     goal?: string
 }
 
+type Role = "CLIENT" | "TRAINER" | "ADMIN" | "";
+
 const ClientInfo =
     ["Log workouts & track PRs",
         "Follow trainer programs",
         "Monitor progress over time"]
 
+const btnClass = "flex flex-col px-6 py-8 rounded-lg justify-center gap-y-4 items-center bg-[#6c757d] w-[250px] h-[220px] border hover:cursor-pointer border-gray-400 border border-gray-400 transition hover:-translate-y-2 hover:border-gray-200 hover:border-2 focus:bg-blue-500/40"
+
 export default function Register() {
     const navigate = useNavigate()
     const [step, setStep] = useState<number>(0)
+    const [role, setRole] = useState<Role>("")
     const {
         register,
         handleSubmit,
@@ -86,18 +91,23 @@ export default function Register() {
                     </div>
 
             </div>
-            <form className="w-full bg-gray-300 flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+            <form className="w-full bg-[#495057] flex flex-col gap-4 p-25" onSubmit={handleSubmit(onSubmit)}>
                 {step === 0 && (
-                    <div className="flex flex-col justify-center items-center gap-4">
-                        <h1 className="mb-2 text-2xl">Sign up as a Trainer or Client</h1>
-                        <div className={"flex justify-center w-full gap-x-4 text-lg text-gray-800 font-semibold"}>
-                        <button className="px-6 py-2 rounded-lg bg-orange-500 hover:bg-orange-400 hover:cursor-pointer" onClick={nextStep}>
-                            Client
+                    <div className="flex flex-col mt-20 items-center justify-center">
+                        <h1 className="text-6xl text-gray-100">Who are you signing up as?</h1>
+                        <div className="mt-10 flex gap-x-12">
+                            <button className={`${btnClass}`} onClick={() => setRole("CLIENT")}>
+                                <h1 className="text-5xl text-white">Client</h1>
+                                <p className="text-lg text-white">Track workouts & follow trainer's programs</p>
+                            </button>
+                            <button className={`${btnClass}`} onClick={() => setRole("TRAINER")}>
+                                <h1 className="text-5xl text-white">Trainer</h1>
+                                <p className="text-lg text-white px-2">Build programs & manage clients</p>
+                            </button>
+                        </div>
+                        <button onClick={() => nextStep()} disabled={!role} className="w-64 mt-20 px-6 py-3 text-2xl border rounded-lg transition-all duration-200 bg-transparent border-gray-100 hover:border-white hover:cursor-pointer text-white">
+                            Continue <FontAwesomeIcon icon={faArrowRight}/>
                         </button>
-                        <button className="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-400 hover:cursor-pointer" onClick={nextStep}>
-                            Trainer
-                        </button>
-                    </div>
                     </div>
                 )}
                 {step === 1 && (
@@ -235,12 +245,6 @@ export default function Register() {
                         )}
 
                 </div>
-                <p className="text-sm text-gray-500 text-center">
-                    Already have an account?{" "}
-                    <span className="cursor-pointer underline" onClick={() => navigate("/login")}>
-                        Sign in
-                    </span>
-                </p>
 
 
             </form>
