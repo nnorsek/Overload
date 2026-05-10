@@ -6,6 +6,8 @@ interface MetricCardProps {
   metric_data: number;
 }
 
+
+
 const MetricCard: React.FC<MetricCardProps> = ({
   title,
   primary_data,
@@ -16,6 +18,9 @@ const MetricCard: React.FC<MetricCardProps> = ({
       <h1 className="text-xl font-medium">{title}</h1>
       <p className="pt-4 text-lg font-semibold">{primary_data}</p>
       <p className="mt-2 text-gray-800">{metric_data}</p>
+        <div className="mt-6">
+
+        </div>
     </div>
   );
 };
