@@ -42,7 +42,7 @@ const InputForm = forwardRef<HTMLInputElement, Props>(
                 )}
                 <label
                     htmlFor={name}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base transition-all duration-200 pointer-events-none
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-base transition-all duration-200 pointer-events-none
                         peer-focus:top-3 peer-focus:text-xs peer-focus:text-gray-500
                         peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-500"
                 >
