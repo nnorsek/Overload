@@ -30,11 +30,14 @@ public class ClientService {
 
         this.jwtUtil = jwtUtil;
     }
-    // Update to a DTO using passwordHash
+
     public CreateClientResponse createClient(CreateClientRequest req) {
+
+        if (clientRepo.findByEmail(req.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+        };
+
         Client client = new Client();
-
-
 
         client.setPasswordHash(passwordEncoder.encode(req.getPassword()));
         client.setFirstName(req.getFirstName());
@@ -47,8 +50,6 @@ public class ClientService {
         client.setCurrentWeight(req.getStartingWeight());
         client.setStartingWeight(req.getStartingWeight());
         client.setHeight(req.getHeight());
-
-
 
         Client saved = clientRepo.save(client);
         return new CreateClientResponse(saved);

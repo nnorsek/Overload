@@ -30,8 +30,8 @@ const ClientInfo =
         "Follow trainer programs",
         "Monitor progress over time"]
 
-const btnClass = "flex flex-col px-6 py-8 rounded-lg justify-center gap-y-4 items-center bg-transparent w-[250px] h-[200] border hover:cursor-pointer border-gray-400 border border-gray-400 transition hover:-translate-y-2 hover:border-gray-200 hover:border-2 focus:bg-blue-500/40 focus:border-2 focus:border-gray-200"
 
+const totalSteps = 4
 
 export default function Register() {
     const navigate = useNavigate()
@@ -44,13 +44,17 @@ export default function Register() {
         formState: { errors, isSubmitting },
     } = useForm<SignUpForm>()
 
+    const btnBase = `flex flex-col px-6 py-8 rounded-lg justify-center gap-y-4 items-center w-[250px] h-[200] border-2 hover:cursor-pointer transition hover:-translate-y-2`
+    const selectedClass = `bg-blue-500/40 border-gray-200`
+    const unselectedClass = `bg-transparent border-gray-400 hover:border-gray-200`
+
+
     const displayRole = role == "CLIENT" ? "client" : "trainer"
 
     const onSubmit = async (data: SignUpForm) => {
         const { confirmPassword, ...payload } = data
         try {
-            console.log(payload)
-            const res = await fetch("http://localhost:8080/client/create", {
+            const res = await fetch(`http://localhost:8080/${displayRole}/create`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
@@ -69,6 +73,8 @@ export default function Register() {
     const prevStep = () => {
         setStep(step - 1)
     }
+
+    console.log(role === "TRAINER")
     return (
         <div className="flex">
             <div className={`flex flex-col w-[1000px] ${role == "CLIENT" ? "bg-white" : "bg-[#040F16]"}`}>
@@ -97,16 +103,31 @@ export default function Register() {
                 </div>
             </div>
             <form className="w-full bg-[#262B40] flex flex-col gap-4 p-25" onSubmit={handleSubmit(onSubmit)}>
+                <div className="flex flex-col gap-1.5 mb-7">
+                    <p className="text-lg font-medium tracking-widest uppercase text-[#5171A5]">
+                        Step {step} of {totalSteps}
+                    </p>
+                    <div className="flex gap-1.5">
+                        {Array.from({ length: totalSteps }, (_, i) => (
+                            <div
+                                key={i}
+                                className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                                    i < step ? 'bg-[#5171A5]' : 'bg-white/10'
+                                }`}
+                            />
+                        ))}
+                    </div>
+                </div>
                 {step === 1 && (
                     <div className="flex flex-col mt-20">
                         <p className="text-3xl text-gray-200 mb-4">Get Started</p>
                         <h1 className="text-5xl text-gray-200">Who are you signing up as?</h1>
                         <div className="mt-10 flex gap-x-12">
-                            <button className={`${btnClass}`} onClick={() => setRole("CLIENT")}>
+                            <button className={`${btnBase} ${role === "CLIENT" ? selectedClass : unselectedClass}`} onClick={() => setRole("CLIENT")}>
                                 <h1 className="text-2xl text-white font-semibold">Client</h1>
                                 <p className="text-white">Track workouts & follow trainer's programs</p>
                             </button>
-                            <button className={`${btnClass}`} onClick={() => setRole("TRAINER")}>
+                            <button className={`${btnBase} ${role === "TRAINER" ? selectedClass : unselectedClass}`} onClick={() => setRole("TRAINER")}>
                                 <h1 className="text-2xl text-white font-semibold">Trainer</h1>
                                 <p className="text-white px-2">Build programs & manage clients</p>
                             </button>
@@ -123,6 +144,7 @@ export default function Register() {
                     {...register("firstName", { required: "First name is required" })}
                     required={true}
                     type="text"
+                    textColor={"text-white"}
                     label="First Name"
                     error={errors.firstName?.message}
                 />
@@ -130,12 +152,13 @@ export default function Register() {
                     {...register("middleName")}
                     type="text"
                     label="Middle Name"
-                    error={errors.firstName?.message}
+                    textColor={"text-white"}
                 />
                 <InputForm
                     {...register("lastName", { required: "Last name is required" })}
                     required={true}
                     type="text"
+                    textColor={"text-white"}
                     label="Last Name"
                     error={errors.lastName?.message}
                 />
@@ -143,13 +166,14 @@ export default function Register() {
                             {...register("dateOfBirth", { required: "Date of birth is required" })}
                             required={true}
                             type="date"
+                            textColor={"text-white"}
                             label="Date of Birth"
                             error={errors.dateOfBirth?.message}
                         />
-                            {/* TODO: Fix chevron position */}
                             <SelectForm
                                 {...register("gender", { required: "Gender is required" })}
-                                options={["Gender", "male", "female"]}
+                                label={"Select a gender"}
+                                options={["Male", "Female"]}
                                 error={errors.gender?.message}
                             >
                             </SelectForm>
@@ -157,34 +181,31 @@ export default function Register() {
             )}
                 {step === 3 && (
                     <div className="flex flex-col w-full justify-center gap-y-5">
-                        <h1 className="text-4xl mb-2">Body Metrics</h1>
+                        <h1 className="text-4xl mb-2 text-white">Body Metrics</h1>
                         <InputForm
                             {...register("startingWeight", { required: "Weight is required", min: { value: 1, message: "Invalid weight" } })}
                             required={true}
                             type="number"
+                            textColor={"text-white"}
                             label="Weight (lbs)"
                             error={errors.startingWeight?.message}
                         />
-                        {/* TODO: Change to incremental */}
                         <InputForm
                             {...register("height", { required: "Height is required", min: { value: 1, message: "Invalid height" } })}
                             required={true}
                             type="number"
+                            textColor={"text-white"}
                             label="Height (in)"
                             error={errors.height?.message}
                         />
 
-                            <InputForm
-                                {...register("goal")}
-                                type="text"
-                                label="Goal (optional)"
-                            />
+
 
                     </div>
                 )}
                 {step === 4 && (
                     <div className="flex flex-col w-full justify-center gap-y-5">
-                        <h1 className="text-4xl mb-2">Account Information</h1>
+                        <h1 className="text-4xl mb-2 text-white">Account Information</h1>
                     <InputForm
                         {...register("email", {
                             required: "Email is required",
@@ -192,6 +213,7 @@ export default function Register() {
                         })}
                         required={true}
                         type="text"
+                        textColor={"text-white"}
                         label="Email"
                         error={errors.email?.message}
                     />
@@ -205,6 +227,7 @@ export default function Register() {
                     required={true}
                     type="password"
                     label="Password"
+                    textColor={"text-white"}
                     error={errors.password?.message}
                 />
                 <InputForm
@@ -213,11 +236,17 @@ export default function Register() {
                         validate: val => val === watch("password") || "Passwords do not match",
                     })}
                     required={true}
+                    textColor={"text-white"}
                     type="password"
                     label="Confirm Password"
                     error={errors.confirmPassword?.message}
                 />
-                    </div>
+                <InputForm
+                    {...register("goal")}
+                    type="text"
+                    textColor={"text-white"}
+                    label="Goal (optional)"
+                /></div>
             )}
 
                 <div className="flex flex-row justify-center w-full mt-2 gap-x-5">
@@ -225,7 +254,7 @@ export default function Register() {
                     <button
                         type="button"
                         onClick={() => prevStep()}
-                        className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 hover:cursor-pointer transition-colors duration-200 disabled:opacity-50"
+                        className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-900/80 hover:cursor-pointer transition-colors duration-200 disabled:opacity-50"
                     >
                         Back
                     </button>
@@ -235,7 +264,7 @@ export default function Register() {
                             <button
                                 type="button"
                                 onClick={() => nextStep()}
-                                className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 hover:cursor-pointer transition-colors duration-200 disabled:opacity-50"
+                                className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-900/80 hover:cursor-pointer transition-colors duration-200 disabled:opacity-50"
                                 >
                                 Next
                             </button>

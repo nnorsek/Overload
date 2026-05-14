@@ -6,13 +6,14 @@ type Props = {
     name: string
     type: string
     label: string
+    textColor?: string
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     error?: string
     required?: boolean
 }
 
 const InputForm = forwardRef<HTMLInputElement, Props>(
-    ({ name, type, label, onChange, error, required, ...rest }, ref) => {
+    ({ name, type, label, onChange, error, required, textColor, ...rest }, ref) => {
         const [showPassword, setShowPassword] = useState(false)
         const isPassword = type === "password"
         const inputType = isPassword ? (showPassword ? "text" : "password") : type
@@ -28,7 +29,7 @@ const InputForm = forwardRef<HTMLInputElement, Props>(
                     id={name}
                     onChange={onChange}
                     placeholder=" "
-                    className={`peer w-full px-4 pt-5 pb-2 border rounded-lg focus:outline-none focus:border-gray-500 ${
+                    className={`peer w-full px-4 pt-5 pb-2 border rounded-lg focus:outline-none focus:border-blue-500 ${textColor} ${
                         error ? "border-red-400" : "border-gray-300"
                     }`}
                 />
