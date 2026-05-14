@@ -35,24 +35,36 @@ public class ClientService {
 
         if (clientRepo.findByEmail(req.getEmail()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
-        };
+        }
 
-        Client client = new Client();
-
-        client.setPasswordHash(passwordEncoder.encode(req.getPassword()));
-        client.setFirstName(req.getFirstName());
-        client.setMiddleName(req.getMiddleName());
-        client.setLastName(req.getLastName());
-        client.setEmail(req.getEmail());
-        client.setGender(req.getGender());
-        client.setDateOfBirth(req.getDateOfBirth());
-        client.setGoal(req.getGoal());
-        client.setCurrentWeight(req.getStartingWeight());
-        client.setStartingWeight(req.getStartingWeight());
-        client.setHeight(req.getHeight());
+        Client client = Client.builder()
+                .passwordHash(passwordEncoder.encode(req.getPassword()))
+                .firstName(req.getFirstName())
+                .middleName(req.getMiddleName())
+                .lastName(req.getLastName())
+                .email(req.getEmail())
+                .gender(req.getGender())
+                .dateOfBirth(req.getDateOfBirth())
+                .goal(req.getGoal())
+                .currentWeight(req.getStartingWeight())
+                .startingWeight(req.getStartingWeight())
+                .height(req.getHeight())
+                .build();
 
         Client saved = clientRepo.save(client);
-        return new CreateClientResponse(saved);
+        String token = jwtUtil.generateToken(req.getEmail(), "CLIENT");
+
+        return CreateClientResponse.builder()
+                .token(token)
+                .clientId(saved.getClientId())
+                .firstName(saved.getFirstName())
+                .lastName(saved.getLastName())
+                .email(saved.getEmail())
+                .startingWeight(saved.getStartingWeight())
+                .height(saved.getHeight())
+                .gender(saved.getGender())
+                .photoUrl(saved.getPhotoUrl())
+                .build();
     }
 
     public List<ClientResponse> getAllClients(){

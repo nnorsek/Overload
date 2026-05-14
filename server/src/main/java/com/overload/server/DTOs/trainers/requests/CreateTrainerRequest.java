@@ -1,6 +1,6 @@
 package com.overload.server.DTOs.trainers.requests;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -20,7 +20,7 @@ public class CreateTrainerRequest {
     private String lastName;
 
     @NotNull
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @NotBlank
     private String gender;

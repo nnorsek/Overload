@@ -8,6 +8,8 @@ import com.overload.server.DTOs.sessions.responses.TrainerSessionsResponse;
 import com.overload.server.DTOs.trainers.responses.LoginTrainerResponse;
 import com.overload.server.service.SessionService;
 import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +35,7 @@ public class TrainerController {
 
     @PostMapping("/create")
     public ResponseEntity<CreateTrainerResponse> createTrainer(@Valid @RequestBody CreateTrainerRequest trainer) {
-        return ResponseEntity.ok(trainerService.createTrainer(trainer));
+        return ResponseEntity.status(HttpStatus.CREATED).body(trainerService.createTrainer(trainer));
 
     }
 

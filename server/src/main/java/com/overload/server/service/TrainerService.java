@@ -1,6 +1,7 @@
 package com.overload.server.service;
 
 import com.overload.server.DTOs.clients.requests.AssignClientRequest;
+import com.overload.server.DTOs.clients.responses.CreateClientResponse;
 import com.overload.server.DTOs.trainers.requests.CreateTrainerRequest;
 import com.overload.server.DTOs.trainers.requests.LoginTrainerRequest;
 import com.overload.server.DTOs.trainers.responses.CreateTrainerResponse;
@@ -34,18 +35,28 @@ public class TrainerService {
 
     public CreateTrainerResponse createTrainer(CreateTrainerRequest req){
 
-        Trainer trainer = new Trainer();
+        Trainer trainer = Trainer.builder()
+                .passwordHash(passwordEncoder.encode(req.getPassword()))
+                .firstName(req.getFirstName())
+                .lastName(req.getLastName())
+                .email(req.getEmail())
+                .gender(req.getGender())
+                .dateOfBirth(req.getDateOfBirth())
+                .photoUrl(req.getPhotoUrl())
+                .build();
 
-        trainer.setPasswordHash(passwordEncoder.encode(req.getPassword()));
-        trainer.setFirstName(req.getFirstName());
-        trainer.setLastName(req.getLastName());
-        trainer.setEmail(req.getEmail());
-        trainer.setGender(req.getGender());
-        trainer.setDateOfBirth(req.getDateOfBirth());
-        trainer.setPhotoUrl(req.getPhotoUrl());
 
         Trainer saved = trainerRepo.save(trainer);
-        return new CreateTrainerResponse(saved);
+        String token = jwtUtil.generateToken(req.getEmail(), "TRAINER");
+        return CreateTrainerResponse.builder()
+                .token(token)
+                .trainerId(saved.getTrainerId())
+                .firstName(saved.getFirstName())
+                .lastName(saved.getLastName())
+                .email(saved.getEmail())
+                .gender(saved.getGender())
+                .photoUrl(saved.getPhotoUrl())
+                .build();
     }
 
     public void assignClientToTrainer(AssignClientRequest req) {

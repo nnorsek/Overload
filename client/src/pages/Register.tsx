@@ -36,6 +36,7 @@ const totalSteps = 4
 export default function Register() {
     const navigate = useNavigate()
     const [step, setStep] = useState<number>(1)
+    const [error, setError] = useState<string | null>(null)
     const [role, setRole] = useState<Role>("")
     const {
         register,
@@ -48,6 +49,14 @@ export default function Register() {
     const selectedClass = `bg-blue-500/40 border-gray-200`
     const unselectedClass = `bg-transparent border-gray-400 hover:border-gray-200`
 
+    const watchedStepTwo = watch(["firstName", "lastName", "gender", "dateOfBirth"])
+    const isStepTwoValid = watchedStepTwo.every(v => !!v)
+
+    const watchedStepThree = watch(["startingWeight", "height"])
+    const isStepThreeValid = watchedStepThree.every(v => !!v)
+
+    const watchedStepFour = watch(["password", "confirmPassword", "email"])
+    const isStepFourValid = watchedStepFour.every(v => !!v)
 
     const displayRole = role == "CLIENT" ? "client" : "trainer"
 
@@ -60,9 +69,11 @@ export default function Register() {
                 body: JSON.stringify(payload),
             })
             if (!res.ok) return
-            navigate("/login")
-        } catch {
-            // handle network error
+            navigate("/")
+        } catch (err: any) {
+            if (err.message.includes("Not Found")) {
+                setError(err.message)
+            }
         }
     }
 
@@ -74,7 +85,6 @@ export default function Register() {
         setStep(step - 1)
     }
 
-    console.log(role === "TRAINER")
     return (
         <div className="flex">
             <div className={`flex flex-col w-[1000px] ${role == "CLIENT" ? "bg-white" : "bg-[#040F16]"}`}>
@@ -123,16 +133,16 @@ export default function Register() {
                         <p className="text-3xl text-gray-200 mb-4">Get Started</p>
                         <h1 className="text-5xl text-gray-200">Who are you signing up as?</h1>
                         <div className="mt-10 flex gap-x-12">
-                            <button className={`${btnBase} ${role === "CLIENT" ? selectedClass : unselectedClass}`} onClick={() => setRole("CLIENT")}>
+                            <button type="button" className={`${btnBase} ${role === "CLIENT" ? selectedClass : unselectedClass}`} onClick={() => setRole("CLIENT")}>
                                 <h1 className="text-2xl text-white font-semibold">Client</h1>
                                 <p className="text-white">Track workouts & follow trainer's programs</p>
                             </button>
-                            <button className={`${btnBase} ${role === "TRAINER" ? selectedClass : unselectedClass}`} onClick={() => setRole("TRAINER")}>
+                            <button type="button" className={`${btnBase} ${role === "TRAINER" ? selectedClass : unselectedClass}`} onClick={() => setRole("TRAINER")}>
                                 <h1 className="text-2xl text-white font-semibold">Trainer</h1>
                                 <p className="text-white px-2">Build programs & manage clients</p>
                             </button>
                         </div>
-                        <button onClick={() => nextStep()} disabled={!role} className="w-64 mt-20 px-6 py-3 text-2xl border-2 border-gray-500 rounded-lg transition-all duration-200 ease-in-out bg-transparent hover:border-white hover:cursor-pointer text-white">
+                        <button onClick={() => nextStep()} type="button" disabled={!role} className="w-64 mt-20 px-6 py-3 text-2xl border-2 border-gray-500 rounded-lg transition-all duration-200 ease-in-out bg-transparent hover:border-white hover:cursor-pointer text-white">
                             Continue <FontAwesomeIcon icon={faArrowRight}/>
                         </button>
                     </div>
@@ -173,6 +183,7 @@ export default function Register() {
                             <SelectForm
                                 {...register("gender", { required: "Gender is required" })}
                                 label={"Select a gender"}
+                                required={true}
                                 options={["Male", "Female"]}
                                 error={errors.gender?.message}
                             >
@@ -206,6 +217,9 @@ export default function Register() {
                 {step === 4 && (
                     <div className="flex flex-col w-full justify-center gap-y-5">
                         <h1 className="text-4xl mb-2 text-white">Account Information</h1>
+                        {error == "Email already exists" && (
+                            <p className="text-red-500">{error}</p>
+                        )}
                     <InputForm
                         {...register("email", {
                             required: "Email is required",
@@ -262,9 +276,10 @@ export default function Register() {
 
                 {(step == 2 || step == 3) && (
                             <button
+                                disabled={step === 2 ? !isStepTwoValid : step === 3 ? !isStepThreeValid : false}
                                 type="button"
                                 onClick={() => nextStep()}
-                                className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-900/80 hover:cursor-pointer transition-colors duration-200 disabled:opacity-50"
+                                className={`w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-900/80 ${step === 2 && !isStepTwoValid ? "hover:cursor-not-allowed" : step === 3 && !isStepThreeValid ? "hover:cursor-not-allowed" : "hover:cursor-pointer"} transition-colors duration-200 disabled:opacity-50`}
                                 >
                                 Next
                             </button>
@@ -272,8 +287,8 @@ export default function Register() {
                     {step == 4 && (
                         <button
                             type="submit"
-                            disabled={isSubmitting}
-                            className="w-full bg-blue-500 border text-white py-2 rounded-lg hover:bg-blue-400 hover:cursor-pointer transition-colors duration-200 disabled:opacity-50"
+                            disabled={isSubmitting || !isStepFourValid}
+                            className={`w-full bg-blue-500 border text-white py-2 rounded-lg hover:bg-blue-400 ${isStepFourValid ? "hover:cursor-pointer" : "hover:cursor-not-allowed"} transition-colors duration-200 disabled:opacity-50`}
                         >
                             {isSubmitting ? "Creating account..." : "Sign up"}
                         </button>

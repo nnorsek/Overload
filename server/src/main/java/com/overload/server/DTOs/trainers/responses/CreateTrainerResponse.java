@@ -1,13 +1,14 @@
 package com.overload.server.DTOs.trainers.responses;
 
 import com.overload.server.model.Trainer;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
 
 @Getter
-@Setter
+@Builder
 public class CreateTrainerResponse {
 
     private Long trainerId;
@@ -17,6 +18,7 @@ public class CreateTrainerResponse {
     private String gender;
     private String photoUrl;
     private Instant createdAt;
+    private String token;
 
     public CreateTrainerResponse(Trainer trainer) {
         this.trainerId = trainer.getTrainerId();

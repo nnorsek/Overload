@@ -1,10 +1,12 @@
 package com.overload.server.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import com.overload.server.DTOs.clients.requests.ClientLoginRequest;
 import com.overload.server.DTOs.clients.requests.CreateClientRequest;
 import com.overload.server.DTOs.clients.responses.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +38,7 @@ public class ClientController {
 
     @PostMapping("/create")
     public ResponseEntity<CreateClientResponse> createClient(@Valid @RequestBody CreateClientRequest req) {
-        return ResponseEntity.ok(clientService.createClient(req));
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientService.createClient(req));
     }
 
     @GetMapping("/all")
