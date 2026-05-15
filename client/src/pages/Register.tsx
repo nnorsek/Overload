@@ -19,10 +19,27 @@ type SignUpForm = {
     startingWeight: number
     height: number
     dateOfBirth: string
-    photoURL?: string
     goal?: string
 }
 
+type SignUpClientResponse = {
+    clientId: string
+    firstName: string
+    lastName: string
+    email: string
+    startingWeight: number
+    height: number
+    gender: "male" | "female"
+    token: string
+}
+type SignUpTrainerResponse = {
+    trainerId: string
+    firstName: string
+    lastName: string
+    email: string
+    gender: string
+    token: string
+}
 type Role = "CLIENT" | "TRAINER" | "ADMIN" | "";
 
 const ClientInfo =
@@ -31,7 +48,6 @@ const ClientInfo =
         "Monitor progress over time"]
 
 
-const totalSteps = 4
 
 export default function Register() {
     const navigate = useNavigate()
@@ -42,21 +58,26 @@ export default function Register() {
         register,
         handleSubmit,
         watch,
+        setError: setFieldError,
         formState: { errors, isSubmitting },
-    } = useForm<SignUpForm>()
+    } = useForm<SignUpForm>({ mode: "onBlur"})
 
+    const totalSteps = role === "CLIENT" ? 4 : role === "TRAINER" ? 3 : 4
     const btnBase = `flex flex-col px-6 py-8 rounded-lg justify-center gap-y-4 items-center w-[250px] h-[200] border-2 hover:cursor-pointer transition hover:-translate-y-2`
     const selectedClass = `bg-blue-500/40 border-gray-200`
     const unselectedClass = `bg-transparent border-gray-400 hover:border-gray-200`
 
     const watchedStepTwo = watch(["firstName", "lastName", "gender", "dateOfBirth"])
-    const isStepTwoValid = watchedStepTwo.every(v => !!v)
+    const isStepTwoValid = watchedStepTwo.every(v => !!v) &&
+        !errors.firstName && !errors.lastName && !errors.gender && !errors.dateOfBirth
 
     const watchedStepThree = watch(["startingWeight", "height"])
-    const isStepThreeValid = watchedStepThree.every(v => !!v)
+    const isStepThreeValid = watchedStepThree.every(v => !!v) &&
+        !errors.height && !errors.startingWeight
 
     const watchedStepFour = watch(["password", "confirmPassword", "email"])
-    const isStepFourValid = watchedStepFour.every(v => !!v)
+    const isStepFourValid = watchedStepFour.every(v => !!v) &&
+        !errors.email && !errors.password && !errors.confirmPassword
 
     const displayRole = role == "CLIENT" ? "client" : "trainer"
 
@@ -68,15 +89,27 @@ export default function Register() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             })
-            if (!res.ok) return
+            if (!res.ok) {
+                const errorData = await res.json()
+                if (res.status === 409) {
+                    setFieldError("email", { type: "server", message: errorData.message })
+                } else if (res.status === 400) {
+                    Object.entries(errorData).forEach(([field, message]) => {
+                        setFieldError(field as keyof SignUpForm, { type: "server", message: message as string})
+                    })
+                }
+                return
+            }
+
+            const data = await res.json() as SignUpClientResponse | SignUpTrainerResponse
+            localStorage.setItem("token", data.token)
             navigate("/")
         } catch (err: any) {
-            if (err.message.includes("Not Found")) {
                 setError(err.message)
             }
         }
-    }
 
+    console.log("error", error)
     const nextStep = () => {
         setStep(step + 1)
     }
@@ -151,7 +184,9 @@ export default function Register() {
                 <div className="flex flex-col w-full gap-y-5">
                     <h1 className="text-4xl text-white mb-4">Let's get to know you...</h1>
                 <InputForm
-                    {...register("firstName", { required: "First name is required" })}
+                    {...register("firstName", { required: "First name is required" ,
+                        pattern: { value: /^[A-Za-z\s'-]+$/, message: "Name cannot contain numbers" }
+                    })}
                     required={true}
                     type="text"
                     textColor={"text-white"}
@@ -159,13 +194,17 @@ export default function Register() {
                     error={errors.firstName?.message}
                 />
                 <InputForm
-                    {...register("middleName")}
+                    {...register("middleName", {
+                        pattern: { value: /^[A-Za-z\s'-]+$/, message: "Name cannot contain numbers" }
+                    })}
                     type="text"
                     label="Middle Name"
                     textColor={"text-white"}
                 />
                 <InputForm
-                    {...register("lastName", { required: "Last name is required" })}
+                    {...register("lastName", { required: "Last name is required",
+                        pattern: { value: /^[A-Za-z\s'-]+$/, message: "Name cannot contain numbers" }
+                    })}
                     required={true}
                     type="text"
                     textColor={"text-white"}
@@ -173,8 +212,18 @@ export default function Register() {
                     error={errors.lastName?.message}
                 />
                         <InputForm
-                            {...register("dateOfBirth", { required: "Date of birth is required" })}
+                            {...register("dateOfBirth", { required: "Date of birth is required",
+                            validate: val => {
+                                const date = new Date(val)
+                                const today = new Date()
+                                const minAge = new Date(today.getFullYear() - 120, today.getMonth(), today.getDate())
+                                const maxAge = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate())
+                                if (date > today) return "Date of birth cannot be in the future"
+                                if (date < minAge) return "Enter a valid date of birth"
+                                if (date > maxAge) return "You must be at least 13 years old"
+                            }})}
                             required={true}
+                            max={new Date().toISOString().split("T")[0]}
                             type="date"
                             textColor={"text-white"}
                             label="Date of Birth"
@@ -190,11 +239,11 @@ export default function Register() {
                             </SelectForm>
                     </div>
             )}
-                {step === 3 && (
+                {step === 3 && role === "CLIENT" && (
                     <div className="flex flex-col w-full justify-center gap-y-5">
                         <h1 className="text-4xl mb-2 text-white">Body Metrics</h1>
                         <InputForm
-                            {...register("startingWeight", { required: "Weight is required", min: { value: 1, message: "Invalid weight" } })}
+                            {...register("startingWeight", { required: "Weight is required", min: { value: 60, message: "Invalid weight" } })}
                             required={true}
                             type="number"
                             textColor={"text-white"}
@@ -202,7 +251,7 @@ export default function Register() {
                             error={errors.startingWeight?.message}
                         />
                         <InputForm
-                            {...register("height", { required: "Height is required", min: { value: 1, message: "Invalid height" } })}
+                            {...register("height", { required: "Height is required", min: { value: 60, message: "Invalid height" } })}
                             required={true}
                             type="number"
                             textColor={"text-white"}
@@ -214,12 +263,9 @@ export default function Register() {
 
                     </div>
                 )}
-                {step === 4 && (
+                {(step === 4 || (step === 3 && role === "TRAINER")) && (
                     <div className="flex flex-col w-full justify-center gap-y-5">
                         <h1 className="text-4xl mb-2 text-white">Account Information</h1>
-                        {error == "Email already exists" && (
-                            <p className="text-red-500">{error}</p>
-                        )}
                     <InputForm
                         {...register("email", {
                             required: "Email is required",
@@ -233,6 +279,15 @@ export default function Register() {
                     />
 
 
+                <div className="text-sm text-gray-400 bg-white/5 rounded-lg px-4 py-3 leading-relaxed">
+                    <p className="font-medium text-gray-300 mb-1">Password must:</p>
+                    <ul className="list-disc list-inside space-y-0.5">
+                        <li>Be at least 8 characters long</li>
+                        <li>Contain at least one uppercase letter</li>
+                        <li>Contain at least one number</li>
+                        <li>Contain at least one special character (e.g. ! @ # $)</li>
+                    </ul>
+                </div>
                 <InputForm
                     {...register("password", {
                         required: "Password is required",
@@ -255,12 +310,13 @@ export default function Register() {
                     label="Confirm Password"
                     error={errors.confirmPassword?.message}
                 />
+                {role === "CLIENT" && (
                 <InputForm
                     {...register("goal")}
                     type="text"
                     textColor={"text-white"}
                     label="Goal (optional)"
-                /></div>
+                />)}</div>
             )}
 
                 <div className="flex flex-row justify-center w-full mt-2 gap-x-5">
@@ -268,27 +324,27 @@ export default function Register() {
                     <button
                         type="button"
                         onClick={() => prevStep()}
-                        className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-900/80 hover:cursor-pointer transition-colors duration-200 disabled:opacity-50"
+                        className="w-full bg-[#5171A5] text-white py-2 rounded-lg hover:bg-[#5171A5]/80 hover:cursor-pointer transition-colors duration-200 disabled:opacity-50"
                     >
                         Back
                     </button>
                 )}
 
-                {(step == 2 || step == 3) && (
+                {(step == 2 || (step == 3 && role === "CLIENT")) && (
                             <button
                                 disabled={step === 2 ? !isStepTwoValid : step === 3 ? !isStepThreeValid : false}
                                 type="button"
                                 onClick={() => nextStep()}
-                                className={`w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-900/80 ${step === 2 && !isStepTwoValid ? "hover:cursor-not-allowed" : step === 3 && !isStepThreeValid ? "hover:cursor-not-allowed" : "hover:cursor-pointer"} transition-colors duration-200 disabled:opacity-50`}
+                                className={`w-full bg-[#5171A5] text-white py-2 rounded-lg hover:bg-[#5171A5]/80 ${step === 2 && !isStepTwoValid ? "hover:cursor-not-allowed" : step === 3 && !isStepThreeValid ? "hover:cursor-not-allowed" : "hover:cursor-pointer"} transition-colors duration-200 disabled:opacity-50`}
                                 >
                                 Next
                             </button>
                 )}
-                    {step == 4 && (
+                    {(step == 4 || (step == 3 && role === "TRAINER")) && (
                         <button
                             type="submit"
                             disabled={isSubmitting || !isStepFourValid}
-                            className={`w-full bg-blue-500 border text-white py-2 rounded-lg hover:bg-blue-400 ${isStepFourValid ? "hover:cursor-pointer" : "hover:cursor-not-allowed"} transition-colors duration-200 disabled:opacity-50`}
+                            className={`w-full border-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-400 hover:to-purple-400 text-white py-2 rounded-lg ${isStepFourValid ? "hover:cursor-pointer" : "hover:cursor-not-allowed"} transition-all duration-200 disabled:opacity-50`}
                         >
                             {isSubmitting ? "Creating account..." : "Sign up"}
                         </button>

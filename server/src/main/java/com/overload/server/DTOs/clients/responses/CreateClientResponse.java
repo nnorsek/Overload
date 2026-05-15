@@ -16,7 +16,6 @@ public class CreateClientResponse {
     private Float startingWeight;
     private Integer height;
     private String gender;
-    private String photoUrl;
     private String token;
 }
 

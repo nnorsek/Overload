@@ -30,6 +30,8 @@ public class CreateClientRequest {
     private String email;
 
     @Size(min = 8, max = 72)
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).+$",
+             message = "Password must contain at least one uppercase letter, one number, and one special character")
     @NotBlank
     private String password;
 

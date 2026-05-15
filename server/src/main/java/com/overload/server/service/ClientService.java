@@ -63,7 +63,6 @@ public class ClientService {
                 .startingWeight(saved.getStartingWeight())
                 .height(saved.getHeight())
                 .gender(saved.getGender())
-                .photoUrl(saved.getPhotoUrl())
                 .build();
     }
 

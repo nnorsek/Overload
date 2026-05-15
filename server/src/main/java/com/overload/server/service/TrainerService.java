@@ -35,6 +35,10 @@ public class TrainerService {
 
     public CreateTrainerResponse createTrainer(CreateTrainerRequest req){
 
+        if (trainerRepo.findByEmail(req.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+        }
+
         Trainer trainer = Trainer.builder()
                 .passwordHash(passwordEncoder.encode(req.getPassword()))
                 .firstName(req.getFirstName())
@@ -55,7 +59,6 @@ public class TrainerService {
                 .lastName(saved.getLastName())
                 .email(saved.getEmail())
                 .gender(saved.getGender())
-                .photoUrl(saved.getPhotoUrl())
                 .build();
     }
 
