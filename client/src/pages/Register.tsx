@@ -54,6 +54,7 @@ export default function Register() {
     const [step, setStep] = useState<number>(1)
     const [error, setError] = useState<string | null>(null)
     const [role, setRole] = useState<Role>("")
+    const [unit, setUnit] = useState<"imperial" | "metric">("imperial")
     const {
         register,
         handleSubmit,
@@ -242,12 +243,20 @@ export default function Register() {
                 {step === 3 && role === "CLIENT" && (
                     <div className="flex flex-col w-full justify-center gap-y-5">
                         <h1 className="text-4xl mb-2 text-white">Body Metrics</h1>
+                        <div className="flex gap-2">
+                        <button type="button" className={`text-white rounded bg-gray-700 hover:cursor-pointer py-2 px-4 ${unit === "imperial" ? "border" : ""}`} onClick={() => setUnit("imperial")}>
+                            metric
+                        </button>
+                        <button  className={`text-white rounded bg-gray-700 hover:cursor-pointer py-2 px-4 ${unit === "metric" ? "border" : ""}`} onClick={() => setUnit("metric")} type="button">
+                            imperial
+                        </button>
+                        </div>
                         <InputForm
                             {...register("startingWeight", { required: "Weight is required", min: { value: 60, message: "Invalid weight" } })}
                             required={true}
                             type="number"
                             textColor={"text-white"}
-                            label="Weight (lbs)"
+                            label={`Weight ${unit === "imperial" ? "(lbs)" : "(kg)"}`}
                             error={errors.startingWeight?.message}
                         />
                         <InputForm
@@ -255,7 +264,7 @@ export default function Register() {
                             required={true}
                             type="number"
                             textColor={"text-white"}
-                            label="Height (in)"
+                            label={`Height ${unit === "imperial" ? "(in)" : "(cm)"}`}
                             error={errors.height?.message}
                         />
 
