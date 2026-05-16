@@ -47,6 +47,11 @@ const ClientInfo =
         "Follow trainer programs",
         "Monitor progress over time"]
 
+const TrainerInfo = [
+    "Build & assign workout programs",
+    "Message and manage your clients",
+    "Send forms and track check-ins"
+]
 
 
 export default function Register() {
@@ -104,13 +109,13 @@ export default function Register() {
 
             const data = await res.json() as SignUpClientResponse | SignUpTrainerResponse
             localStorage.setItem("token", data.token)
+            localStorage.setItem("role", role)
             navigate("/")
         } catch (err: any) {
                 setError(err.message)
             }
         }
 
-    console.log("error", error)
     const nextStep = () => {
         setStep(step + 1)
     }
@@ -132,19 +137,24 @@ export default function Register() {
                     <p className={`text-xl mt-6 font-semibold ${role == "CLIENT" ? "text-black" : "text-white"}`}>Start your fitness journey today</p>
                 </div>
                 <div className="mt-6">
-                    {ClientInfo.map((item) => (
+                    {role == "CLIENT" ? ClientInfo.map((item) => (
                         <div className={`flex py-4 gap-x-2 text-lg ${role == "CLIENT" ? "text-black" : "text-white"}`}>
                             <div className="px-2 py-1 rounded-lg bg-gray-400"><FontAwesomeIcon size={"xs"} icon={faCheck}/></div>
                             {item}
                         </div>
-                    ))}
+                    )) : TrainerInfo.map((item) => (
+                        <div className={`flex py-4 gap-x-2 text-lg text-white`}>
+                            <div className="px-2 py-1 rounded-lg bg-gray-400"><FontAwesomeIcon size={"xs"} icon={faCheck}/></div>
+                            {item}
+                        </div>
+                    ))
+                    }
                 </div>
-
-                    <hr className={`mt-auto mb-3 ${role == "CLIENT" ? "text-black" : "text-white"}`}/>
-                    <div className={`flex flex-col text-xl ${role == "CLIENT" ? "text-black" : "text-white"}`}>
-                        <p>Already have an account? <a className="hover:cursor-pointer underline hover:text-gray-800" href="/login">Log in</a></p>
-                    </div>
+                <hr className={`mt-auto mb-3 ${role == "CLIENT" ? "text-black" : "text-white"}`}/>
+                <div className={`flex flex-col text-xl ${role == "CLIENT" ? "text-black" : "text-white"}`}>
+                    <p>Already have an account? <a className="hover:cursor-pointer underline hover:text-gray-800" href="/login">Log in</a></p>
                 </div>
+            </div>
             </div>
             <form className="w-full bg-[#262B40] flex flex-col gap-4 p-25" onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-1.5 mb-7">
@@ -364,5 +374,4 @@ export default function Register() {
 
             </form>
         </div>
-    )
-}
+    )}

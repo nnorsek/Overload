@@ -1,11 +1,13 @@
-import 'react'
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faClock, faCheck, faStar} from "@fortawesome/free-solid-svg-icons";
 import InputForm from "../components/InputForm";
+import SelectForm from "../components/SelectForm";
+import type { DisplayRole } from "../types/StartUp";
 
 type LoginForm = {
+    role: DisplayRole,
     email: string,
     password: string
 }
@@ -17,7 +19,7 @@ const features = [
 ];
 
 const Login = () => {
-    const [loginForm, setLoginForm] = useState<LoginForm>({ email: "", password: ""});
+    const [loginForm, setLoginForm] = useState<LoginForm>({ role: "client", email: "", password: ""});
     const navigate = useNavigate();
     const [error, setError] = useState("");
 
@@ -25,16 +27,21 @@ const Login = () => {
         setLoginForm(prev => ({ ...prev, [e.target.name]: e.target.value}));
     }
 
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setLoginForm(prev => ({ ...prev, role: e.target.value as DisplayRole }))
+    }
+
     const SubmitLogin = async () => {
+       const {role, ...payload} = loginForm
         try {
-            const res = await fetch("http://localhost:8080/trainer/login", {
+            const res = await fetch(`http://localhost:8080/${loginForm.role}/login`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(loginForm)
+                body: JSON.stringify(payload)
             });
 
             if (!res.ok) {
-                if (res.status === 403) {
+                if (res.status === 401) {
                     setError("Invalid email or password")
                 } else if (res.status === 500) {
                     setError("Something went wrong, please try again")
@@ -53,26 +60,21 @@ const Login = () => {
     return (
         <div className="flex h-screen">
 
-            {/* Login Form */}
-
             <div className="flex w-1/2 flex-col justify-center items-center">
-                <p className="text-red-500 pb-4">{error}</p>
+                <p className="text-red-500 text-lg px-2 py-1 rounded font-bold">{error}</p>
                 <form className="flex flex-col items-center justify-center" onSubmit={(e) => { e.preventDefault(); SubmitLogin();}}>
                 <h1 className="text-2xl font-bold mb-6">Login</h1>
 
                 <div className="flex flex-col w-80 gap-4">
-
-                    <InputForm name="email" type="text" label="Email" onChange={handleChange} />
-                    <InputForm name="password" type="password" label="Password" onChange={handleChange} />
-                    <button type="submit" className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200" onClick={SubmitLogin}>
+                    <SelectForm name="role" options={["client", "trainer"]} label={"Select your role"} onChange={handleSelectChange} />
+                    <InputForm textColor="text-black" name="email" type="text" label="Email" onChange={handleChange} />
+                    <InputForm textColor="text-black" name="password" type="password" label="Password" onChange={handleChange} />
+                    <button type="submit" className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
                         Sign in
                     </button>
                 </div>
             </form>
             </div>
-
-
-            {/* Right side */}
 
             <div className="relative flex w-1/2 flex-col justify-center items-center bg-blue-primary text-white overflow-hidden">
                 <div className="inline-flex items-center gap-2 bg-blue-secondary/10 border border-blue-secondary/25 rounded-full px-4 py-1.5 mb-5">
