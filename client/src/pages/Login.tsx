@@ -5,11 +5,16 @@ import {faClock, faCheck, faStar} from "@fortawesome/free-solid-svg-icons";
 import InputForm from "../components/InputForm";
 import SelectForm from "../components/SelectForm";
 import type { DisplayRole } from "../types/StartUp";
+import { useAuth } from "../context/AuthContext"
 
 type LoginForm = {
     role: DisplayRole,
     email: string,
     password: string
+}
+
+type LoginResponse = {
+
 }
 
 const features = [
@@ -22,6 +27,7 @@ const Login = () => {
     const [loginForm, setLoginForm] = useState<LoginForm>({ role: "client", email: "", password: ""});
     const navigate = useNavigate();
     const [error, setError] = useState("");
+    const { login } = useAuth();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLoginForm(prev => ({ ...prev, [e.target.name]: e.target.value}));
@@ -49,7 +55,11 @@ const Login = () => {
                 return;
             }
             const data = await res.json();
-            localStorage.setItem("token", data.token)
+            login({
+                role: data.role,
+                email: data.email,
+                token: data.token
+            })
             navigate("/") // ! Update to real url
         } catch {
            setError("Something went wrong, please try again")
