@@ -14,7 +14,10 @@ type LoginForm = {
 }
 
 type LoginResponse = {
-
+    role: string,
+    email: string,
+    token: string,
+    id: string
 }
 
 const features = [
@@ -39,6 +42,8 @@ const Login = () => {
 
     const SubmitLogin = async () => {
        const {role, ...payload} = loginForm
+        console.log(payload)
+        console.log(loginForm.role)
         try {
             const res = await fetch(`http://localhost:8080/${loginForm.role}/login`, {
                 method: "POST",
@@ -54,13 +59,14 @@ const Login = () => {
                 }
                 return;
             }
-            const data = await res.json();
+            const data = await res.json() as LoginResponse;
             login({
                 role: data.role,
                 email: data.email,
+                id: data.id,
                 token: data.token
             })
-            navigate("/") // ! Update to real url
+            navigate("/")
         } catch {
            setError("Something went wrong, please try again")
         }
@@ -70,16 +76,37 @@ const Login = () => {
     return (
         <div className="flex h-screen">
 
-            <div className="flex w-1/2 flex-col justify-center items-center">
+            <div className="flex w-1/2 flex-col justify-center items-center bg-[#212121]">
                 <p className="text-red-500 text-lg px-2 py-1 rounded font-bold">{error}</p>
                 <form className="flex flex-col items-center justify-center" onSubmit={(e) => { e.preventDefault(); SubmitLogin();}}>
-                <h1 className="text-2xl font-bold mb-6">Login</h1>
+                <h1 className="text-2xl text-white font-bold mb-6">Login</h1>
 
                 <div className="flex flex-col w-80 gap-4">
-                    <SelectForm name="role" options={["client", "trainer"]} label={"Select your role"} onChange={handleSelectChange} />
-                    <InputForm textColor="text-black" name="email" type="text" label="Email" onChange={handleChange} />
-                    <InputForm textColor="text-black" name="password" type="password" label="Password" onChange={handleChange} />
-                    <button type="submit" className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                    <div className="relative flex bg-gray-100 rounded-full p-1 w-fit mx-auto mb-6">
+                        <div className={`absolute top-1 bottom-1 rounded-full bg-gray-400/50 border border-gray-400 shadow-sm
+                                         transition-all duration-200 ease-in-out
+                                         ${loginForm.role === "client" ? "left-1 right-1/2" : "left-1/2 right-1"}`}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setLoginForm(prev => ({ ...prev, role: "client" }))}
+                            className={`relative z-10 px-6 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 hover:cursor-pointer
+                                ${loginForm.role === "client" ? "text-black" : "text-gray-500 hover:text-gray-700"}`}
+                        >
+                            Client
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setLoginForm(prev => ({ ...prev, role: "trainer" }))}
+                            className={`relative z-10 px-6 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 hover:cursor-pointer
+                                ${loginForm.role === "trainer" ? "text-black" : "text-gray-500 hover:text-gray-700"}`}
+                        >
+                            Trainer
+                        </button>
+                    </div>
+                    <InputForm textColor="text-white" name="email" type="text" label="Email" onChange={handleChange} />
+                    <InputForm textColor="text-white" name="password" type="password" label="Password" onChange={handleChange} />
+                    <button type="submit" className="w-full bg-white py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200 hover:cursor-pointer">
                         Sign in
                     </button>
                 </div>

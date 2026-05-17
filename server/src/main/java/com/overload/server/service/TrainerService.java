@@ -51,7 +51,7 @@ public class TrainerService {
 
 
         Trainer saved = trainerRepo.save(trainer);
-        String token = jwtUtil.generateToken(req.getEmail(), "TRAINER");
+        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_TRAINER");
         return CreateTrainerResponse.builder()
                 .token(token)
                 .trainerId(saved.getTrainerId())
@@ -88,8 +88,11 @@ public class TrainerService {
 
         String token = jwtUtil.generateToken(req.getEmail(), "ROLE_TRAINER");
 
-        return new LoginTrainerResponse(found.getTrainerId(), found.getFirstName(), found.getLastName(), found.getEmail(), found.getGender(),
-                 found.getPhotoUrl(), token);
+        return new LoginTrainerResponse(
+                found.getTrainerId(),
+                found.getEmail(),
+                token,
+                "ROLE_TRAINER");
    }
 
     }

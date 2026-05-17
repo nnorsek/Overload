@@ -1,9 +1,11 @@
 import { createContext, useContext, useState } from "react"
+import type { ReactNode } from "react"
 
 type AuthUser = {
-    token: string,
+    token: string
     role: "ROLE_TRAINER" | "ROLE_CLIENT"
     email: string
+    id: string
 }
 
 type AuthContextType = {
@@ -31,9 +33,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     return  (
-        <AuthContext value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout }}>
             {children}
-        </AuthContext>
+        </AuthContext.Provider>
     );
 }
 

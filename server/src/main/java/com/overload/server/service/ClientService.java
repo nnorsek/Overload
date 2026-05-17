@@ -52,7 +52,7 @@ public class ClientService {
                 .build();
 
         Client saved = clientRepo.save(client);
-        String token = jwtUtil.generateToken(req.getEmail(), "CLIENT");
+        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_CLIENT");
 
         return CreateClientResponse.builder()
                 .token(token)
@@ -118,27 +118,19 @@ public class ClientService {
     public ClientLoginResponse loginClient(ClientLoginRequest req){
 
         Client found = clientRepo.findByEmail(req.getEmail())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find client by email: " + req.getEmail()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
 
         if (!passwordEncoder.matches(req.getPassword(), found.getPasswordHash())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password is incorrect");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
         String token = jwtUtil.generateToken(found.getEmail(), "ROLE_CLIENT");
 
         return new ClientLoginResponse(
                 found.getClientId(),
-                found.getFirstName(),
-                found.getLastName(),
                 found.getEmail(),
-                found.getGender(),
-                found.getPhotoUrl(),
-                found.getGoal(),
-                found.getCurrentWeight(),
-                found.getStartingWeight(),
-                found.getHeight(),
-                found.getDateOfBirth(),
-                token
+                token,
+                "ROLE_CLIENT"
         );
     }
 

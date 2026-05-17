@@ -7,11 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class LoginTrainerResponse {
 
-    private Long trainerId;
-    private String firstName;
-    private String lastName;
+    private Long id;
     private String email;
-    private String gender;
-    private String photoUrl;
     private String token;
+    private String role;
 }

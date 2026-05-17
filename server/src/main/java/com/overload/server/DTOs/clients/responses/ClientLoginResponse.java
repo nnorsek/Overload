@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 public class ClientLoginResponse {
-    private Long clientId;
+    private Long id;
     private String email;
     private String token;
     private String role;
