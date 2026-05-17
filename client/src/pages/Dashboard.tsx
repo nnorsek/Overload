@@ -5,8 +5,10 @@ import { exampleSession } from "../../mock_data";
 import type { Client } from "../types/Client";
 import type { Session } from "../types/Session";
 import { useClientHooks } from "../hooks/ClientHooks";
+import { useAuth } from "../context/AuthContext"
 
 const Dashboard = () => {
+  const { user } = useAuth();
   const { clients, fetchAllClients } = useClientHooks();
 
   useEffect(() => {
@@ -15,6 +17,7 @@ const Dashboard = () => {
     }
   }, [clients, fetchAllClients]);
 
+  console.log(user)
   // TODO: Add loading spinner
   // TODO: Add error screen
 

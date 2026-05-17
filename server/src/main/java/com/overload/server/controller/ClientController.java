@@ -59,8 +59,8 @@ public class ClientController {
         return ResponseEntity.ok(clientService.getAllClientByTrainerId(trainerId));
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<ClientLoginResponse> loginClient(@RequestBody @Valid ClientLoginRequest req){
+    @PostMapping("/login")
+    public ResponseEntity<ClientLoginResponse> loginClient(@Valid @RequestBody ClientLoginRequest req){
         return ResponseEntity.ok(clientService.loginClient(req));
     }
 
