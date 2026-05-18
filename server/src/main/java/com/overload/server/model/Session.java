@@ -1,5 +1,6 @@
 package com.overload.server.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.overload.server.enums.SessionStatus;
@@ -57,4 +58,5 @@ public class Session {
     @Column(nullable = false)
     @NotBlank
     private String notes;
+
 }

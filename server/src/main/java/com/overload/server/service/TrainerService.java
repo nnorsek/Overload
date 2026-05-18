@@ -17,6 +17,8 @@ import com.overload.server.model.Trainer;
 import com.overload.server.repo.TrainerRepo;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+
 @Service
 public class TrainerService {
 
@@ -73,6 +75,7 @@ public class TrainerService {
         Client client = clientRepo.findById(clientId)
                 .orElseThrow(() -> new RuntimeException("Client not found."));
 
+        client.setStartedAt(LocalDateTime.now());
         trainer.addClient(client);
 
         trainerRepo.save(trainer);

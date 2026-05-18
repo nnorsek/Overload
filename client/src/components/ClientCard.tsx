@@ -34,7 +34,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
         <div className="flex flex-col pl-2">
           <div className="flex items-center gap-3">
             <h3 className="font-semibold text-lg">
-              {client.first_name + " " + client.last_name}
+              {client.firstName + " " + client.lastName}
             </h3>
 
             <div className="flex items-center gap-1 text-sm">
@@ -56,7 +56,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
 
             <span className="text-gray-400">•</span>
             <span>
-              {client.current_weight} {weightDisplayMetric}
+              {client.currentWeight} {weightDisplayMetric}
             </span>
 
             <span className="text-gray-400">•</span>

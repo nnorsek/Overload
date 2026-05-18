@@ -19,6 +19,7 @@ const useClientHooks = () => {
       if (!res.ok) {
         throw new Error("request failed");
       }
+      console.log(res)
       const data = await res.json() as Client[];
 
       setClients(data);

@@ -20,6 +20,7 @@ const Dashboard = () => {
   // TODO: Add loading spinner
   // TODO: Add error screen
 
+  console.log(clients)
   return (
     <div className="">
       <div className="px-5">
@@ -40,7 +41,7 @@ const Dashboard = () => {
                     View Client Details and History
                   </p>
                   {clients.map((client: Client) => (
-                    <ClientCard key={client.client_id} client={client} />
+                    <ClientCard key={client.clientId} client={client} />
                   ))}
                 </div>
                 <div className="flex-1 flex flex-col gap-y-5">
