@@ -1,6 +1,6 @@
 package com.overload.server.service;
 
-import com.overload.server.DTOs.clients.requests.AssignClientRequest;
+import com.overload.server.DTOs.clients.requests.AssignClientToTrainerRequest;
 import com.overload.server.DTOs.clients.responses.CreateClientResponse;
 import com.overload.server.DTOs.trainers.requests.CreateTrainerRequest;
 import com.overload.server.DTOs.trainers.requests.LoginTrainerRequest;
@@ -62,7 +62,7 @@ public class TrainerService {
                 .build();
     }
 
-    public void assignClientToTrainer(AssignClientRequest req) {
+    public void assignClientToTrainer(AssignClientToTrainerRequest req) {
 
         long trainerId = req.getTrainerId();
         long clientId = req.getClientId();

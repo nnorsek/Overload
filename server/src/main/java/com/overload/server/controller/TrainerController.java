@@ -1,6 +1,6 @@
 package com.overload.server.controller;
 
-import com.overload.server.DTOs.clients.requests.AssignClientRequest;
+import com.overload.server.DTOs.clients.requests.AssignClientToTrainerRequest;
 import com.overload.server.DTOs.trainers.requests.CreateTrainerRequest;
 import com.overload.server.DTOs.trainers.requests.LoginTrainerRequest;
 import com.overload.server.DTOs.trainers.responses.CreateTrainerResponse;
@@ -39,10 +39,10 @@ public class TrainerController {
 
     }
 
-    @PostMapping("/assignTrainer")
-    public ResponseEntity<?> clientToTrainer(@Valid @RequestBody AssignClientRequest req){
+    @PostMapping("/assignClientToTrainer")
+    public ResponseEntity<?> clientToTrainer(@Valid @RequestBody AssignClientToTrainerRequest req){
         trainerService.assignClientToTrainer(req);
-        return ResponseEntity.ok().build(); // add response message here
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/sessions/{trainerId}")

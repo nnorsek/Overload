@@ -7,13 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AssignClientRequest {
+public class AssignClientToTrainerRequest {
 
     @NotNull
-    @Positive
     private long clientId;
 
     @NotNull
-    @Positive
     private long trainerId;
 }

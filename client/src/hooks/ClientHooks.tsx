@@ -1,21 +1,25 @@
 import { useCallback, useState } from "react";
 import type { Client } from "../types/Client";
+import { useAuth } from "../context/AuthContext"
 
 const useClientHooks = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState<Client[] | null>(null);
+  const { user } = useAuth();
 
   const fetchAllClients = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:8080/client/all");
+      const res = await fetch(`http://localhost:8080/client/all/${user.id}`, {
+        headers: { "Authorization": `Bearer ${user.token}` }
+      });
 
       if (!res.ok) {
         throw new Error("request failed");
       }
-      const data: Client[] = await res.json();
+      const data = await res.json() as Client[];
 
       setClients(data);
     } catch (err: any) {
