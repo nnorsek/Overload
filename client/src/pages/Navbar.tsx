@@ -21,7 +21,6 @@ const Navbar = ({
   const navRef = useRef<HTMLDivElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Close when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
@@ -90,6 +89,13 @@ const Navbar = ({
               open={open}
               onClick={() => navigate("/sessions")}
             />
+           
+            <NavItem
+              icon={faDumbbell}
+              label="Exercises"
+              open={open}
+              onClick={() => navigate("/exercises")}
+              />
           </nav>
 
           <div className="grow" />

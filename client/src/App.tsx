@@ -5,6 +5,9 @@ import { AppLayout } from "./AppLayout";
 import ClientDetails from "./pages/ClientDetails";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
+import Exercises from "./pages/Exercises"
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -18,6 +21,7 @@ function App() {
             path="/session/:clientName/:sessionId"
             element={<ClientDetails />}
           />
+          <Route path="/exercises" element={<Exercises />} />
         </Route>
       </Routes>
     </BrowserRouter>
