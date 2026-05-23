@@ -25,7 +25,7 @@ public class ExerciseService {
             throw new ResourceNotFoundException("Trainer not found with id: " + trainerId);
         }
 
-       return exerciseRepo.findByTrainerId(trainerId)
+       return exerciseRepo.findByTrainer(trainerId)
             .stream().map(this::toResponse).toList();
     }
 

@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
                 .body(Map.of("message", ex.getReason()));
     }
 
-    @ExceptionHandler(ResponseStatusException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }

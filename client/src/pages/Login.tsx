@@ -67,6 +67,7 @@ const Login = () => {
                 token: data.token
             })
             navigate("/")
+            console.log(data)
         } catch {
            setError("Something went wrong, please try again")
         }

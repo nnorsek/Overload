@@ -86,7 +86,4 @@ public class Trainer {
     @Size(min = 8, max = 72)
     @NotNull
     private String passwordHash;
-
-    @OneToMany
-    private Exercise exercise;
 }

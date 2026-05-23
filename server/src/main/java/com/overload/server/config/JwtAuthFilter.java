@@ -1,5 +1,6 @@
 package com.overload.server.config;
 
+import com.overload.server.security.UserDetailsImpl;
 import com.overload.server.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,11 +39,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (jwtUtil.isTokenValid(token)) {
                 String email = jwtUtil.extractEmail(token);
                 String role = jwtUtil.extractRole(token);
-                System.out.println("Role" + role);
-                System.out.println("Email" + email);
+                Long id = jwtUtil.extractId(token);
+
+                UserDetailsImpl userDetails = new UserDetailsImpl(id, email, null);
 
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        email,
+                        userDetails,
                         null,
                         List.of(new SimpleGrantedAuthority(role)));
                 SecurityContextHolder.getContext().setAuthentication(auth);
