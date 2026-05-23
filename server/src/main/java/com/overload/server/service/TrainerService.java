@@ -53,7 +53,7 @@ public class TrainerService {
 
 
         Trainer saved = trainerRepo.save(trainer);
-        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_TRAINER");
+        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_TRAINER", saved.getTrainerId());
         return CreateTrainerResponse.builder()
                 .token(token)
                 .trainerId(saved.getTrainerId())
@@ -89,7 +89,7 @@ public class TrainerService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
-        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_TRAINER");
+        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_TRAINER", found.getTrainerId());
 
         return new LoginTrainerResponse(
                 found.getTrainerId(),

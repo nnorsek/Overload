@@ -52,7 +52,7 @@ public class ClientService {
                 .build();
 
         Client saved = clientRepo.save(client);
-        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_CLIENT");
+        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_CLIENT", saved.getClientId());
 
         return CreateClientResponse.builder()
                 .token(token)
@@ -124,7 +124,7 @@ public class ClientService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
-        String token = jwtUtil.generateToken(found.getEmail(), "ROLE_CLIENT");
+        String token = jwtUtil.generateToken(found.getEmail(), "ROLE_CLIENT", found.getClientId());
 
         return new ClientLoginResponse(
                 found.getClientId(),
