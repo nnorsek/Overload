@@ -17,7 +17,7 @@ public class Workout {
 
     @Id
     @GeneratedValue
-    private long workoutId;
+    private Long workoutId;
 
     @NotBlank
     @Column(nullable = false)

@@ -20,7 +20,7 @@ public class WorkoutExercises {
 
     @Id
     @GeneratedValue
-    private long workoutExercisesId;
+    private Long workoutExercisesId;
 
     @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false)

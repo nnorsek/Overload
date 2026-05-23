@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TrainerSessionsResponse {
 
-    private Long sessionId;
+    private long sessionId;
     private String clientFirstName;
     private String clientLastName;
     private LocalDateTime scheduledStart;

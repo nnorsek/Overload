@@ -28,7 +28,7 @@ public class Session {
     
     @Id
     @GeneratedValue
-    private long sessionId;
+    private Long sessionId;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)

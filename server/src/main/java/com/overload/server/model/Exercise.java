@@ -3,15 +3,10 @@ package com.overload.server.model;
 import com.overload.server.enums.EquipmentType;
 import com.overload.server.enums.MuscleGroup;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,8 +18,11 @@ public class Exercise {
     
     @Id
     @GeneratedValue
-    private long exerciseId;
+    private Long exerciseId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trainer_id")
+    private Trainer trainer;
 
     @NotBlank
     @Column(nullable = false)
@@ -39,7 +37,6 @@ public class Exercise {
     @NotNull
     @Column(nullable = false)
     private MuscleGroup muscleGroup;
-
 
     private String description;
 }
