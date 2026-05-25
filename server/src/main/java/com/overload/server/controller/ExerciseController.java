@@ -2,6 +2,7 @@ package com.overload.server.controller;
 
 import com.overload.server.DTOs.exercises.repsonses.ExerciseResponse;
 import com.overload.server.DTOs.exercises.requests.CreateExerciseRequest;
+import com.overload.server.DTOs.exercises.requests.UpdateExerciseRequest;
 import com.overload.server.security.UserDetailsImpl;
 import com.overload.server.service.ExerciseService;
 import jakarta.validation.Valid;
@@ -39,6 +40,11 @@ public class ExerciseController {
     public ResponseEntity<Void> deleteExercise(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl trainer) {
         exerciseService.deleteExercise(id, trainer.getId());
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ExerciseResponse> updateExercise(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl trainer, @Valid @RequestBody UpdateExerciseRequest req) {
+        return ResponseEntity.ok(exerciseService.updateExercise(req, id, trainer.getId()));
     }
 }
 

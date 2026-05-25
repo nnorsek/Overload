@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ExerciseRepo extends JpaRepository<Exercise, Long> {
@@ -18,4 +19,6 @@ public interface ExerciseRepo extends JpaRepository<Exercise, Long> {
 
     @Query("SELECT COUNT(e) > 0 FROM Exercise e WHERE e.id = :id AND e.trainer.trainerId = :trainerId")
     boolean existsByIdAndTrainerId(@Param("id") Long id, @Param("trainerId") Long trainerId);
+
+    Optional<Exercise> findByIdAndTrainer_TrainerId(Long exerciseId, Long trainerId);
 }

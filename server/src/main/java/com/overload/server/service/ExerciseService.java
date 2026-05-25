@@ -8,9 +8,7 @@ import com.overload.server.model.Exercise;
 import com.overload.server.model.Trainer;
 import com.overload.server.repo.ExerciseRepo;
 import com.overload.server.repo.TrainerRepo;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -57,7 +55,7 @@ public class ExerciseService {
     public void deleteExercise(Long exerciseId, Long trainerId) {
 
         if (!exerciseRepo.existsByIdAndTrainerId(exerciseId, trainerId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exercise not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercise not found");
         }
 
         exerciseRepo.deleteById(exerciseId);
@@ -65,17 +63,15 @@ public class ExerciseService {
 
     public ExerciseResponse updateExercise(UpdateExerciseRequest req, Long exerciseId, Long trainerId) {
 
-        Exercise exercise = exerciseRepo.findB
+        Exercise exercise = exerciseRepo.findByIdAndTrainer_TrainerId(exerciseId, trainerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Exercise not found"));
 
-        Exercise exercise = Exercise.builder()
-                .name(req.getName())
-                .muscleGroup(req.getMuscleGroup())
-                .equipmentType(req.getEquipmentType())
-                .description(req.getDescription())
-                .build();
+        exercise.setName(req.getName());
+        exercise.setDescription(req.getDescription());
+        exercise.setMuscleGroup(req.getMuscleGroup());
+        exercise.setEquipmentType(req.getEquipmentType());
 
-        exerciseRepo.save(exercise);
-
+        return toResponse(exerciseRepo.save(exercise));
     }
 
     private ExerciseResponse toResponse(Exercise exercise) {

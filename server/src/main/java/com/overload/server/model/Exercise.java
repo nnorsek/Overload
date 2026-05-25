@@ -48,6 +48,9 @@ public class Exercise {
 
     private String description;
 
+    @NotBlank
+    private String category;
+
     @CreatedDate
     private LocalDateTime createdAt;
 

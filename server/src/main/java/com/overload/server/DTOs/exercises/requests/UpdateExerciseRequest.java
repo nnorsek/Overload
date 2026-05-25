@@ -18,9 +18,6 @@ public class UpdateExerciseRequest {
     @Size(max = 100)
     private String description;
 
-    @NotBlank
-    private String category;
-
     @NotNull
     private EquipmentType equipmentType;
 
