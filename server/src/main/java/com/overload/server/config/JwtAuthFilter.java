@@ -16,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-// What exactly does this do?
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 

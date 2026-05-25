@@ -9,6 +9,7 @@ import com.overload.server.DTOs.clients.responses.*;
 import com.overload.server.DTOs.trainers.responses.CreateTrainerResponse;
 import com.overload.server.model.Trainer;
 import com.overload.server.utils.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,18 +19,12 @@ import com.overload.server.repo.ClientRepo;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@RequiredArgsConstructor
 public class ClientService {
     
     private final ClientRepo clientRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-
-    public ClientService(ClientRepo clientRepo, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
-        this.clientRepo = clientRepo;
-        this.passwordEncoder = passwordEncoder;
-
-        this.jwtUtil = jwtUtil;
-    }
 
     public CreateClientResponse createClient(CreateClientRequest req) {
 

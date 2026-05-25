@@ -33,6 +33,13 @@ const Navbar = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [setOpen]);
 
+
+  const logout = () => {
+    localStorage.removeItem("auth");
+    localStorage.removeItem("role");
+    navigate("/login");
+  }
+
   return (
     <>
       {/* Mobile overlay (Not Done) */}
@@ -106,6 +113,13 @@ const Navbar = ({
             open={open}
             onClick={() => navigate("/settings")}
           />
+
+          <NavItem
+            icon={faBars}
+            label="Logout"
+            open={open}
+            onClick={() => logout()}
+            />
         </div>
       </aside>
     </>

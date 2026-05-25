@@ -41,9 +41,7 @@ const Login = () => {
     }
 
     const SubmitLogin = async () => {
-       const {role, ...payload} = loginForm
-        console.log(payload)
-        console.log(loginForm.role)
+        const {role, ...payload} = loginForm
         try {
             const res = await fetch(`http://localhost:8080/${loginForm.role}/login`, {
                 method: "POST",
@@ -67,7 +65,6 @@ const Login = () => {
                 token: data.token
             })
             navigate("/")
-            console.log(data)
         } catch {
            setError("Something went wrong, please try again")
         }

@@ -34,5 +34,11 @@ public class ExerciseController {
         exerciseService.createExercise(req, trainer.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteExercise(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl trainer) {
+        exerciseService.deleteExercise(id, trainer.getId());
+        return ResponseEntity.noContent().build();
+    }
 }
 

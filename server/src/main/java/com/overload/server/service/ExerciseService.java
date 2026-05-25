@@ -2,11 +2,14 @@ package com.overload.server.service;
 
 import com.overload.server.DTOs.exercises.repsonses.ExerciseResponse;
 import com.overload.server.DTOs.exercises.requests.CreateExerciseRequest;
+import com.overload.server.DTOs.exercises.requests.UpdateExerciseRequest;
 import com.overload.server.exception.ResourceNotFoundException;
 import com.overload.server.model.Exercise;
 import com.overload.server.model.Trainer;
 import com.overload.server.repo.ExerciseRepo;
 import com.overload.server.repo.TrainerRepo;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,13 +18,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ExerciseService {
 
-    @Autowired
-    private ExerciseRepo exerciseRepo;
+    private final ExerciseRepo exerciseRepo;
 
-    @Autowired
-    private TrainerRepo trainerRepo;
+    private final TrainerRepo trainerRepo;
 
     public List<ExerciseResponse> findAllExercisesByTrainerId(Long trainerId) {
 
@@ -52,6 +54,29 @@ public class ExerciseService {
         exerciseRepo.save(exercise);
     }
 
+    public void deleteExercise(Long exerciseId, Long trainerId) {
+
+        if (!exerciseRepo.existsByIdAndTrainerId(exerciseId, trainerId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exercise not found");
+        }
+
+        exerciseRepo.deleteById(exerciseId);
+    }
+
+    public ExerciseResponse updateExercise(UpdateExerciseRequest req, Long exerciseId, Long trainerId) {
+
+        Exercise exercise = exerciseRepo.findB
+
+        Exercise exercise = Exercise.builder()
+                .name(req.getName())
+                .muscleGroup(req.getMuscleGroup())
+                .equipmentType(req.getEquipmentType())
+                .description(req.getDescription())
+                .build();
+
+        exerciseRepo.save(exercise);
+
+    }
 
     private ExerciseResponse toResponse(Exercise exercise) {
         ExerciseResponse response = new ExerciseResponse();

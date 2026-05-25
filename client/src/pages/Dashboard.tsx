@@ -20,7 +20,6 @@ const Dashboard = () => {
   // TODO: Add loading spinner
   // TODO: Add error screen
 
-  console.log(clients)
   return (
     <div className="">
       <div className="px-5">

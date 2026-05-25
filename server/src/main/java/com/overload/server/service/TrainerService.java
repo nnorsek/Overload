@@ -9,6 +9,7 @@ import com.overload.server.DTOs.trainers.responses.LoginTrainerResponse;
 import com.overload.server.model.Client;
 import com.overload.server.repo.ClientRepo;
 import com.overload.server.utils.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,20 +21,14 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class TrainerService {
 
     private final TrainerRepo trainerRepo;
     private final ClientRepo clientRepo;
     private final JwtUtil jwtUtil;
-
     private final PasswordEncoder passwordEncoder;
 
-    public TrainerService(TrainerRepo trainerRepo, ClientRepo clientRepo, JwtUtil jwtUtil, PasswordEncoder passwordEncoder){
-        this.trainerRepo = trainerRepo;
-        this.clientRepo = clientRepo;
-        this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public CreateTrainerResponse createTrainer(CreateTrainerRequest req){
 
