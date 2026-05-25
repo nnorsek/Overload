@@ -6,7 +6,6 @@ import com.overload.server.DTOs.exercises.requests.UpdateExerciseRequest;
 import com.overload.server.security.UserDetailsImpl;
 import com.overload.server.service.ExerciseService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
