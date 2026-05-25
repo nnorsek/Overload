@@ -29,7 +29,7 @@ public class ExerciseService {
             throw new ResourceNotFoundException("Trainer not found with id: " + trainerId);
         }
 
-       return exerciseRepo.findByTrainer_TrainerId(trainerId)
+       return exerciseRepo.findAllByTrainerIdOrDefault(trainerId)
             .stream().map(this::toResponse).toList();
     }
 
@@ -46,6 +46,7 @@ public class ExerciseService {
                 .muscleGroup(request.getMuscleGroup())
                 .description(request.getDescription())
                 .equipmentType(request.getEquipmentType())
+                .category(request.getCategory())
                 .trainer(trainer)
                 .build();
 
@@ -63,13 +64,14 @@ public class ExerciseService {
 
     public ExerciseResponse updateExercise(UpdateExerciseRequest req, Long exerciseId, Long trainerId) {
 
-        Exercise exercise = exerciseRepo.findByIdAndTrainer_TrainerId(exerciseId, trainerId)
+        Exercise exercise = exerciseRepo.findByExerciseIdAndTrainer_TrainerId(exerciseId, trainerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exercise not found"));
 
         exercise.setName(req.getName());
         exercise.setDescription(req.getDescription());
         exercise.setMuscleGroup(req.getMuscleGroup());
         exercise.setEquipmentType(req.getEquipmentType());
+        exercise.setCategory(req.getCategory());
 
         return toResponse(exerciseRepo.save(exercise));
     }
@@ -79,6 +81,8 @@ public class ExerciseService {
         response.setExerciseId(exercise.getExerciseId());
         response.setName(exercise.getName());
         response.setDescription(exercise.getDescription());
+        response.setMuscleGroup(exercise.getMuscleGroup());
+        response.setCategory(exercise.getCategory());
         return response;
     }
 }

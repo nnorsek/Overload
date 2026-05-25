@@ -1,6 +1,7 @@
 package com.overload.server.DTOs.exercises.requests;
 
 import com.overload.server.enums.EquipmentType;
+import com.overload.server.enums.ExerciseCategory;
 import com.overload.server.enums.MuscleGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,8 +19,8 @@ public class CreateExerciseRequest {
     @Size(max = 100)
     private String description;
 
-    @NotBlank
-    private String category;
+    @NotNull
+    private ExerciseCategory category;
 
     @NotNull
     private EquipmentType equipmentType;

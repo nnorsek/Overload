@@ -41,7 +41,7 @@ public class ExerciseController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<ExerciseResponse> updateExercise(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl trainer, @Valid @RequestBody UpdateExerciseRequest req) {
         return ResponseEntity.ok(exerciseService.updateExercise(req, id, trainer.getId()));
     }
