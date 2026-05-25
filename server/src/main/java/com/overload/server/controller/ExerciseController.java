@@ -40,5 +40,13 @@ public class ExerciseController {
         exerciseService.deleteExercise(id, trainer.getId());
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ExerciseResponse> updateExercise(@PathVariable Long id,
+                                                           @AuthenticationPrincipal UserDetailsImpl trainer,
+                                                           @Valid @RequestBody CreateExerciseRequest req){
+        Long trainerId = trainer.getId();
+        return ResponseEntity.ok(exerciseService.updateExercise(req, id, trainerId));
+    }
 }
 
