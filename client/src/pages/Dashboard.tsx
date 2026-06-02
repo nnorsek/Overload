@@ -17,8 +17,6 @@ const Dashboard = () => {
     }
   }, [clients, fetchAllClients]);
 
-  // TODO: Add loading spinner
-  // TODO: Add error screen
 
   return (
     <div className="">

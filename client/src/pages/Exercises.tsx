@@ -18,9 +18,9 @@ const Exercises = () => {
                 <h1 className="text-3xl font-bold py-5">Exercise Library</h1>
                 <p className="text-lg">Create, edit, and explain different exercises your own way</p>
             </div>
-            <div className="flex w-full gap-x-4">
-                <input className="py-2 px-4 border border-gray-300 rounded-lg focus:outline-none" placeholder={"Search..."} onChange={handleSearchChange}/>
-                <button className="text-lg px-6 py-2 bg-blue-400 rounded-lg ring-2 ring-transparent hover:ring-blue-600 hover:bg-blue-500 transition-all duration-200 cursor-pointer">Add</button>
+            <div className="flex gap-x-28 mt-8">
+                <input className="w-128 py-2 px-4 border border-gray-300 rounded-lg focus:outline-none" placeholder={"Search..."} onChange={handleSearchChange}/>
+                <button className="flex text-lg px-6 py-2 bg-blue-400 rounded-lg ring-2 ring-transparent hover:ring-blue-600 hover:bg-blue-500 transition-all duration-200 cursor-pointer">Add</button>
             </div>
             <div className="flex gap-x-10 mt-5">
                 {EXERCISE_CATEGORIES.map((category) => (
