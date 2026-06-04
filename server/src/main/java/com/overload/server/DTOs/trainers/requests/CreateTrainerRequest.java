@@ -1,40 +1,18 @@
 package com.overload.server.DTOs.trainers.requests;
 
+import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public class CreateTrainerRequest {
-
-    @NotBlank
-    private String firstName;
-
-    @NotBlank
-    private String lastName;
-
-    @NotNull
-    private LocalDate dateOfBirth;
-
-    @NotBlank
-    private String gender;
-
-    private String photoUrl;
-
-    @Email
-    @NotBlank
-    private String email;
-
+public record CreateTrainerRequest(
+    @NotBlank String firstName,
+    @NotBlank String lastName,
+    @NotNull LocalDate dateOfBirth,
+    @NotBlank String gender,
+    String photoUrl,
+    @Email @NotBlank String email,
     @Size(min = 8, max = 72)
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).+$",
              message = "Password must contain at least one uppercase letter, one number, and one special character")
-    @NotBlank
-    private String password;
-}
+    @NotBlank String password
+) {}

@@ -34,7 +34,7 @@ public class ExerciseService {
     }
 
     public void createExercise(CreateExerciseRequest request, Long trainerId) {
-        if (exerciseRepo.existsByName(request.getName(), trainerId)) {
+        if (exerciseRepo.existsByName(request.name(), trainerId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exercise already exists");
         }
 
@@ -42,11 +42,11 @@ public class ExerciseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Trainer not found"));
 
         Exercise exercise = Exercise.builder()
-                .name(request.getName())
-                .muscleGroup(request.getMuscleGroup())
-                .description(request.getDescription())
-                .equipmentType(request.getEquipmentType())
-                .category(request.getCategory())
+                .name(request.name())
+                .muscleGroup(request.muscleGroup())
+                .description(request.description())
+                .equipmentType(request.equipmentType())
+                .category(request.category())
                 .trainer(trainer)
                 .build();
 
@@ -67,22 +67,23 @@ public class ExerciseService {
         Exercise exercise = exerciseRepo.findByExerciseIdAndTrainer_TrainerId(exerciseId, trainerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exercise not found"));
 
-        exercise.setName(req.getName());
-        exercise.setDescription(req.getDescription());
-        exercise.setMuscleGroup(req.getMuscleGroup());
-        exercise.setEquipmentType(req.getEquipmentType());
-        exercise.setCategory(req.getCategory());
+        exercise.setName(req.name());
+        exercise.setDescription(req.description());
+        exercise.setMuscleGroup(req.muscleGroup());
+        exercise.setEquipmentType(req.equipmentType());
+        exercise.setCategory(req.category());
 
         return toResponse(exerciseRepo.save(exercise));
     }
 
     private ExerciseResponse toResponse(Exercise exercise) {
-        ExerciseResponse response = new ExerciseResponse();
-        response.setExerciseId(exercise.getExerciseId());
-        response.setName(exercise.getName());
-        response.setDescription(exercise.getDescription());
-        response.setMuscleGroup(exercise.getMuscleGroup());
-        response.setCategory(exercise.getCategory());
-        return response;
+        return new ExerciseResponse(
+            exercise.getExerciseId(),
+            exercise.getName(),
+            exercise.getEquipmentType(),
+            exercise.getMuscleGroup(),
+            exercise.getCategory(),
+            exercise.getDescription()
+        );
     }
 }

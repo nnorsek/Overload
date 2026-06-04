@@ -1,13 +1,10 @@
 package com.overload.server.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.overload.server.DTOs.clients.requests.ClientLoginRequest;
 import com.overload.server.DTOs.clients.requests.CreateClientRequest;
 import com.overload.server.DTOs.clients.responses.*;
-import com.overload.server.DTOs.trainers.responses.CreateTrainerResponse;
-import com.overload.server.model.Trainer;
 import com.overload.server.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,44 +18,44 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class ClientService {
-    
+
     private final ClientRepo clientRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
     public CreateClientResponse createClient(CreateClientRequest req) {
 
-        if (clientRepo.findByEmail(req.getEmail()).isPresent()) {
+        if (clientRepo.findByEmail(req.email()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
 
         Client client = Client.builder()
-                .passwordHash(passwordEncoder.encode(req.getPassword()))
-                .firstName(req.getFirstName())
-                .middleName(req.getMiddleName())
-                .lastName(req.getLastName())
-                .email(req.getEmail())
-                .gender(req.getGender())
-                .dateOfBirth(req.getDateOfBirth())
-                .goal(req.getGoal())
-                .currentWeight(req.getStartingWeight())
-                .startingWeight(req.getStartingWeight())
-                .height(req.getHeight())
+                .passwordHash(passwordEncoder.encode(req.password()))
+                .firstName(req.firstName())
+                .middleName(req.middleName())
+                .lastName(req.lastName())
+                .email(req.email())
+                .gender(req.gender())
+                .dateOfBirth(req.dateOfBirth())
+                .goal(req.goal())
+                .currentWeight(req.startingWeight())
+                .startingWeight(req.startingWeight())
+                .height(req.height())
                 .build();
 
         Client saved = clientRepo.save(client);
-        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_CLIENT", saved.getClientId());
+        String token = jwtUtil.generateToken(req.email(), "ROLE_CLIENT", saved.getClientId());
 
-        return CreateClientResponse.builder()
-                .token(token)
-                .clientId(saved.getClientId())
-                .firstName(saved.getFirstName())
-                .lastName(saved.getLastName())
-                .email(saved.getEmail())
-                .startingWeight(saved.getStartingWeight())
-                .height(saved.getHeight())
-                .gender(saved.getGender())
-                .build();
+        return new CreateClientResponse(
+                saved.getClientId(),
+                saved.getFirstName(),
+                saved.getLastName(),
+                saved.getEmail(),
+                saved.getStartingWeight(),
+                saved.getHeight(),
+                saved.getGender(),
+                token
+        );
     }
 
     public List<ClientResponse> getAllClients(){
@@ -112,10 +109,10 @@ public class ClientService {
 
     public ClientLoginResponse loginClient(ClientLoginRequest req){
 
-        Client found = clientRepo.findByEmail(req.getEmail())
+        Client found = clientRepo.findByEmail(req.email())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
 
-        if (!passwordEncoder.matches(req.getPassword(), found.getPasswordHash())) {
+        if (!passwordEncoder.matches(req.password(), found.getPasswordHash())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
@@ -128,6 +125,4 @@ public class ClientService {
                 "ROLE_CLIENT"
         );
     }
-
-
 }

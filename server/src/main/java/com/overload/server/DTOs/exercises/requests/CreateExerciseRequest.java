@@ -6,25 +6,11 @@ import com.overload.server.enums.MuscleGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
 
-@Getter
-public class CreateExerciseRequest {
-
-    @NotBlank
-    @Size(max = 50)
-    private String name;
-
-    @NotBlank
-    @Size(max = 100)
-    private String description;
-
-    @NotNull
-    private ExerciseCategory category;
-
-    @NotNull
-    private EquipmentType equipmentType;
-
-    @NotNull
-    private MuscleGroup muscleGroup;
-}
+public record CreateExerciseRequest(
+    @NotBlank @Size(max = 50) String name,
+    @NotBlank @Size(max = 100) String description,
+    @NotNull ExerciseCategory category,
+    @NotNull EquipmentType equipmentType,
+    @NotNull MuscleGroup muscleGroup
+) {}

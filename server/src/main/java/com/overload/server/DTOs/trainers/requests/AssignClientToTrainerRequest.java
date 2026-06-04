@@ -1,4 +1,4 @@
-package com.overload.server.DTOs.clients.requests;
+package com.overload.server.DTOs.trainers.requests;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

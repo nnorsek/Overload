@@ -1,7 +1,6 @@
 package com.overload.server.service;
 
 import com.overload.server.DTOs.clients.requests.AssignClientToTrainerRequest;
-import com.overload.server.DTOs.clients.responses.CreateClientResponse;
 import com.overload.server.DTOs.trainers.requests.CreateTrainerRequest;
 import com.overload.server.DTOs.trainers.requests.LoginTrainerRequest;
 import com.overload.server.DTOs.trainers.responses.CreateTrainerResponse;
@@ -32,37 +31,37 @@ public class TrainerService {
 
     public CreateTrainerResponse createTrainer(CreateTrainerRequest req){
 
-        if (trainerRepo.findByEmail(req.getEmail()).isPresent()) {
+        if (trainerRepo.findByEmail(req.email()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
 
         Trainer trainer = Trainer.builder()
-                .passwordHash(passwordEncoder.encode(req.getPassword()))
-                .firstName(req.getFirstName())
-                .lastName(req.getLastName())
-                .email(req.getEmail())
-                .gender(req.getGender())
-                .dateOfBirth(req.getDateOfBirth())
-                .photoUrl(req.getPhotoUrl())
+                .passwordHash(passwordEncoder.encode(req.password()))
+                .firstName(req.firstName())
+                .lastName(req.lastName())
+                .email(req.email())
+                .gender(req.gender())
+                .dateOfBirth(req.dateOfBirth())
+                .photoUrl(req.photoUrl())
                 .build();
-
 
         Trainer saved = trainerRepo.save(trainer);
-        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_TRAINER", saved.getTrainerId());
-        return CreateTrainerResponse.builder()
-                .token(token)
-                .trainerId(saved.getTrainerId())
-                .firstName(saved.getFirstName())
-                .lastName(saved.getLastName())
-                .email(saved.getEmail())
-                .gender(saved.getGender())
-                .build();
+        String token = jwtUtil.generateToken(req.email(), "ROLE_TRAINER", saved.getTrainerId());
+
+        return new CreateTrainerResponse(
+                saved.getTrainerId(),
+                saved.getFirstName(),
+                saved.getLastName(),
+                saved.getEmail(),
+                saved.getGender(),
+                token
+        );
     }
 
     public void assignClientToTrainer(AssignClientToTrainerRequest req) {
 
-        long trainerId = req.getTrainerId();
-        long clientId = req.getClientId();
+        long trainerId = req.trainerId();
+        long clientId = req.clientId();
 
         Trainer trainer = trainerRepo.findById(trainerId)
                 .orElseThrow(() -> new RuntimeException("Trainer not found."));
@@ -77,14 +76,14 @@ public class TrainerService {
     }
 
     public LoginTrainerResponse loginTrainer(LoginTrainerRequest req){
-        Trainer found = trainerRepo.findByEmail(req.getEmail())
+        Trainer found = trainerRepo.findByEmail(req.email())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
 
-        if (!passwordEncoder.matches(req.getPassword(), found.getPasswordHash())) {
+        if (!passwordEncoder.matches(req.password(), found.getPasswordHash())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
-        String token = jwtUtil.generateToken(req.getEmail(), "ROLE_TRAINER", found.getTrainerId());
+        String token = jwtUtil.generateToken(req.email(), "ROLE_TRAINER", found.getTrainerId());
 
         return new LoginTrainerResponse(
                 found.getTrainerId(),
@@ -92,5 +91,4 @@ public class TrainerService {
                 token,
                 "ROLE_TRAINER");
    }
-
-    }
+}

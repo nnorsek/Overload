@@ -18,7 +18,7 @@ public interface ExerciseRepo extends JpaRepository<Exercise, Long> {
     @Query("SELECT COUNT(e) > 0 FROM Exercise e WHERE e.name = :name AND e.trainer.trainerId = :trainerId")
     boolean existsByName(@Param("name") String name, @Param("trainerId") Long trainerId);
 
-    @Query("SELECT COUNT(e) > 0 FROM Exercise e WHERE e.id = :id AND e.trainer.trainerId = :trainerId")
+    @Query("SELECT COUNT(e) > 0 FROM Exercise e WHERE e.exerciseId = :id AND e.trainer.trainerId = :trainerId")
     boolean existsByIdAndTrainerId(@Param("id") Long id, @Param("trainerId") Long trainerId);
 
     Optional<Exercise> findByExerciseIdAndTrainer_TrainerId(Long exerciseId, Long trainerId);
