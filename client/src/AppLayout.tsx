@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 export const AppLayout = () => {
   const [navOpen, setNavOpen] = useState(false);
   return (
-    <div className="flex min-h-screen bg-mist">
+    <div className="flex min-h-screen" style={{ backgroundColor: '#F7F8FA' }}>
       {/* Sidebar */}
       <Navbar open={navOpen} setOpen={setNavOpen} />
 

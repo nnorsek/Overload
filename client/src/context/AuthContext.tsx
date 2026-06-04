@@ -19,7 +19,6 @@ const AuthContext = createContext<AuthContextType | null>(null)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<AuthUser | null>(() => {
         const stored = localStorage.getItem("auth");
-        console.log("Stored",stored)
         return stored ? JSON.parse(stored) : null
     });
 

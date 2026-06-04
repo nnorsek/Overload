@@ -1,16 +1,15 @@
 import { useState } from 'react';
-
+import { useExerciseHooks } from "../hooks/ExerciseHooks"
 const EXERCISE_CATEGORIES = ["Chest", "Shoulders", "Arms", "Legs", "Core", "Back"]
 
 
 const Exercises = () => {
     const [searchInput, setSearchInput] = useState<string>("");
-
+    const { loading, error, exercises } = useExerciseHooks();
 
     const handleSearchChange = () => {
         const search = searchInput.trim().toLowerCase();
     }
-
 
     return (
         <div className="p-5 ml-10">
@@ -29,6 +28,7 @@ const Exercises = () => {
                     </div>
                 ))}
             </div>
+
         </div>
     )
 }
