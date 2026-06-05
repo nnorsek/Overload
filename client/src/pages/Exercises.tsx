@@ -1,14 +1,30 @@
 import { useState } from 'react';
 import { useExerciseHooks } from "../hooks/ExerciseHooks"
-const EXERCISE_CATEGORIES = ["Chest", "Shoulders", "Arms", "Legs", "Core", "Back"]
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card"
+import { Badge } from "../components/ui/badge"
+import { Button } from "../components/ui/button"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuContent} from "../components/ui/dropdown-menu"
+import { Dialog, DialogTitle, DialogContent, DialogHeader, DialogFooter, DialogClose } from "../components/ui/dialog"
+import { MoreHorizontal } from "lucide-react"
+
+
+
+const EXERCISE_CATEGORIES = ["Chest", "Shoulders", "Arms", "Legs", "Core", "Back"]
+
 
 const Exercises = () => {
     const [searchInput, setSearchInput] = useState<string>("");
+    const [editExercise, setEditExercise] = useState<Exercise | null> (null);
+    const [openEditExercise, setOpenEditExercise] = useState<boolean>(false);
     const { loading, error, exercises } = useExerciseHooks();
 
     const handleSearchChange = () => {
         const search = searchInput.trim().toLowerCase();
+    }
+
+    const handleEditExercise = (id: number)=> {
+        setEditExercise(exercises.find(exercise => exercise.id === id ?? null));
+        setOpenEditExercise(true);
     }
 
     return (
@@ -23,17 +39,29 @@ const Exercises = () => {
             </div>
             <div className="flex gap-x-10 mt-5">
                 {EXERCISE_CATEGORIES.map((category) => (
-                    <div className="flex text-lg rounded-sm px-6 py-3 border shadow-lg  hover:cursor-pointer">
+                    <div className="flex text-lg rounded-sm px-6 py-3 border hover:cursor-pointer">
                         {category}
                     </div>
                 ))}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
                 {exercises.map((exercise) => (
-                    <Card key={exercise.id} className="hover:shadow-lg transition-shadow duration-200">
+                    <Card key={exercise.id} className="border hover:border-blue-300 transition-colors duration-200">
                         <CardHeader>
-                            <CardTitle>{exercise.name}</CardTitle>
-                            <CardDescription>{exercise.category}</CardDescription>
+                            <div className="flex justify-between items-center">
+                                <CardTitle>{exercise.name}</CardTitle>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" size="icon-sm" className="hover:cursor-pointer hover:bg-slate-100 mb-2"><MoreHorizontal/></Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-16" onCloseAutoFocus={(e) => e.preventDefault()}>
+                                        <DropdownMenuItem>Details</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleEditExercise(exercise.id)}>Edit</DropdownMenuItem>
+                                        <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                            </div>
+                            <Badge variant="outline" className="hover:bg-slate-200 border-blue-500">{exercise.category}</Badge>
                         </CardHeader>
                         <CardContent className="flex flex-col gap-2">
                             <div className="flex justify-between text-sm">
@@ -51,7 +79,31 @@ const Exercises = () => {
                     </Card>
                 ))}
             </div>
-
+            {openEditExercise && (
+                <Dialog open={openEditExercise} onOpenChange={setOpenEditExercise}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Edit Exercise</DialogTitle>
+                        </DialogHeader>
+                    <div className="flex flex-col">
+                        <p className="pl-2 text-sm pb-2">Name</p>
+                        <input defaultValue={editExercise?.name} className="border px-3 py-2 rounded-lg mb-5" placeholder="Name" />
+                        <p className="pl-2 text-sm pb-2">Muscle Group</p>
+                        <input defaultValue={editExercise?.muscleGroup} className="border px-3 py-2 rounded-lg mb-5" placeholder="Muscle Group" />
+                        <p className="pl-2 text-sm pb-2">Equipment</p>
+                        <input defaultValue={editExercise?.equipmentType} className="border px-3 py-2 rounded-lg mb-5" placeholder="Equipment" />
+                        <p className="pl-2 text-sm pb-2">Description</p>
+                        <textarea defaultValue={editExercise?.description} className="border px-3 py-2 rounded-lg mb-5" placeholder="Description" />
+                    </div>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="outline">Cancel</Button>
+                                </DialogClose>
+                            <Button>Save</Button>
+                        </DialogFooter>
+                </DialogContent>
+                </Dialog>
+            )}
         </div>
     )
 }
