@@ -10,5 +10,7 @@ public record ExerciseResponse(
     EquipmentType equipmentType,
     MuscleGroup muscleGroup,
     ExerciseCategory category,
-    String description
+    String description,
+    Long trainerId,
+    Long originalExerciseId
 ) {}

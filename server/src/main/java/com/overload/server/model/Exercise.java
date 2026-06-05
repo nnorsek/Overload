@@ -55,6 +55,9 @@ public class Exercise {
     @Column(nullable = false)
     private ExerciseCategory category;
 
+    @Column(nullable = true)
+    private Long originalExerciseId;
+
     @CreatedDate
     private LocalDateTime createdAt;
 

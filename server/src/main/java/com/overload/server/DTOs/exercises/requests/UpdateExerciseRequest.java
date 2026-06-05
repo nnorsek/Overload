@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 
 public record UpdateExerciseRequest(
     @NotBlank @Size(max = 50) String name,
-    @NotBlank @Size(max = 100) String description,
+    @Size(max = 100) String description,
     @NotNull EquipmentType equipmentType,
     @NotNull MuscleGroup muscleGroup,
     @NotNull ExerciseCategory category

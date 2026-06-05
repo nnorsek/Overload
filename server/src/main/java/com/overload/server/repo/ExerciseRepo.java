@@ -12,7 +12,20 @@ import java.util.Optional;
 @Repository
 public interface ExerciseRepo extends JpaRepository<Exercise, Long> {
 
-    @Query("SELECT e FROM Exercise e WHERE e.trainer.trainerId = :trainerId OR e.trainer IS NULL")
+    @Query("""
+        SELECT e FROM Exercise e
+        WHERE e.trainer.trainerId = :trainerId
+        OR (e.trainer IS NULL
+            AND e.exerciseId NOT IN (
+                SELECT f.originalExerciseId FROM Exercise f
+                WHERE f.trainer.trainerId = :trainerId AND f.originalExerciseId IS NOT NULL
+            )
+            AND e.exerciseId NOT IN (
+                SELECT h.exercise.exerciseId FROM TrainerHiddenExercise h
+                WHERE h.trainer.trainerId = :trainerId
+            )
+        )
+    """)
     List<Exercise> findAllByTrainerIdOrDefault(@Param("trainerId") Long trainerId);
 
     @Query("SELECT COUNT(e) > 0 FROM Exercise e WHERE e.name = :name AND e.trainer.trainerId = :trainerId")
@@ -21,5 +34,9 @@ public interface ExerciseRepo extends JpaRepository<Exercise, Long> {
     @Query("SELECT COUNT(e) > 0 FROM Exercise e WHERE e.exerciseId = :id AND e.trainer.trainerId = :trainerId")
     boolean existsByIdAndTrainerId(@Param("id") Long id, @Param("trainerId") Long trainerId);
 
-    Optional<Exercise> findByExerciseIdAndTrainer_TrainerId(Long exerciseId, Long trainerId);
+    @Query("SELECT e FROM Exercise e WHERE e.exerciseId = :exerciseId AND e.trainer.trainerId = :trainerId")
+    Optional<Exercise> findByExerciseIdAndTrainerId(@Param("exerciseId") Long exerciseId, @Param("trainerId") Long trainerId);
+
+    @Query("SELECT e FROM Exercise e WHERE e.exerciseId = :exerciseId AND e.trainer IS NULL")
+    Optional<Exercise> findDefaultById(@Param("exerciseId") Long exerciseId);
 }

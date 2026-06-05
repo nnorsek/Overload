@@ -6,7 +6,9 @@ import com.overload.server.DTOs.exercises.requests.UpdateExerciseRequest;
 import com.overload.server.exception.ResourceNotFoundException;
 import com.overload.server.model.Exercise;
 import com.overload.server.model.Trainer;
+import com.overload.server.model.TrainerHiddenExercise;
 import com.overload.server.repo.ExerciseRepo;
+import com.overload.server.repo.TrainerHiddenExerciseRepo;
 import com.overload.server.repo.TrainerRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,8 +22,8 @@ import java.util.List;
 public class ExerciseService {
 
     private final ExerciseRepo exerciseRepo;
-
     private final TrainerRepo trainerRepo;
+    private final TrainerHiddenExerciseRepo hiddenExerciseRepo;
 
     public List<ExerciseResponse> findAllExercisesByTrainerId(Long trainerId) {
 
@@ -55,6 +57,21 @@ public class ExerciseService {
 
     public void deleteExercise(Long exerciseId, Long trainerId) {
 
+        if (exerciseRepo.findDefaultById(exerciseId).isPresent()) {
+            if (hiddenExerciseRepo.existsByTrainer_TrainerIdAndExercise_ExerciseId(trainerId, exerciseId)) {
+                return;
+            }
+            Trainer trainer = trainerRepo.findById(trainerId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Trainer not found"));
+            Exercise exercise = exerciseRepo.findById(exerciseId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Exercise not found"));
+            hiddenExerciseRepo.save(TrainerHiddenExercise.builder()
+                    .trainer(trainer)
+                    .exercise(exercise)
+                    .build());
+            return;
+        }
+
         if (!exerciseRepo.existsByIdAndTrainerId(exerciseId, trainerId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercise not found");
         }
@@ -64,7 +81,25 @@ public class ExerciseService {
 
     public ExerciseResponse updateExercise(UpdateExerciseRequest req, Long exerciseId, Long trainerId) {
 
-        Exercise exercise = exerciseRepo.findByExerciseIdAndTrainer_TrainerId(exerciseId, trainerId)
+        // If editing a default exercise (trainer IS NULL), fork it instead of mutating it
+        if (exerciseRepo.findDefaultById(exerciseId).isPresent()) {
+            Trainer trainer = trainerRepo.findById(trainerId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Trainer not found"));
+
+            Exercise fork = Exercise.builder()
+                    .name(req.name())
+                    .description(req.description())
+                    .muscleGroup(req.muscleGroup())
+                    .equipmentType(req.equipmentType())
+                    .category(req.category())
+                    .trainer(trainer)
+                    .originalExerciseId(exerciseId)
+                    .build();
+
+            return toResponse(exerciseRepo.save(fork));
+        }
+
+        Exercise exercise = exerciseRepo.findByExerciseIdAndTrainerId(exerciseId, trainerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exercise not found"));
 
         exercise.setName(req.name());
@@ -83,7 +118,9 @@ public class ExerciseService {
             exercise.getEquipmentType(),
             exercise.getMuscleGroup(),
             exercise.getCategory(),
-            exercise.getDescription()
+            exercise.getDescription(),
+            exercise.getTrainer() != null ? exercise.getTrainer().getTrainerId() : null,
+            exercise.getOriginalExerciseId()
         );
     }
 }
