@@ -7,17 +7,19 @@ import { Button } from "../components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuContent} from "../components/ui/dropdown-menu"
 import { Dialog, DialogTitle, DialogContent, DialogHeader, DialogFooter, DialogClose } from "../components/ui/dialog"
 import { MoreHorizontal } from "lucide-react"
+import { Select, SelectTrigger, SelectGroup, SelectItem, SelectContent, SelectValue } from "../components/ui/select"
+import { useNavigate } from "react-router-dom"
+import { CATEGORY_OPTIONS, MUSCLE_GROUP_OPTIONS, EQUIPMENT_OPTIONS } from "../constants/exerciseOptions"
 
-
-
-const EXERCISE_CATEGORIES = ["Chest", "Shoulders", "Biceps" , "Triceps", "Legs", "Core", "Back"]
+const MUSCLE_GROUP = MUSCLE_GROUP_OPTIONS.map(opt => opt.label)
 
 const Exercises = () => {
     const [searchInput, setSearchInput] = useState<string>("");
     const [editExercise, setEditExercise] = useState<Exercise | null>(null);
     const [openEditExercise, setOpenEditExercise] = useState<boolean>(false);
     const { loading, error, exercises, handleEditExercise, handleDeleteExercise } = useExerciseHooks();
-    const [filter, setFilter] = useState<EXERCISE_CATEGORIES | "ALL">("ALL");
+    const [filter, setFilter] = useState<MUSCLE_GROUP | "ALL">("ALL");
+    const navigate = useNavigate();
 
     const handleSearchChange = (input: string) => {
         setSearchInput(input);
@@ -38,25 +40,22 @@ const Exercises = () => {
         setOpenEditExercise(false);
     }
 
-    const handleCreate = async (payload: CreateExercisePayload) => {
-
-    }
-
+    console.log(editExercise?.equipmentType)
     return (
         <div className="p-5 ml-10">
             <div className="flex flex-col">
                 <h1 className="text-3xl font-bold py-5">Exercise Library</h1>
                 <p className="text-lg">Create, edit, and explain different exercises your own way</p>
             </div>
-            <div className="flex gap-x-28 mt-8">
+            <div className="flex gap-x-8 mt-8">
                 <input className="w-128 py-2 px-4 border border-gray-300 rounded-lg focus:outline-none" placeholder={"Search..."} onChange={(e) => handleSearchChange(e.target.value)}/>
-                <button className="flex text-lg px-6 py-2 bg-blue-400 rounded-lg ring-2 ring-transparent hover:ring-blue-600 hover:bg-blue-500 transition-all duration-200 cursor-pointer">Add</button>
+                <button onClick={() => navigate("/exercises/create")} className="flex border hover:border-blue-500 transition ease-in-out duration-200 px-3 py-1 rounded-full items-center justify-center hover:cursor-pointer">Create Exercise</button>
             </div>
             <div className="flex gap-x-10 mt-5">
                 <div onClick={() => setFilter("ALL")} className={`flex text-lg rounded-sm px-6 py-3 border hover:cursor-pointer hover:border-blue-500 ${filter === "ALL" ? "bg-blue-500 text-white" : ""}`}>
                     All
                 </div>
-                {EXERCISE_CATEGORIES.map((category) => (
+                {MUSCLE_GROUP.map((category) => (
                     <div key={category} onClick={() => setFilter(category)} className={`flex text-lg rounded-sm px-6 py-3 border hover:cursor-pointer hover:border-blue-500 ${filter === category ? "bg-blue-500 text-white" : ""}`}>
                         {category}
                     </div>
@@ -112,9 +111,44 @@ const Exercises = () => {
                         <p className="pl-2 text-sm pb-2">Name</p>
                         <input value={editExercise?.name ?? ""} onChange={(e) => setEditExercise(prev => prev ? { ...prev, name: e.target.value} : prev)} className="border px-3 py-2 rounded-lg mb-5" placeholder="Name" />
                         <p className="pl-2 text-sm pb-2">Muscle Group</p>
-                        <input value={editExercise?.muscleGroup ?? ""} onChange={(e) => setEditExercise(prev => prev ? { ...prev, muscleGroup: e.target.value} : prev)} className="border px-3 py-2 rounded-lg mb-5" placeholder="Muscle Group" />
-                        <p className="pl-2 text-sm pb-2">Equipment</p>
-                        <input value={editExercise?.equipmentType ?? ""} onChange={(e) => setEditExercise(prev => prev ? { ...prev, equipmentType: e.target.value} : prev)} className="border px-3 py-2 rounded-lg mb-5" placeholder="Equipment" />
+                        <Select value={editExercise?.muscleGroup} onValueChange={(val) => setEditExercise(prev => prev ? { ...prev, muscleGroup: val } : prev)}>
+                            <SelectTrigger className="w-full mb-5">
+                                <SelectValue placeholder="Select a muscle group" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {MUSCLE_GROUP_OPTIONS.map((opt) => (
+                                        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <p className="pl-2 text-sm pb-2">Equipment Type</p>
+                        <Select value={editExercise?.equipmentType} onValueChange={(val) => setEditExercise(prev => prev ? { ...prev, equipmentType: val } : prev)}>
+                            <SelectTrigger className="w-full mb-5">
+                                <SelectValue placeholder="Select equipment type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {EQUIPMENT_OPTIONS.map((opt) => (
+                                        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <p className="pl-2 text-sm pb-2">Category</p>
+                        <Select value={editExercise?.category} onValueChange={(val) => setEditExercise(prev => prev ? { ...prev, category: val } : prev)}>
+                            <SelectTrigger className="w-full mb-5">
+                                <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {CATEGORY_OPTIONS.map((opt) => (
+                                        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                         <p className="pl-2 text-sm pb-2">Description</p>
                         <textarea value={editExercise?.description ?? ""} onChange={(e) => setEditExercise(prev => prev ? { ...prev, description: e.target.value} : prev)} className="border px-3 py-2 rounded-lg mb-5" placeholder="Description" />
                     </div>

@@ -6,6 +6,7 @@ import ClientDetails from "./pages/ClientDetails";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import Exercises from "./pages/Exercises"
+import CreateExercise from "./pages/CreateExercise"
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             element={<ClientDetails />}
           />
           <Route path="/exercises" element={<Exercises />} />
+          <Route path="/exercises/create" element={<CreateExercise />} />
         </Route>
       </Routes>
     </BrowserRouter>

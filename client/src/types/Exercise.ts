@@ -1,7 +1,7 @@
 type Exercise = {
     exerciseId: number,
     name: string,
-    equipmentType: string,
+    equipmentType: EquipmentType,
     muscleGroup: MuscleGroup,
     description: string,
     category: Category,
@@ -16,12 +16,14 @@ type CreateExercisePayload = {
     muscleGroup: MuscleGroup
 }
 
-type Category =  "STRENGTH" | "CARDIO" | "FLEXIBILITY" | "BALANCE" | "POWER" | "ENDURANCE" | "MOBILITY" | "CORE"
+type EquipmentType = "BARBELL" | "DUMBBELL" | "KETTLEBELL" | "CABLE" | "BODY_WEIGHT" | "MACHINE" | "RESISTANCE_BAND"
+type ExerciseCategory =  "STRENGTH" | "CARDIO" | "FLEXIBILITY" | "BALANCE" | "POWER" | "ENDURANCE" | "MOBILITY" | "CORE"
 type MuscleGroup = "CHEST" | "BACK" | "BICEPS" | "LEGS" | "SHOULDERS" | "TRICEPS" | "CORE"
 
 export {
     Exercise,
-    Category,
+    ExerciseCategory,
     MuscleGroup,
-    CreateExercisePayload
+    CreateExercisePayload,
+    EquipmentType,
 }

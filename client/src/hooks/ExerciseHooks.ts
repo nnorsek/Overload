@@ -93,7 +93,7 @@ const useExerciseHooks = () => {
         setLoading(true);
         try {
             const res = await fetch(`${API_BASE}/exercises/create`, {
-                method: "CREATE",
+                method: "POST",
                 headers: authHeaders,
                 body: JSON.stringify(payload),
             })
@@ -112,8 +112,7 @@ const useExerciseHooks = () => {
         }
     }
 
-
-    return { loading, exercises, error, reload, reloader, handleEditExercise, handleDeleteExercise }
+    return { loading, exercises, error, reload, reloader, handleEditExercise, handleDeleteExercise, handleCreateExercise }
 }
 
 export {
