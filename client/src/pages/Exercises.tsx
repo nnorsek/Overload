@@ -115,7 +115,7 @@ const Exercises = () => {
                             <SelectTrigger className="w-full mb-5">
                                 <SelectValue placeholder="Select a muscle group" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent position={"popper"}>
                                 <SelectGroup>
                                     {MUSCLE_GROUP_OPTIONS.map((opt) => (
                                         <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
@@ -128,7 +128,7 @@ const Exercises = () => {
                             <SelectTrigger className="w-full mb-5">
                                 <SelectValue placeholder="Select equipment type" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent position={"popper"}>
                                 <SelectGroup>
                                     {EQUIPMENT_OPTIONS.map((opt) => (
                                         <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
@@ -141,7 +141,7 @@ const Exercises = () => {
                             <SelectTrigger className="w-full mb-5">
                                 <SelectValue placeholder="Select category" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent position={"popper"} >
                                 <SelectGroup>
                                     {CATEGORY_OPTIONS.map((opt) => (
                                         <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
