@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { Exercise, Category, MuscleGroup, CreateExercisePayload } from "../types/Exercise";
 import { useExerciseHooks } from "../hooks/ExerciseHooks"
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card"
+import { Input } from "../components/ui/input"
 import { Badge } from "../components/ui/badge"
 import { Button } from "../components/ui/button"
+import { Textarea } from "../components/ui/textarea"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuContent} from "../components/ui/dropdown-menu"
 import { Dialog, DialogTitle, DialogContent, DialogHeader, DialogFooter, DialogClose } from "../components/ui/dialog"
 import { MoreHorizontal } from "lucide-react"
@@ -20,6 +22,7 @@ const Exercises = () => {
     const { loading, error, exercises, handleEditExercise, handleDeleteExercise } = useExerciseHooks();
     const [filter, setFilter] = useState<MUSCLE_GROUP | "ALL">("ALL");
     const navigate = useNavigate();
+    const originalExercise = useRef<Exercise | null>(null);
 
     const handleSearchChange = (input: string) => {
         setSearchInput(input);
@@ -30,8 +33,10 @@ const Exercises = () => {
 
 
     const handleOpenEditExercise = (id: number) => {
-        setEditExercise(exercises.find(exercise => exercise.exerciseId === id) ?? null);
+        const found = exercises.find(exercise => exercise.exerciseId === id) ?? null;
+        setEditExercise(found)
         setOpenEditExercise(true);
+        originalExercise.current = found;
     }
 
     const handleSaveEdit = async (id: number) => {
@@ -40,7 +45,10 @@ const Exercises = () => {
         setOpenEditExercise(false);
     }
 
-    console.log(editExercise?.equipmentType)
+    const editIsUnchanged = originalExercise.current?.name === editExercise?.name && originalExercise.current?.muscleGroup === editExercise?.muscleGroup
+    && originalExercise.current?.equipmentType === editExercise?.equipmentType && originalExercise.current?.category === editExercise?.category
+    && originalExercise.current?.description === editExercise?.description
+
     return (
         <div className="p-5 ml-10">
             <div className="flex flex-col">
@@ -48,15 +56,15 @@ const Exercises = () => {
                 <p className="text-lg">Create, edit, and explain different exercises your own way</p>
             </div>
             <div className="flex gap-x-8 mt-8">
-                <input className="w-128 py-2 px-4 border border-gray-300 rounded-lg focus:outline-none" placeholder={"Search..."} onChange={(e) => handleSearchChange(e.target.value)}/>
-                <button onClick={() => navigate("/exercises/create")} className="flex border hover:border-blue-500 transition ease-in-out duration-200 px-3 py-1 rounded-full items-center justify-center hover:cursor-pointer">Create Exercise</button>
+                <input className="w-full max-w-sm bg-card py-2 px-4 border border-border rounded-lg focus:outline-none" placeholder={"Search..."} onChange={(e) => handleSearchChange(e.target.value)}/>
+                <button onClick={() => navigate("/exercises/create")} className="flex border hover:border-blue-500 bg-card transition ease-in-out duration-200 px-3 py-1 rounded-full items-center justify-center hover:cursor-pointer">Create Exercise</button>
             </div>
-            <div className="flex gap-x-10 mt-5">
-                <div onClick={() => setFilter("ALL")} className={`flex text-lg rounded-sm px-6 py-3 border hover:cursor-pointer hover:border-blue-500 ${filter === "ALL" ? "bg-blue-500 text-white" : ""}`}>
+            <div className="flex flex-wrap gap-x-10 mt-5">
+                <div onClick={() => setFilter("ALL")} className={`flex text-lg rounded-sm px-6 py-3 border hover:cursor-pointer hover:border-blue-500 ${filter === "ALL" ? "bg-blue-500 text-white" : "bg-card"}`}>
                     All
                 </div>
                 {MUSCLE_GROUP.map((category) => (
-                    <div key={category} onClick={() => setFilter(category)} className={`flex text-lg rounded-sm px-6 py-3 border hover:cursor-pointer hover:border-blue-500 ${filter === category ? "bg-blue-500 text-white" : ""}`}>
+                    <div key={category} onClick={() => setFilter(category)} className={`flex text-lg rounded-sm px-6 py-3 border hover:cursor-pointer hover:border-blue-500 ${filter === category ? "bg-blue-500 text-white" : "bg-card"}`}>
                         {category}
                     </div>
                 ))}
@@ -109,7 +117,7 @@ const Exercises = () => {
                         </DialogHeader>
                     <div className="flex flex-col">
                         <p className="pl-2 text-sm pb-2">Name</p>
-                        <input value={editExercise?.name ?? ""} onChange={(e) => setEditExercise(prev => prev ? { ...prev, name: e.target.value} : prev)} className="border px-3 py-2 rounded-lg mb-5" placeholder="Name" />
+                        <Input value={editExercise?.name ?? ""} onChange={(e) => setEditExercise(prev => prev ? { ...prev, name: e.target.value} : prev)} className="border px-3 py-2 rounded-lg mb-5" placeholder="Name" />
                         <p className="pl-2 text-sm pb-2">Muscle Group</p>
                         <Select value={editExercise?.muscleGroup} onValueChange={(val) => setEditExercise(prev => prev ? { ...prev, muscleGroup: val } : prev)}>
                             <SelectTrigger className="w-full mb-5">
@@ -150,13 +158,13 @@ const Exercises = () => {
                             </SelectContent>
                         </Select>
                         <p className="pl-2 text-sm pb-2">Description</p>
-                        <textarea value={editExercise?.description ?? ""} onChange={(e) => setEditExercise(prev => prev ? { ...prev, description: e.target.value} : prev)} className="border px-3 py-2 rounded-lg mb-5" placeholder="Description" />
+                        <Textarea value={editExercise?.description ?? ""} onChange={(e) => setEditExercise(prev => prev ? { ...prev, description: e.target.value} : prev)} className="mb-5" placeholder="Description" />
                     </div>
                         <DialogFooter>
                             <DialogClose asChild>
                                 <Button variant="outline">Cancel</Button>
                                 </DialogClose>
-                            <Button onClick={() => handleSaveEdit(editExercise?.exerciseId)}>Save</Button>
+                            <Button disabled={editIsUnchanged} onClick={() => handleSaveEdit(editExercise?.exerciseId)}>Save</Button>
                         </DialogFooter>
                 </DialogContent>
                 </Dialog>

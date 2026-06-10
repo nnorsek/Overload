@@ -32,15 +32,17 @@ const CreateExercise = () => {
         navigate("/exercises");
     }
 
+    const blankFields = form.name === "" || form.category === "" || form.description === "" || form.muscleGroup === "" || form.equipmentType === "";
+
     return (
         <div className="min-h-screen p-8">
-            <button
+            <Button
                 onClick={() => navigate("/exercises")}
-                className="flex items-center gap-2 text-sm hover:text-blue-500 cursor-pointer mb-8 transition-colors"
+                className="mb-8"
             >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Exercises
-            </button>
+            </Button>
 
             <div className="max-w-xl mx-auto">
                 <div className="mb-8 text-center">
@@ -48,7 +50,7 @@ const CreateExercise = () => {
                     <p className="text-muted-foreground mt-2">Add a new exercise to your library with all the details your clients need</p>
                 </div>
 
-                <div className="bg-white border border-blue-100 rounded-2xl shadow-sm p-8">
+                <div className="bg-form border border-border rounded-2xl shadow p-8">
                     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
                         <div className="flex flex-col gap-1.5">
@@ -67,7 +69,7 @@ const CreateExercise = () => {
                                 <SelectTrigger id="muscleGroup" className="w-full">
                                     <SelectValue placeholder="Select a muscle group" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent position={"popper"}>
                                     <SelectGroup>
                                         {MUSCLE_GROUP_OPTIONS.map(opt => (
                                             <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
@@ -83,7 +85,7 @@ const CreateExercise = () => {
                                 <SelectTrigger id="equipment" className="w-full">
                                     <SelectValue placeholder="Select equipment" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent position={"popper"}>
                                     <SelectGroup>
                                         {EQUIPMENT_OPTIONS.map(opt => (
                                             <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
@@ -99,7 +101,7 @@ const CreateExercise = () => {
                                 <SelectTrigger id="category" className="w-full">
                                     <SelectValue placeholder="Select a category" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent position={"popper"}>
                                     <SelectGroup>
                                         {CATEGORY_OPTIONS.map(opt => (
                                             <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
@@ -124,7 +126,7 @@ const CreateExercise = () => {
                             <Button type="button" variant="outline" onClick={() => navigate("/exercises")}>
                                 Cancel
                             </Button>
-                            <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">
+                            <Button type="submit" disabled={blankFields} className="bg-blue-500 hover:bg-blue-600 text-white">
                                 Create Exercise
                             </Button>
                         </div>

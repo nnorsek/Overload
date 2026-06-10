@@ -1,18 +1,18 @@
-import Navbar from "./pages/Navbar";
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import React from "react"
+import { AppSidebar } from "./components/AppSidebar"
+import { SidebarProvider, SidebarInset } from "./components/ui/sidebar"
+import { TooltipProvider } from "./components/ui/tooltip"
+import { Outlet } from "react-router-dom"
 
 export const AppLayout = () => {
-  const [navOpen, setNavOpen] = useState(false);
   return (
-    <div className="flex min-h-screen" style={{ backgroundColor: '#EBEDE8' }}>
-      {/* Sidebar */}
-      <Navbar open={navOpen} setOpen={setNavOpen} />
-
-      {/* Page content */}
-      <main className="flex-1">
-        <Outlet />
-      </main>
-    </div>
-  );
-};
+    <TooltipProvider>
+      <SidebarProvider defaultOpen={false} style={{ "--sidebar-width-icon": "4rem" } as React.CSSProperties}>
+        <AppSidebar />
+        <SidebarInset>
+          <Outlet />
+        </SidebarInset>
+      </SidebarProvider>
+    </TooltipProvider>
+  )
+}
