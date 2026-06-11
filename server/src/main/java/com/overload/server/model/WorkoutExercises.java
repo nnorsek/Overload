@@ -12,6 +12,20 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
+/*
+ * WorkoutExercises is the join table between Workout and Exercise.
+ * Each row represents one exercise slot within a workout, carrying the
+ * trainer-defined defaults (sets, reps, weight) and the display position
+ * of that exercise via exerciseOrder (1-based, ascending).
+ *
+ * Relationships:
+ *   - ManyToOne -> Workout  (many exercise slots belong to one workout)
+ *   - ManyToOne -> Exercise (many workout slots can reference the same exercise)
+ *
+ * SessionExercises references WorkoutExercises to inherit these defaults
+ * when a session is performed, allowing the client's actual performance
+ * to be tracked against the trainer's original plan.
+ */
 @Getter
 @Setter
 @Entity
@@ -20,7 +34,7 @@ public class WorkoutExercises {
 
     @Id
     @GeneratedValue
-    private Long workoutExercisesId;
+    private Long workoutExerciseId;
 
     @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false)
@@ -32,7 +46,7 @@ public class WorkoutExercises {
 
     @NotNull
     @Column(nullable = false)
-    private Integer exerciseOrder;
+    private int exerciseOrder;
 
     @NotNull
     @PositiveOrZero

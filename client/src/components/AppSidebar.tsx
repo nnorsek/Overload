@@ -57,7 +57,7 @@ export const AppSidebar = () => {
             <SidebarMenu className="gap-2">
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.label}>
-                  <SidebarMenuButton onClick={() => navigate(item.path)} tooltip={item.label} className="text-base cursor-pointer [&_svg]:size-5">
+                  <SidebarMenuButton onClick={() => navigate(item.path)} className="text-base cursor-pointer [&_svg]:size-5">
                     <item.icon />
                     <span>{item.label}</span>
                   </SidebarMenuButton>
@@ -70,19 +70,19 @@ export const AppSidebar = () => {
       <SidebarFooter>
         <SidebarMenu className="gap-2">
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => navigate("/settings")} tooltip="Settings" className="text-base cursor-pointer [&_svg]:size-5">
+            <SidebarMenuButton onClick={() => navigate("/settings")} className="text-base cursor-pointer [&_svg]:size-5">
               <Settings />
               <span>Settings</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={logout} tooltip="Logout" className="text-base cursor-pointer [&_svg]:size-5">
+            <SidebarMenuButton onClick={logout} className="text-base cursor-pointer [&_svg]:size-5">
               <LogOut />
               <span>Logout</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={toggleTheme} tooltip="Toggle theme" className="text-base cursor-pointer [&_svg]:size-5">
+            <SidebarMenuButton onClick={toggleTheme} className="text-base cursor-pointer [&_svg]:size-5">
               {isDark ? <Sun /> : <Moon />}
               <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
             </SidebarMenuButton>
