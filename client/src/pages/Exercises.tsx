@@ -71,7 +71,7 @@ const Exercises = () => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
                 {visibleExercises.map((exercise) => (
-                    <Card key={exercise.exerciseId} className="border hover:border-blue-300 transition-colors duration-200">
+                    <Card key={exercise.exerciseId} className="border hover:border-blue-500 transition-colors duration-200">
                         <CardHeader>
                             <div className="flex justify-between items-center">
                                 <CardTitle>{exercise.name}</CardTitle>
