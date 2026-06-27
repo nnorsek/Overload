@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Spring will detect this class as a bean and allows for it to be injected in other places
 @Service
 @RequiredArgsConstructor
 public class SessionService {
