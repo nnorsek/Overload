@@ -1,90 +1,59 @@
-import { useCallback, useState } from "react";
+import { useState, useEffect } from "react";
 import type { Client } from "../types/Client";
-import { useAuth } from "../context/AuthContext";
-
-
-const API_BASE = import.meta.env.API_BASE ?? "http://localhost:8080";
-
-interface ClientHookState {
-  clients: Client[] | null;
-  client: Client | null;
-  loading: boolean;
-  error: string | null;
-}
+import { useApi } from "./useApi";
 
 const useClientHooks = () => {
-  const [state, setState] = useState<ClientHookState>({
-    clients: null,
-    client: null,
-    loading: false,
-    error: null,
-  });
 
-  const { user } = useAuth();
+    const [clients, setClients] = useState<Client[]>([]);
+    const [client, setClient] = useState<Client | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [reload, setReload] = useState(false);
+    const { apiBase, authHeaders, user, GENERIC_ERROR } = useApi();
 
-  const authHeaders: HeadersInit = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${user.token}`,
-  };
+    const reloader = () => setReload((prev) => !prev);
 
-  const fetchAllClients = useCallback(async () => {
-    setState((prev) => ({ ...prev, loading: true, error: null }));
+    const fetchAllClients = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch(`${apiBase}/client/all/${user?.id}`, {
+                headers: authHeaders,
+            });
+            if (res.ok) {
+                setClients(await res.json());
+            } else if (res.status === 500) {
+                setError(GENERIC_ERROR);
+            }
+        } catch (error: any) {
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    try {
-      const res = await fetch(`${API_BASE}/client/all/${user.id}`, {
-        headers: authHeaders,
-      });
+    useEffect(() => {
+        fetchAllClients();
+    }, [reload]);
 
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => ({}));
-        throw new Error(errBody.message ?? `Request failed with status ${res.status}`);
-      }
+    const fetchClientById = async (id: number) => {
+        setLoading(true);
+        try {
+            const res = await fetch(`${apiBase}/clients/${id}`, {
+                headers: authHeaders,
+            });
+            if (res.ok) {
+                setClient(await res.json());
+            } else if (res.status === 500) {
+                setError(GENERIC_ERROR);
+            }
+        } catch (error: any) {
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-      const data = (await res.json()) as Client[];
-
-      setState((prev) => ({ ...prev, clients: data }));
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to fetch clients";
-      setState((prev) => ({ ...prev, clients: null, error: message }));
-    } finally {
-      setState((prev) => ({ ...prev, loading: false }));
-    }
-  }, [user.id, user.token]);
-
-  const fetchClientById = useCallback(async (id: number) => {
-    setState((prev) => ({ ...prev, loading: true, error: null }));
-
-    try {
-      const res = await fetch(`${API_BASE}/clients/${id}`, {
-        headers: authHeaders,
-      });
-
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => ({}));
-        throw new Error(errBody.message ?? `Request failed with status ${res.status}`);
-      }
-
-      const data = (await res.json()) as Client;
-
-      setState((prev) => ({ ...prev, client: data }));
-      return data;
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to fetch client";
-      setState((prev) => ({ ...prev, client: null, error: message }));
-      return null;
-    } finally {
-      setState((prev) => ({ ...prev, loading: false }));
-    }
-  }, [user.token]);
-
-  return {
-    clients: state.clients,
-    client: state.client,
-    loading: state.loading,
-    error: state.error,
-    fetchAllClients,
-    fetchClientById,
-  };
+    return { loading, clients, client, error, reload, reloader, fetchClientById };
 };
 
 export { useClientHooks };

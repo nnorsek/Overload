@@ -6,6 +6,7 @@ import type { Client } from "../types/Client";
 import type { Session } from "../types/Session";
 import { useClientHooks } from "../hooks/ClientHooks";
 import { useAuth } from "../context/AuthContext"
+import Wrapper from "../components/Wrapper"
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -19,8 +20,7 @@ const Dashboard = () => {
 
 
   return (
-    <div className="">
-      <div className="px-5">
+    <Wrapper>
         <h1 className="text-3xl bold py-5 font-bold">Dashboard</h1>
         <p className="text-gray-500 pt-2">
           Placeholder description tag Placeholder description tag Placeholder
@@ -54,8 +54,7 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-      </div>
-    </div>
+    </Wrapper>
   );
 };
 

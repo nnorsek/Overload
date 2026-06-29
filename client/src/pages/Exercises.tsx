@@ -12,6 +12,8 @@ import { MoreHorizontal } from "lucide-react"
 import { Select, SelectTrigger, SelectGroup, SelectItem, SelectContent, SelectValue } from "../components/ui/select"
 import { useNavigate } from "react-router-dom"
 import { CATEGORY_OPTIONS, MUSCLE_GROUP_OPTIONS, EQUIPMENT_OPTIONS } from "../constants/exerciseOptions"
+import Wrapper from "../components/Wrapper"
+
 
 const MUSCLE_GROUP = MUSCLE_GROUP_OPTIONS.map(opt => opt.label)
 
@@ -50,7 +52,7 @@ const Exercises = () => {
     && originalExercise.current?.description === editExercise?.description
 
     return (
-        <div className="p-5 ml-10">
+        <Wrapper>
             <div className="flex flex-col">
                 <h1 className="text-3xl font-bold py-5">Exercise Library</h1>
                 <p className="text-lg">Create, edit, and explain different exercises your own way</p>
@@ -169,7 +171,7 @@ const Exercises = () => {
                 </DialogContent>
                 </Dialog>
             )}
-        </div>
+        </Wrapper>
     )
 }
 

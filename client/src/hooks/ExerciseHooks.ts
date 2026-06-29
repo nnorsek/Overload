@@ -1,50 +1,39 @@
 import { useState, useEffect } from "react";
-import type { Exercise } from "../types/Exercise"
-import { useAuth } from "../context/AuthContext";
-import type { CreateExercisePayload } from "../types/Exercise";
-
-const API_BASE = import.meta.env.API_BASE ?? "http://localhost:8080";
+import type { Exercise, CreateExercisePayload } from "../types/Exercise";
+import { useApi } from "./useApi";
 
 const useExerciseHooks = () => {
 
     const [exercises, setExercises] = useState<Exercise[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { user } = useAuth();
     const [reload, setReload] = useState(false);
-
-    const authHeaders: HeadersInit = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-    };
+    const { apiBase, authHeaders, GENERIC_ERROR } = useApi();
 
     const reloader = () => setReload((prev) => !prev);
 
     const fetchExercises = async () => {
         setLoading(true);
-
         try {
-            const res = await fetch(`${API_BASE}/exercises/all`, {
+            const res = await fetch(`${apiBase}/exercises/all`, {
                 headers: authHeaders,
             })
             if (res.ok) {
                 setExercises(await res.json());
-            } else if (res.status === 500){
-                setError("Something went wrong, please try again.")
+            } else if (res.status === 500) {
+                setError(GENERIC_ERROR)
             }
         } catch (error: any) {
             setError(error)
         } finally {
             setLoading(false);
         }
-
     }
 
     const handleEditExercise = async (id: number, payload: Partial<Exercise>) => {
         setLoading(true);
-
         try {
-            const res = await fetch(`${API_BASE}/exercises/${id}`, {
+            const res = await fetch(`${apiBase}/exercises/${id}`, {
                 method: 'PUT',
                 headers: authHeaders,
                 body: JSON.stringify(payload),
@@ -54,7 +43,7 @@ const useExerciseHooks = () => {
             }
         } catch (error: any) {
             if (error.response.status === 500) {
-                setError("Something went wrong, please try again.")
+                setError(GENERIC_ERROR)
             } else {
                 setError(error.response)
             }
@@ -70,17 +59,16 @@ const useExerciseHooks = () => {
     const handleDeleteExercise = async (id: number) => {
         setLoading(true);
         try {
-            const res = await fetch(`${API_BASE}/exercises/${id}`, {
+            const res = await fetch(`${apiBase}/exercises/${id}`, {
                 method: "DELETE",
-                headers: authHeaders
+                headers: authHeaders,
             })
-
             if (res.ok) {
                 reloader();
             }
         } catch (error: any) {
             if (error.response.status === 500) {
-                setError("Something went wrong, please try again.")
+                setError(GENERIC_ERROR)
             } else {
                 setError(error.response);
             }
@@ -92,18 +80,17 @@ const useExerciseHooks = () => {
     const handleCreateExercise = async (payload: CreateExercisePayload) => {
         setLoading(true);
         try {
-            const res = await fetch(`${API_BASE}/exercises/create`, {
+            const res = await fetch(`${apiBase}/exercises/create`, {
                 method: "POST",
                 headers: authHeaders,
                 body: JSON.stringify(payload),
             })
-
             if (res.ok) {
                 reloader();
             }
         } catch (error: any) {
             if (error.response.status === 500) {
-                setError("Something went wrong, please try again.")
+                setError(GENERIC_ERROR)
             } else {
                 setError(error.response);
             }
@@ -115,6 +102,4 @@ const useExerciseHooks = () => {
     return { loading, exercises, error, reload, reloader, handleEditExercise, handleDeleteExercise, handleCreateExercise }
 }
 
-export {
-    useExerciseHooks
-}
+export { useExerciseHooks }

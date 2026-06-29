@@ -20,6 +20,7 @@ const navItems = [
   { label: "Clients", icon: Users, path: "/clients" },
   { label: "Sessions", icon: Calendar, path: "/sessions" },
   { label: "Exercises", icon: Dumbbell, path: "/exercises" },
+  { label: "Workouts", icon: Dumbbell, path: "/workouts"}
 ]
 
 export const AppSidebar = () => {
