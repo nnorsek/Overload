@@ -6,13 +6,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme {
-  --color-blue-primary: #5171a5;
-  --color-mist: #f3eff5;
-  --color-ink: #080708;
-  --color-pollen: #fdca40;
-  --color-alabaster: #e6e8e6;
-}
 body {
   background-color: #F7F8FA;
 }
@@ -24,7 +17,7 @@ body {
   --card-foreground: #0a0a0a;
   --popover: #ffffff;
   --popover-foreground: #0a0a0a;
-  --primary: #0069a8;
+  --primary: #3ba5de;
   --primary-foreground: #f0f9ff;
   --secondary: #f4f4f5;
   --secondary-foreground: #18181b;
@@ -44,7 +37,7 @@ body {
   --radius: 0.625rem;
   --sidebar: #fafafa;
   --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #0084d1;
+  --sidebar-primary: #166999;
   --sidebar-primary-foreground: #f0f9ff;
   --sidebar-accent: #e1e1e1;
   --sidebar-accent-foreground: #171717;
@@ -60,7 +53,7 @@ body {
   --card-foreground: #fafafa;
   --popover: #171717;
   --popover-foreground: #fafafa;
-  --primary: #00598a;
+  --primary: #1a536d;
   --primary-foreground: #f0f9ff;
   --secondary: #27272a;
   --secondary-foreground: #fafafa;
@@ -130,6 +123,7 @@ body {
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
   --color-form: var(--form);
+  --color-blue-primary: #5171a5;
 }
 
 @layer base {
