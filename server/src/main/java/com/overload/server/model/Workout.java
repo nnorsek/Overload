@@ -8,6 +8,7 @@ import com.overload.server.enums.DifficultyLevel;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,12 +49,11 @@ public class Workout {
     @Column(nullable = false)
     private String description;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private DifficultyLevel difficultyLevel;
 
-    @NotBlank
     @Column(nullable = false)
     private int estimatedDuration;
 
