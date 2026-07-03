@@ -9,6 +9,7 @@ import Exercises from "./pages/Exercises"
 import CreateExercise from "./pages/CreateExercise"
 import Workouts from "./pages/Workouts"
 import CreateWorkout from "./pages/CreateWorkout"
+import AddExercisesToWorkout from "./pages/AddExercisesToWorkout"
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/exercises/create" element={<CreateExercise />} />
           <Route path="/workouts" element={<Workouts/>} />
           <Route path="/workouts/create" element={<CreateWorkout/>} />
+          <Route path="/workouts/:id/exercises" element={<AddExercisesToWorkout/>} />
         </Route>
       </Routes>
     </BrowserRouter>

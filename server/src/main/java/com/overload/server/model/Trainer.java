@@ -51,6 +51,7 @@ public class Trainer {
 
     private String photoUrl;
     
+    @Builder.Default
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
     private List<Client> clients = new ArrayList<>();
 

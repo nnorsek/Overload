@@ -7,17 +7,17 @@
 @custom-variant dark (&:is(.dark *));
 
 body {
-  background-color: #F7F8FA;
+  background-color: #f7f8fa;
 }
 
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
-  --card: #F2F2F2;
+  --card: #f2f2f2;
   --card-foreground: #0a0a0a;
   --popover: #ffffff;
   --popover-foreground: #0a0a0a;
-  --primary: #3ba5de;
+  --primary: #2979a3;
   --primary-foreground: #f0f9ff;
   --secondary: #f4f4f5;
   --secondary-foreground: #18181b;
@@ -26,8 +26,8 @@ body {
   --accent: #f5f5f5;
   --accent-foreground: #171717;
   --destructive: #e7000b;
-  --border: #D1D1D1;
-  --input: #FFFFFF;
+  --border: #d1d1d1;
+  --input: #ffffff;
   --ring: #a1a1a1;
   --chart-1: #5ee9b5;
   --chart-2: #00bc7d;
@@ -43,13 +43,13 @@ body {
   --sidebar-accent-foreground: #171717;
   --sidebar-border: #e5e5e5;
   --sidebar-ring: #a1a1a1;
-  --form: #F7F8F8;
+  --form: #f7f8f8;
 }
 
 .dark {
-  --background: #1C1C1C;
+  --background: #1c1c1c;
   --foreground: #fafafa;
-  --card: #171717;
+  --card: #504c4c;
   --card-foreground: #fafafa;
   --popover: #171717;
   --popover-foreground: #fafafa;
@@ -82,8 +82,8 @@ body {
 }
 
 @theme inline {
-  --font-serif: 'Merriweather Variable', serif;
-  --font-heading: 'Roboto Slab Variable', serif;
+  --font-serif: "Merriweather Variable", serif;
+  --font-heading: "Roboto Slab Variable", serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

@@ -1,10 +1,5 @@
 import { useState, useRef } from "react";
-import type {
-  Exercise,
-  Category,
-  MuscleGroup,
-  CreateExercisePayload,
-} from "../types/Exercise";
+import type { Exercise, MuscleGroup } from "../types/Exercise";
 import { useExerciseHooks } from "../hooks/ExerciseHooks";
 import {
   Card,
@@ -44,7 +39,7 @@ import {
   CATEGORY_OPTIONS,
   MUSCLE_GROUP_OPTIONS,
   EQUIPMENT_OPTIONS,
-} from "../constants/exerciseOptions";
+} from "../constants/ExerciseOptions";
 import Wrapper from "../components/Wrapper";
 
 const MUSCLE_GROUP = MUSCLE_GROUP_OPTIONS.map((opt) => opt.label);
@@ -71,7 +66,7 @@ const Exercises = () => {
   const visibleExercises = exercises
     .filter((e) => filter === "ALL" || e.muscleGroup === filter.toUpperCase())
     .filter((e) =>
-      e.name.toLowerCase().includes(searchInput.trim().toLowerCase()),
+      e.name.toLowerCase().includes(searchInput.trim().toLowerCase())
     );
 
   const handleOpenEditExercise = (id: number) => {
@@ -104,9 +99,10 @@ const Exercises = () => {
         </p>
       </div>
       <div className="flex gap-x-8 mt-8">
-        <input
-          className="w-full max-w-sm bg-card py-2 px-4 border border-border rounded-lg focus:outline-none"
-          placeholder={"Search..."}
+        <Input
+          type="text"
+          className="py-5 w-1/3"
+          placeholder="Search workout..."
           onChange={(e) => handleSearchChange(e.target.value)}
         />
         <Button
@@ -117,21 +113,29 @@ const Exercises = () => {
           Create Exercise
         </Button>
       </div>
-      <div className="flex flex-wrap gap-x-10 mt-5">
-        <div
+      <div className="flex flex-wrap gap-x-5 mt-5">
+        <Badge
           onClick={() => setFilter("ALL")}
-          className={`flex text-lg rounded-sm px-6 py-3 border hover:cursor-pointer hover:border-blue-500 ${filter === "ALL" ? "bg-blue-500 text-white" : "bg-card"}`}
+          className={`flex shadow rounded-sm text-center p-4 border hover:cursor-pointer hover:border-blue-500 ${
+            filter === "ALL"
+              ? "bg-blue-500 text-white"
+              : "bg-card text-secondary-foreground"
+          }`}
         >
           All
-        </div>
+        </Badge>
         {MUSCLE_GROUP.map((category) => (
-          <div
+          <Badge
             key={category}
             onClick={() => setFilter(category)}
-            className={`flex text-lg rounded-sm px-6 py-3 border hover:cursor-pointer hover:border-blue-500 ${filter === category ? "bg-blue-500 text-white" : "bg-card"}`}
+            className={`flex shadow rounded-sm text-center p-4 border hover:cursor-pointer hover:border-blue-500 ${
+              filter === category
+                ? "bg-blue-500 text-white"
+                : "bg-card text-secondary-foreground"
+            }`}
           >
             {category}
-          </div>
+          </Badge>
         ))}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
@@ -221,7 +225,7 @@ const Exercises = () => {
                 value={editExercise?.name ?? ""}
                 onChange={(e) =>
                   setEditExercise((prev) =>
-                    prev ? { ...prev, name: e.target.value } : prev,
+                    prev ? { ...prev, name: e.target.value } : prev
                   )
                 }
                 className="border px-3 py-2 rounded-lg mb-5"
@@ -232,7 +236,7 @@ const Exercises = () => {
                 value={editExercise?.muscleGroup}
                 onValueChange={(val) =>
                   setEditExercise((prev) =>
-                    prev ? { ...prev, muscleGroup: val } : prev,
+                    prev ? { ...prev, muscleGroup: val } : prev
                   )
                 }
               >
@@ -254,7 +258,7 @@ const Exercises = () => {
                 value={editExercise?.equipmentType}
                 onValueChange={(val) =>
                   setEditExercise((prev) =>
-                    prev ? { ...prev, equipmentType: val } : prev,
+                    prev ? { ...prev, equipmentType: val } : prev
                   )
                 }
               >
@@ -276,7 +280,7 @@ const Exercises = () => {
                 value={editExercise?.category}
                 onValueChange={(val) =>
                   setEditExercise((prev) =>
-                    prev ? { ...prev, category: val } : prev,
+                    prev ? { ...prev, category: val } : prev
                   )
                 }
               >
@@ -298,7 +302,7 @@ const Exercises = () => {
                 value={editExercise?.description ?? ""}
                 onChange={(e) =>
                   setEditExercise((prev) =>
-                    prev ? { ...prev, description: e.target.value } : prev,
+                    prev ? { ...prev, description: e.target.value } : prev
                   )
                 }
                 className="mb-5"

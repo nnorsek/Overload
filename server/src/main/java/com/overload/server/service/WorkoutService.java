@@ -2,6 +2,7 @@ package com.overload.server.service;
 
 import com.overload.server.DTOs.workouts.requests.WorkoutExerciseRequest;
 import com.overload.server.DTOs.workouts.requests.WorkoutRequest;
+import com.overload.server.DTOs.workouts.responses.CreateWorkoutResponse;
 import com.overload.server.DTOs.workouts.responses.WorkoutExerciseResponse;
 import com.overload.server.DTOs.workouts.responses.WorkoutResponse;
 import com.overload.server.exception.ResourceNotFoundException;
@@ -38,7 +39,7 @@ public class WorkoutService {
         return toResponse(findOwned(workoutId, trainerId));
     }
 
-    public WorkoutResponse createWorkout(WorkoutRequest req, Long trainerId) {
+    public CreateWorkoutResponse createWorkout(WorkoutRequest req, Long trainerId) {
         Trainer trainer = trainerRepo.findById(trainerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Trainer not found"));
 
@@ -49,7 +50,8 @@ public class WorkoutService {
         workout.setDifficultyLevel(req.difficultyLevel());
         workout.setEstimatedDuration(req.estimatedDuration());
 
-        return toResponse(workoutRepo.save(workout));
+        Workout saved = workoutRepo.save(workout);
+        return new CreateWorkoutResponse(saved.getWorkoutId());
     }
 
     public WorkoutResponse updateWorkout(Long workoutId, WorkoutRequest req, Long trainerId) {

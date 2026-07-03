@@ -2,6 +2,7 @@ package com.overload.server.controller;
 
 import com.overload.server.DTOs.workouts.requests.WorkoutExerciseRequest;
 import com.overload.server.DTOs.workouts.requests.WorkoutRequest;
+import com.overload.server.DTOs.workouts.responses.CreateWorkoutResponse;
 import com.overload.server.DTOs.workouts.responses.WorkoutResponse;
 import com.overload.server.security.UserDetailsImpl;
 import com.overload.server.service.WorkoutService;
@@ -33,7 +34,7 @@ public class WorkoutController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<WorkoutResponse> createWorkout(@Valid @RequestBody WorkoutRequest req, @AuthenticationPrincipal UserDetailsImpl trainer) {
+    public ResponseEntity<CreateWorkoutResponse> createWorkout(@Valid @RequestBody WorkoutRequest req, @AuthenticationPrincipal UserDetailsImpl trainer) {
         return ResponseEntity.status(HttpStatus.CREATED).body(workoutService.createWorkout(req, trainer.getId()));
     }
 

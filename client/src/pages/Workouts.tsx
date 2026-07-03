@@ -3,13 +3,7 @@ import { useWorkoutHooks } from "../hooks/WorkoutHooks";
 import { Input } from "../components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -18,9 +12,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Workouts = () => {
   const [search, setSearch] = useState<string>("");
+  const navigate = useNavigate();
 
   const {
     loading,
@@ -34,14 +30,20 @@ const Workouts = () => {
   } = useWorkoutHooks();
 
   const visableWorkouts = workouts.filter((w) =>
-    w.name.toLowerCase().includes(search?.toLowerCase()),
+    w.name.toLowerCase().includes(search?.toLowerCase())
   );
 
-  console.log(visableWorkouts);
+  const handleDelete = async (id: number) => {
+    try {
+      await handleDeleteWorkout(id);
+    } catch (error: any) {
+      throw error;
+    }
+  };
 
   return (
     <Wrapper>
-      <div className="flex flex-col">
+      <div className="flex flex-col ml-3">
         <h1 className="text-3xl font-bold py-5">Workouts</h1>
         <p className="text-lg">Manage and build reusable programs</p>
       </div>
@@ -52,7 +54,9 @@ const Workouts = () => {
           placeholder="Search workout..."
           onChange={(e) => setSearch(e.target.value)}
         />
-        <Button size="lg">Create Workout</Button>
+        <Button size="lg" onClick={() => navigate("/workouts/create")}>
+          Create Workout
+        </Button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
         {visableWorkouts.map((workout) => (
@@ -77,7 +81,13 @@ const Workouts = () => {
                     className="w-16"
                     onCloseAutoFocus={(e) => e.preventDefault()}
                   >
-                    <DropdownMenuItem>Details</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() =>
+                        navigate(`/workouts/${workout.workoutId}/exercises`)
+                      }
+                    >
+                      Add Exercises
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => console.log("detail")}>
                       Edit
                     </DropdownMenuItem>
