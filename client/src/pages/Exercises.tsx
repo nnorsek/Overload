@@ -223,11 +223,23 @@ const Exercises = () => {
               <CardContent className="flex flex-col gap-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Muscle Group</span>
-                  <span className="font-medium">{exercise.muscleGroup}</span>
+                  <span className="font-medium">
+                    {
+                      MUSCLE_GROUP_OPTIONS.find(
+                        (e) => e.value === exercise.muscleGroup
+                      )?.label
+                    }
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Equipment</span>
-                  <span className="font-medium">{exercise.equipmentType}</span>
+                  <span className="font-medium">
+                    {
+                      EQUIPMENT_OPTIONS.find(
+                        (e) => e.value === exercise.equipmentType
+                      )?.label
+                    }
+                  </span>
                 </div>
                 {exercise.description && (
                   <p className="text-sm text-muted-foreground mt-2 border-t pt-2">

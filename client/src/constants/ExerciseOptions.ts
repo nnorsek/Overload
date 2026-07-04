@@ -33,4 +33,5 @@ const EQUIPMENT_OPTIONS: { label: string; value: EquipmentType }[] = [
   { label: "Machine", value: "MACHINE" },
   { label: "Resistance Band", value: "RESISTANCE_BAND" },
 ];
+
 export { MUSCLE_GROUP_OPTIONS, CATEGORY_OPTIONS, EQUIPMENT_OPTIONS };

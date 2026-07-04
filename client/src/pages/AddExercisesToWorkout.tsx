@@ -81,7 +81,11 @@ function SortableExerciseCard({
   };
 
   return (
-    <Card ref={setNodeRef} style={style} className="shrink-0 p-0 mr-2">
+    <Card
+      ref={setNodeRef}
+      style={style}
+      className="shrink-0 p-0 mr-2 bg-secondary border"
+    >
       <CardContent className="p-3">
         <div className="flex items-start gap-2">
           <button
