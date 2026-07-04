@@ -3,103 +3,104 @@ import type { Exercise, CreateExercisePayload } from "../types/Exercise";
 import { useApi } from "./useApi";
 
 const useExerciseHooks = () => {
+  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [reload, setReload] = useState(false);
+  const { apiBase, authHeaders, GENERIC_ERROR } = useApi();
 
-    const [exercises, setExercises] = useState<Exercise[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [reload, setReload] = useState(false);
-    const { apiBase, authHeaders, GENERIC_ERROR } = useApi();
+  const reloader = () => setReload((prev) => !prev);
 
-    const reloader = () => setReload((prev) => !prev);
-
-    const fetchExercises = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch(`${apiBase}/exercises/all`, {
-                headers: authHeaders,
-            })
-            if (res.ok) {
-                setExercises(await res.json());
-            } else if (res.status === 500) {
-                setError(GENERIC_ERROR)
-            }
-        } catch (error: any) {
-            setError(error)
-        } finally {
-            setLoading(false);
-        }
+  const fetchExercises = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${apiBase}/exercises/all`, { headers: authHeaders });
+      if (res.ok) setExercises(await res.json());
+    } catch {
+      // network error
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const handleEditExercise = async (id: number, payload: Partial<Exercise>) => {
-        setLoading(true);
-        try {
-            const res = await fetch(`${apiBase}/exercises/${id}`, {
-                method: 'PUT',
-                headers: authHeaders,
-                body: JSON.stringify(payload),
-            })
-            if (res.ok) {
-                reloader();
-            }
-        } catch (error: any) {
-            if (error.response.status === 500) {
-                setError(GENERIC_ERROR)
-            } else {
-                setError(error.response)
-            }
-        } finally {
-            setLoading(false);
-        }
+  useEffect(() => {
+    fetchExercises();
+  }, [reload]);
+
+  const handleEditExercise = async (
+    id: number,
+    payload: Partial<Exercise>
+  ): Promise<{ error?: string }> => {
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${apiBase}/exercises/${id}`, {
+        method: "PUT",
+        headers: authHeaders,
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        reloader();
+        return {};
+      }
+      return { error: GENERIC_ERROR };
+    } catch {
+      return { error: GENERIC_ERROR };
+    } finally {
+      setSubmitting(false);
     }
+  };
 
-    useEffect(() => {
-        fetchExercises();
-    }, [reload])
-
-    const handleDeleteExercise = async (id: number) => {
-        setLoading(true);
-        try {
-            const res = await fetch(`${apiBase}/exercises/${id}`, {
-                method: "DELETE",
-                headers: authHeaders,
-            })
-            if (res.ok) {
-                reloader();
-            }
-        } catch (error: any) {
-            if (error.response.status === 500) {
-                setError(GENERIC_ERROR)
-            } else {
-                setError(error.response);
-            }
-        } finally {
-            setLoading(false)
-        }
+  const handleDeleteExercise = async (id: number): Promise<{ error?: string }> => {
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${apiBase}/exercises/${id}`, {
+        method: "DELETE",
+        headers: authHeaders,
+      });
+      if (res.ok) {
+        reloader();
+        return {};
+      }
+      return { error: GENERIC_ERROR };
+    } catch {
+      return { error: GENERIC_ERROR };
+    } finally {
+      setSubmitting(false);
     }
+  };
 
-    const handleCreateExercise = async (payload: CreateExercisePayload) => {
-        setLoading(true);
-        try {
-            const res = await fetch(`${apiBase}/exercises/create`, {
-                method: "POST",
-                headers: authHeaders,
-                body: JSON.stringify(payload),
-            })
-            if (res.ok) {
-                reloader();
-            }
-        } catch (error: any) {
-            if (error.response.status === 500) {
-                setError(GENERIC_ERROR)
-            } else {
-                setError(error.response);
-            }
-        } finally {
-            setLoading(false)
-        }
+  const handleCreateExercise = async (
+    payload: CreateExercisePayload
+  ): Promise<{ error?: string }> => {
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${apiBase}/exercises/create`, {
+        method: "POST",
+        headers: authHeaders,
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        reloader();
+        return {};
+      }
+      return { error: GENERIC_ERROR };
+    } catch {
+      return { error: GENERIC_ERROR };
+    } finally {
+      setSubmitting(false);
     }
+  };
 
-    return { loading, exercises, error, reload, reloader, handleEditExercise, handleDeleteExercise, handleCreateExercise }
-}
+  return {
+    loading,
+    submitting,
+    exercises,
+    reload,
+    reloader,
+    handleEditExercise,
+    handleDeleteExercise,
+    handleCreateExercise,
+  };
+};
 
-export { useExerciseHooks }
+export { useExerciseHooks };

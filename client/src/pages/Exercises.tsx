@@ -1,5 +1,10 @@
 import { useState, useRef } from "react";
-import type { Exercise, MuscleGroup } from "../types/Exercise";
+import type {
+  Exercise,
+  MuscleGroup,
+  EquipmentType,
+  ExerciseCategory,
+} from "../types/Exercise";
 import { useExerciseHooks } from "../hooks/ExerciseHooks";
 import {
   Card,
@@ -11,6 +16,8 @@ import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
+import { Skeleton } from "../components/ui/skeleton";
+import { Spinner } from "../components/ui/spinner";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -42,29 +49,25 @@ import {
 } from "../constants/ExerciseOptions";
 import Wrapper from "../components/Wrapper";
 
-const MUSCLE_GROUP = MUSCLE_GROUP_OPTIONS.map((opt) => opt.label);
-
 const Exercises = () => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [editExercise, setEditExercise] = useState<Exercise | null>(null);
   const [openEditExercise, setOpenEditExercise] = useState<boolean>(false);
+  const [editError, setEditError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const {
     loading,
-    error,
+    submitting,
     exercises,
     handleEditExercise,
     handleDeleteExercise,
   } = useExerciseHooks();
-  const [filter, setFilter] = useState<typeof MUSCLE_GROUP | "ALL">("ALL");
+  const [filter, setFilter] = useState<MuscleGroup | "ALL">("ALL");
   const navigate = useNavigate();
   const originalExercise = useRef<Exercise | null>(null);
 
-  const handleSearchChange = (input: string) => {
-    setSearchInput(input);
-  };
-
   const visibleExercises = exercises
-    .filter((e) => filter === "ALL" || e.muscleGroup === filter.toUpperCase())
+    .filter((e) => filter === "ALL" || e.muscleGroup === filter)
     .filter((e) =>
       e.name.toLowerCase().includes(searchInput.trim().toLowerCase())
     );
@@ -73,14 +76,26 @@ const Exercises = () => {
     const found =
       exercises.find((exercise) => exercise.exerciseId === id) ?? null;
     setEditExercise(found);
+    setEditError(null);
     setOpenEditExercise(true);
     originalExercise.current = found;
   };
 
   const handleSaveEdit = async (id: number) => {
     if (id == null) return;
-    await handleEditExercise(id, editExercise!);
-    setOpenEditExercise(false);
+    setEditError(null);
+    const result = await handleEditExercise(id, editExercise!);
+    if (result.error) {
+      setEditError(result.error);
+    } else {
+      setOpenEditExercise(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    setDeleteError(null);
+    const result = await handleDeleteExercise(id);
+    if (result.error) setDeleteError(result.error);
   };
 
   const editIsUnchanged =
@@ -102,8 +117,8 @@ const Exercises = () => {
         <Input
           type="text"
           className="py-5 w-1/3"
-          placeholder="Search workout..."
-          onChange={(e) => handleSearchChange(e.target.value)}
+          placeholder="Search exercises..."
+          onChange={(e) => setSearchInput(e.target.value)}
         />
         <Button
           variant="default"
@@ -124,95 +139,106 @@ const Exercises = () => {
         >
           All
         </Badge>
-        {MUSCLE_GROUP.map((category) => (
+        {MUSCLE_GROUP_OPTIONS.map((opt) => (
           <Badge
-            key={category}
-            onClick={() => setFilter(category)}
+            key={opt.value}
+            onClick={() => setFilter(opt.value as MuscleGroup)}
             className={`flex shadow rounded-sm text-center p-4 border hover:cursor-pointer hover:border-blue-500 ${
-              filter === category
+              filter === opt.value
                 ? "bg-blue-500 text-white"
                 : "bg-card text-secondary-foreground"
             }`}
           >
-            {category}
+            {opt.label}
           </Badge>
         ))}
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
-        {visibleExercises.map((exercise) => (
-          <Card
-            key={exercise.exerciseId}
-            className="border hover:border-blue-500 transition-colors duration-200"
-          >
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>{exercise.name}</CardTitle>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      className="hover:cursor-pointer hover:bg-slate-200 mb-2"
+      {deleteError && (
+        <p className="text-sm text-destructive mt-4">{deleteError}</p>
+      )}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-44" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+          {visibleExercises.map((exercise) => (
+            <Card
+              key={exercise.exerciseId}
+              className="border hover:border-blue-500 transition-colors duration-200"
+            >
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>{exercise.name}</CardTitle>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="hover:cursor-pointer hover:bg-slate-200 mb-2"
+                      >
+                        <MoreHorizontal />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="w-16"
+                      onCloseAutoFocus={(e) => e.preventDefault()}
                     >
-                      <MoreHorizontal />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    className="w-16"
-                    onCloseAutoFocus={(e) => e.preventDefault()}
-                  >
-                    <DropdownMenuItem>Details</DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() =>
-                        handleOpenEditExercise(exercise.exerciseId)
-                      }
-                    >
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => handleDeleteExercise(exercise.exerciseId)}
-                      variant="destructive"
-                    >
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-              <div className="flex gap-2">
-                <Badge
-                  variant="outline"
-                  className="hover:bg-slate-200 border-blue-500"
-                >
-                  {exercise.category}
-                </Badge>
-                {exercise.originalExerciseId != null && (
+                      <DropdownMenuItem>Details</DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          handleOpenEditExercise(exercise.exerciseId)
+                        }
+                      >
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleDelete(exercise.exerciseId)}
+                        variant="destructive"
+                      >
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                <div className="flex gap-2">
                   <Badge
                     variant="outline"
-                    className="border-green-500 text-green-600"
+                    className="hover:bg-slate-200 border-blue-500"
                   >
-                    Customized
+                    {exercise.category}
                   </Badge>
+                  {exercise.originalExerciseId != null && (
+                    <Badge
+                      variant="outline"
+                      className="border-green-500 text-green-600"
+                    >
+                      Customized
+                    </Badge>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Muscle Group</span>
+                  <span className="font-medium">{exercise.muscleGroup}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Equipment</span>
+                  <span className="font-medium">{exercise.equipmentType}</span>
+                </div>
+                {exercise.description && (
+                  <p className="text-sm text-muted-foreground mt-2 border-t pt-2">
+                    {exercise.description}
+                  </p>
                 )}
-              </div>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Muscle Group</span>
-                <span className="font-medium">{exercise.muscleGroup}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Equipment</span>
-                <span className="font-medium">{exercise.equipmentType}</span>
-              </div>
-              {exercise.description && (
-                <p className="text-sm text-muted-foreground mt-2 border-t pt-2">
-                  {exercise.description}
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
       {openEditExercise && (
         <Dialog open={openEditExercise} onOpenChange={setOpenEditExercise}>
           <DialogContent>
@@ -236,7 +262,7 @@ const Exercises = () => {
                 value={editExercise?.muscleGroup}
                 onValueChange={(val) =>
                   setEditExercise((prev) =>
-                    prev ? { ...prev, muscleGroup: val } : prev
+                    prev ? { ...prev, muscleGroup: val as MuscleGroup } : prev
                   )
                 }
               >
@@ -258,7 +284,9 @@ const Exercises = () => {
                 value={editExercise?.equipmentType}
                 onValueChange={(val) =>
                   setEditExercise((prev) =>
-                    prev ? { ...prev, equipmentType: val } : prev
+                    prev
+                      ? { ...prev, equipmentType: val as EquipmentType }
+                      : prev
                   )
                 }
               >
@@ -280,7 +308,7 @@ const Exercises = () => {
                 value={editExercise?.category}
                 onValueChange={(val) =>
                   setEditExercise((prev) =>
-                    prev ? { ...prev, category: val } : prev
+                    prev ? { ...prev, category: val as ExerciseCategory } : prev
                   )
                 }
               >
@@ -309,14 +337,20 @@ const Exercises = () => {
                 placeholder="Description"
               />
             </div>
+            {editError && (
+              <p className="text-sm text-destructive px-1 -mt-2">{editError}</p>
+            )}
             <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
               <Button
-                disabled={editIsUnchanged}
-                onClick={() => handleSaveEdit(editExercise?.exerciseId)}
+                disabled={editIsUnchanged || submitting}
+                onClick={() =>
+                  editExercise && handleSaveEdit(editExercise.exerciseId)
+                }
               >
+                {submitting && <Spinner className="mr-1.5" />}
                 Save
               </Button>
             </DialogFooter>

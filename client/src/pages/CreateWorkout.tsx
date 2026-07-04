@@ -24,16 +24,19 @@ const defaultForm: CreateWorkoutPayload = {
 
 export default function CreateWorkout() {
   const navigate = useNavigate();
-  const { handleCreateWorkout } = useWorkoutHooks();
+  const { handleCreateWorkout, submitting } = useWorkoutHooks();
   const [form, setForm] = useState<CreateWorkoutPayload>(defaultForm);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const set = (field: keyof CreateWorkoutPayload) => (val: string) =>
     setForm((prev) => ({ ...prev, [field]: val }));
 
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
-    const workoutId = await handleCreateWorkout(form);
-    if (workoutId) navigate(`/workouts/${workoutId}/exercises`);
+    setSubmitError(null);
+    const result = await handleCreateWorkout(form);
+    if (result.workoutId) navigate(`/workouts/${result.workoutId}/exercises`);
+    else if (result.error) setSubmitError(result.error);
   };
 
   const blankFields =
@@ -51,6 +54,8 @@ export default function CreateWorkout() {
       onSubmit={handleSubmit}
       submitLabel="Next step"
       disabled={blankFields}
+      submitting={submitting}
+      error={submitError}
     >
       <div className="flex flex-col gap-y-4">
         <Label htmlFor="name">Name</Label>

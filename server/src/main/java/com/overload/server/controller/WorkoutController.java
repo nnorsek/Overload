@@ -54,6 +54,11 @@ public class WorkoutController {
         return ResponseEntity.status(HttpStatus.CREATED).body(workoutService.addExercise(id, req, trainer.getId()));
     }
 
+    @PutMapping("/{id}/exercises")
+    public ResponseEntity<WorkoutResponse> saveExercises(@PathVariable Long id, @Valid @RequestBody List<WorkoutExerciseRequest> exercises, @AuthenticationPrincipal UserDetailsImpl trainer) {
+        return ResponseEntity.ok(workoutService.saveExercises(id, exercises, trainer.getId()));
+    }
+
     @PutMapping("/{workoutId}/exercises/{workoutExerciseId}")
     public ResponseEntity<WorkoutResponse> updateExercise(@PathVariable Long workoutId, @PathVariable Long workoutExerciseId, @Valid @RequestBody WorkoutExerciseRequest req, @AuthenticationPrincipal UserDetailsImpl trainer) {
         return ResponseEntity.ok(workoutService.updateExercise(workoutId, workoutExerciseId, req, trainer.getId()));

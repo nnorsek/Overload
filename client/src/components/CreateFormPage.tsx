@@ -1,5 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { Button } from "./ui/button";
+import { Spinner } from "./ui/spinner";
 
 type CreateFormPageProps = {
   title: string;
@@ -9,6 +10,8 @@ type CreateFormPageProps = {
   onSubmit: (e: React.SubmitEvent) => void;
   submitLabel: string;
   disabled: boolean;
+  submitting?: boolean;
+  error?: string | null;
   children: React.ReactNode;
 };
 
@@ -20,6 +23,8 @@ export default function CreateFormPage({
   onSubmit,
   submitLabel,
   disabled,
+  submitting,
+  error,
   children,
 }: CreateFormPageProps) {
   return (
@@ -38,15 +43,19 @@ export default function CreateFormPage({
         <div className="bg-form border border-border rounded-2xl shadow p-8">
           <form onSubmit={onSubmit} className="flex flex-col gap-6">
             {children}
+            {error && (
+              <p className="text-sm text-destructive text-center -mt-2">{error}</p>
+            )}
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="outline" onClick={onBack}>
                 Cancel
               </Button>
               <Button
                 type="submit"
-                disabled={disabled}
+                disabled={disabled || submitting}
                 className="bg-blue-500 hover:bg-blue-600 text-white"
               >
+                {submitting && <Spinner className="mr-1.5" />}
                 {submitLabel}
               </Button>
             </div>

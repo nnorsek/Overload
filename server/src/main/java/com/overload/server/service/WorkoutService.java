@@ -17,6 +17,7 @@ import com.overload.server.repo.WorkoutRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -87,6 +88,30 @@ public class WorkoutService {
         workoutExercisesRepo.save(slot);
 
         return toResponse(workoutRepo.findById(workoutId).get());
+    }
+
+    @Transactional
+    public WorkoutResponse saveExercises(Long workoutId, List<WorkoutExerciseRequest> requests, Long trainerId) {
+        Workout workout = findOwned(workoutId, trainerId);
+
+        workout.getExercises().clear();
+
+        for (int i = 0; i < requests.size(); i++) {
+            WorkoutExerciseRequest req = requests.get(i);
+            Exercise exercise = exerciseRepo.findById(req.exerciseId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Exercise not found"));
+
+            WorkoutExercises slot = new WorkoutExercises();
+            slot.setWorkout(workout);
+            slot.setExercise(exercise);
+            slot.setExerciseOrder(i + 1);
+            slot.setDefaultSets(req.defaultSets());
+            slot.setDefaultReps(req.defaultReps());
+            slot.setDefaultWeight(req.defaultWeight() != null ? req.defaultWeight() : 0f);
+            workout.getExercises().add(slot);
+        }
+
+        return toResponse(workoutRepo.save(workout));
     }
 
     public WorkoutResponse updateExercise(Long workoutId, Long workoutExerciseId, WorkoutExerciseRequest req, Long trainerId) {

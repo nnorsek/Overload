@@ -2,10 +2,18 @@ import { useState, useEffect } from "react";
 import type { Workout, CreateWorkoutPayload } from "../types/Workout";
 import { useApi } from "./useApi";
 
+export type WorkoutExercisePayload = {
+  exerciseId: number;
+  exerciseOrder: number;
+  defaultSets: number;
+  defaultReps: number;
+  defaultWeight: number | null;
+};
+
 const useWorkoutHooks = () => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [reload, setReload] = useState(false);
   const { apiBase, authHeaders, GENERIC_ERROR } = useApi();
 
@@ -17,13 +25,9 @@ const useWorkoutHooks = () => {
       const res = await fetch(`${apiBase}/workouts/all`, {
         headers: authHeaders,
       });
-      if (res.ok) {
-        setWorkouts(await res.json());
-      } else if (res.status === 500) {
-        setError(GENERIC_ERROR);
-      }
-    } catch (error: any) {
-      setError(error);
+      if (res.ok) setWorkouts(await res.json());
+    } catch {
+      // network error
     } finally {
       setLoading(false);
     }
@@ -35,8 +39,8 @@ const useWorkoutHooks = () => {
 
   const handleCreateWorkout = async (
     payload: CreateWorkoutPayload
-  ): Promise<number | null> => {
-    setLoading(true);
+  ): Promise<{ workoutId?: number; error?: string }> => {
+    setSubmitting(true);
     try {
       const res = await fetch(`${apiBase}/workouts/create`, {
         method: "POST",
@@ -46,26 +50,21 @@ const useWorkoutHooks = () => {
       if (res.ok) {
         const { workoutId } = await res.json();
         reloader();
-        return workoutId;
+        return { workoutId };
       }
-    } catch (error: any) {
-      if (error.response?.status === 500) {
-        setError(GENERIC_ERROR);
-      } else {
-        setError(error.response);
-      }
+      return { error: GENERIC_ERROR };
+    } catch {
+      return { error: GENERIC_ERROR };
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
-
-    return null;
   };
 
   const handleEditWorkout = async (
     id: number,
     payload: CreateWorkoutPayload
-  ) => {
-    setLoading(true);
+  ): Promise<{ error?: string }> => {
+    setSubmitting(true);
     try {
       const res = await fetch(`${apiBase}/workouts/${id}`, {
         method: "PUT",
@@ -74,20 +73,20 @@ const useWorkoutHooks = () => {
       });
       if (res.ok) {
         reloader();
+        return {};
       }
-    } catch (error: any) {
-      if (error.response?.status === 500) {
-        setError(GENERIC_ERROR);
-      } else {
-        setError(error.response);
-      }
+      return { error: GENERIC_ERROR };
+    } catch {
+      return { error: GENERIC_ERROR };
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
-  const handleDeleteWorkout = async (id: number) => {
-    setLoading(true);
+  const handleDeleteWorkout = async (
+    id: number
+  ): Promise<{ error?: string }> => {
+    setSubmitting(true);
     try {
       const res = await fetch(`${apiBase}/workouts/${id}`, {
         method: "DELETE",
@@ -95,24 +94,60 @@ const useWorkoutHooks = () => {
       });
       if (res.ok) {
         reloader();
+        return {};
       }
-    } catch (error: any) {
-      if (error.response?.status === 500) {
-        setError(GENERIC_ERROR);
-      } else {
-        setError(error.response);
-      }
+      return { error: GENERIC_ERROR };
+    } catch {
+      return { error: GENERIC_ERROR };
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleGetWorkoutById = async (id: string): Promise<Workout | null> => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${apiBase}/workouts/${id}`, {
+        headers: authHeaders,
+      });
+      if (res.ok) return await res.json();
+      return null;
+    } catch {
+      return null;
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSaveWorkoutExercises = async (
+    id: string,
+    exercises: WorkoutExercisePayload[]
+  ): Promise<{ error?: string }> => {
+    if (!id) return { error: "No workout ID" };
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${apiBase}/workouts/${id}/exercises`, {
+        method: "PUT",
+        headers: authHeaders,
+        body: JSON.stringify(exercises),
+      });
+      if (res.ok) return {};
+      return { error: GENERIC_ERROR };
+    } catch {
+      return { error: GENERIC_ERROR };
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return {
     loading,
+    submitting,
     workouts,
-    error,
     reload,
     reloader,
+    handleSaveWorkoutExercises,
+    handleGetWorkoutById,
     handleCreateWorkout,
     handleEditWorkout,
     handleDeleteWorkout,

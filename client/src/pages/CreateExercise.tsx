@@ -35,16 +35,19 @@ const defaultForm: CreateExercisePayload = {
 
 const CreateExercise = () => {
   const navigate = useNavigate();
-  const { handleCreateExercise } = useExerciseHooks();
+  const { handleCreateExercise, submitting } = useExerciseHooks();
   const [form, setForm] = useState<CreateExercisePayload>(defaultForm);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const set = (field: keyof CreateExercisePayload) => (val: string) =>
     setForm((prev) => ({ ...prev, [field]: val }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await handleCreateExercise(form);
-    navigate("/exercises");
+    setSubmitError(null);
+    const result = await handleCreateExercise(form);
+    if (result.error) setSubmitError(result.error);
+    else navigate("/exercises");
   };
 
   const blankFields =
@@ -63,6 +66,8 @@ const CreateExercise = () => {
       onSubmit={handleSubmit}
       submitLabel="Create Exercise"
       disabled={blankFields}
+      submitting={submitting}
+      error={submitError}
     >
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="name">Name</Label>
