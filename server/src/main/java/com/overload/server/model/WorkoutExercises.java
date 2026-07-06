@@ -1,11 +1,15 @@
 package com.overload.server.model;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -48,18 +52,6 @@ public class WorkoutExercises {
     @Column(nullable = false)
     private int exerciseOrder;
 
-    @NotNull
-    @PositiveOrZero
-    @Column(nullable = false)
-    private Float defaultWeight;
-
-    @NotNull
-    @PositiveOrZero
-    @Column(nullable = false)
-    private int defaultReps;
-
-    @NotNull
-    @PositiveOrZero
-    @Column(nullable = false)
-    private int defaultSets;
+    @OneToMany(mappedBy = "workoutExercises", cascade=CascadeType.ALL, orphanRemoval = true)
+    private List<WorkoutExerciseSet> workoutExerciseSet;
 }

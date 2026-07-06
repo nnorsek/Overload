@@ -1,14 +1,17 @@
 package com.overload.server.service;
 
 import com.overload.server.DTOs.workouts.requests.WorkoutExerciseRequest;
+import com.overload.server.DTOs.workouts.requests.WorkoutExerciseSetRequest;
 import com.overload.server.DTOs.workouts.requests.WorkoutRequest;
 import com.overload.server.DTOs.workouts.responses.CreateWorkoutResponse;
 import com.overload.server.DTOs.workouts.responses.WorkoutExerciseResponse;
+import com.overload.server.DTOs.workouts.responses.WorkoutExerciseSetResponse;
 import com.overload.server.DTOs.workouts.responses.WorkoutResponse;
 import com.overload.server.exception.ResourceNotFoundException;
 import com.overload.server.model.Exercise;
 import com.overload.server.model.Trainer;
 import com.overload.server.model.Workout;
+import com.overload.server.model.WorkoutExerciseSet;
 import com.overload.server.model.WorkoutExercises;
 import com.overload.server.repo.ExerciseRepo;
 import com.overload.server.repo.TrainerRepo;
@@ -81,9 +84,7 @@ public class WorkoutService {
         slot.setWorkout(workout);
         slot.setExercise(exercise);
         slot.setExerciseOrder(req.exerciseOrder());
-        slot.setDefaultSets(req.defaultSets());
-        slot.setDefaultReps(req.defaultReps());
-        slot.setDefaultWeight(req.defaultWeight());
+       slot.getWorkoutExerciseSet().addAll(req.sets().stream().map(s -> buildSet(s, slot).toList());
 
         workoutExercisesRepo.save(slot);
 
@@ -174,4 +175,13 @@ public class WorkoutService {
                 workout.getUpdatedAt()
         );
     }
+
+      private WorkoutExerciseSet buildSet(WorkoutExerciseRequest.WorkoutExerciseSetRequest req, WorkoutExercises parent) {
+        WorkoutExerciseSet set = new WorkoutExerciseSet();
+        set.setSetOrder(req.setOrder());
+        set.setDefaultReps(req.defaultReps());
+        set.setDefaultWeight(req.defaultWeight());
+        set.setWorkoutExercises(parent);
+        return set;
+  }
 }
