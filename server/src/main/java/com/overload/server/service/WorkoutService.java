@@ -74,6 +74,7 @@ public class WorkoutService {
         workoutRepo.delete(workout);
     }
 
+    @Transactional
     public WorkoutResponse addExercise(Long workoutId, WorkoutExerciseRequest req, Long trainerId) {
         Workout workout = findOwned(workoutId, trainerId);
 
@@ -84,11 +85,12 @@ public class WorkoutService {
         slot.setWorkout(workout);
         slot.setExercise(exercise);
         slot.setExerciseOrder(req.exerciseOrder());
-       slot.getWorkoutExerciseSet().addAll(req.sets().stream().map(s -> buildSet(s, slot).toList());
+        slot.setWorkoutExerciseSet(req.sets().stream().map(s -> buildSet(s, slot)).toList());
 
         workoutExercisesRepo.save(slot);
 
-        return toResponse(workoutRepo.findById(workoutId).get());
+        return toResponse(workoutRepo.findById(workoutId)
+                .orElseThrow(() -> new ResourceNotFoundException("Workout not found")));
     }
 
     @Transactional
@@ -106,15 +108,14 @@ public class WorkoutService {
             slot.setWorkout(workout);
             slot.setExercise(exercise);
             slot.setExerciseOrder(i + 1);
-            slot.setDefaultSets(req.defaultSets());
-            slot.setDefaultReps(req.defaultReps());
-            slot.setDefaultWeight(req.defaultWeight() != null ? req.defaultWeight() : 0f);
+            slot.setWorkoutExerciseSet(req.sets().stream().map(s -> buildSet(s, slot)).toList());
             workout.getExercises().add(slot);
         }
 
         return toResponse(workoutRepo.save(workout));
     }
 
+    @Transactional
     public WorkoutResponse updateExercise(Long workoutId, Long workoutExerciseId, WorkoutExerciseRequest req, Long trainerId) {
         findOwned(workoutId, trainerId);
 
@@ -123,13 +124,13 @@ public class WorkoutService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercise slot not found"));
 
         slot.setExerciseOrder(req.exerciseOrder());
-        slot.setDefaultSets(req.defaultSets());
-        slot.setDefaultReps(req.defaultReps());
-        slot.setDefaultWeight(req.defaultWeight());
+        slot.getWorkoutExerciseSet().clear();
+        slot.getWorkoutExerciseSet().addAll(req.sets().stream().map(s -> buildSet(s, slot)).toList());
 
         workoutExercisesRepo.save(slot);
 
-        return toResponse(workoutRepo.findById(workoutId).get());
+        return toResponse(workoutRepo.findById(workoutId)
+                .orElseThrow(() -> new ResourceNotFoundException("Workout not found")));
     }
 
     public void removeExercise(Long workoutId, Long workoutExerciseId, Long trainerId) {
@@ -149,18 +150,26 @@ public class WorkoutService {
 
     private WorkoutResponse toResponse(Workout workout) {
         List<WorkoutExerciseResponse> exercises = workout.getExercises().stream()
-                .map(slot -> new WorkoutExerciseResponse(
-                        slot.getWorkoutExerciseId(),
-                        slot.getExerciseOrder(),
-                        slot.getDefaultSets(),
-                        slot.getDefaultReps(),
-                        slot.getDefaultWeight(),
-                        slot.getExercise().getExerciseId(),
-                        slot.getExercise().getName(),
-                        slot.getExercise().getMuscleGroup(),
-                        slot.getExercise().getEquipmentType(),
-                        slot.getExercise().getCategory()
-                ))
+                .map(slot -> {
+                    List<WorkoutExerciseSetResponse> sets = slot.getWorkoutExerciseSet().stream()
+                            .map(s -> new WorkoutExerciseSetResponse(
+                                    s.getSetId(),
+                                    s.getSetOrder(),
+                                    s.getDefaultReps(),
+                                    s.getDefaultWeight()
+                            ))
+                            .toList();
+                    return new WorkoutExerciseResponse(
+                            slot.getWorkoutExerciseId(),
+                            slot.getExerciseOrder(),
+                            sets,
+                            slot.getExercise().getExerciseId(),
+                            slot.getExercise().getName(),
+                            slot.getExercise().getMuscleGroup(),
+                            slot.getExercise().getEquipmentType(),
+                            slot.getExercise().getCategory()
+                    );
+                })
                 .toList();
 
         return new WorkoutResponse(
@@ -176,12 +185,12 @@ public class WorkoutService {
         );
     }
 
-      private WorkoutExerciseSet buildSet(WorkoutExerciseRequest.WorkoutExerciseSetRequest req, WorkoutExercises parent) {
+    private WorkoutExerciseSet buildSet(WorkoutExerciseSetRequest req, WorkoutExercises parent) {
         WorkoutExerciseSet set = new WorkoutExerciseSet();
         set.setSetOrder(req.setOrder());
         set.setDefaultReps(req.defaultReps());
         set.setDefaultWeight(req.defaultWeight());
         set.setWorkoutExercises(parent);
         return set;
-  }
+    }
 }

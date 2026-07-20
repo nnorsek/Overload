@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
@@ -53,5 +54,5 @@ public class WorkoutExercises {
     private int exerciseOrder;
 
     @OneToMany(mappedBy = "workoutExercises", cascade=CascadeType.ALL, orphanRemoval = true)
-    private List<WorkoutExerciseSet> workoutExerciseSet;
+    private List<WorkoutExerciseSet> workoutExerciseSet = new ArrayList<>();
 }

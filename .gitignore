@@ -1,2 +1,53 @@
-.idea
+# ========================
+# Java / Maven
+# ========================
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# ========================
+# Spring Boot
+# ========================
+# Contains DB credentials and JWT secret — never commit
+server/src/main/resources/application.properties
+server/src/main/resources/application-*.properties
+!server/src/main/resources/application-example.properties
+
+# ========================
+# Node / React
+# ========================
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+
+# ========================
+# IDE
+# ========================
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+*.suo
+*.user
+.classpath
+.project
+.settings/
+
+# ========================
+# OS
+# ========================
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# ========================
+# Logs
+# ========================
+*.log
+logs/
