@@ -2,12 +2,17 @@ import type { EquipmentType, ExerciseCategory, MuscleGroup } from "./Exercise";
 
 type DifficultyLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "EXPERT";
 
+type WorkoutExerciseSet = {
+  setId: number;
+  setOrder: number;
+  defaultReps: number;
+  defaultWeight: number | null;
+}
+
 type WorkoutExercise = {
   workoutExerciseId: number;
   exerciseOrder: number;
-  defaultSets: number;
-  defaultReps: number;
-  defaultWeight: number | null;
+  sets: WorkoutExerciseSet[];
   exerciseId: number;
   exerciseName: string;
   muscleGroup: MuscleGroup;
@@ -34,4 +39,4 @@ type CreateWorkoutPayload = {
   estimatedDuration: number | null;
 };
 
-export type { Workout, WorkoutExercise, CreateWorkoutPayload, DifficultyLevel };
+export type { Workout, WorkoutExercise, CreateWorkoutPayload, DifficultyLevel, WorkoutExerciseSet };

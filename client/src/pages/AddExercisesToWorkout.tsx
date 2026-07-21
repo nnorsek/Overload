@@ -43,7 +43,10 @@ type LocalExercise = {
   muscleGroup: MuscleGroup;
   equipmentType: EquipmentType;
   category: ExerciseCategory;
-  defaultSets: number;
+  sets: LocalSet[];
+};
+
+type LocalSet = {
   defaultReps: number;
   defaultWeight: number | null;
 };
@@ -52,10 +55,13 @@ type SortableCardProps = {
   ex: LocalExercise;
   index: number;
   onRemove: (index: number) => void;
-  onUpdate: (
+  onAddSet: (index: number) => void;
+  onRemoveSet: (index: number, setIndex: number) => void;
+  onUpdateSet: (
     index: number,
-    field: "defaultSets" | "defaultReps" | "defaultWeight",
-    value: string
+    setIndex: number,
+    field: "defaultReps" | "defaultWeight",
+    value: string,
   ) => void;
 };
 
@@ -63,7 +69,9 @@ function SortableExerciseCard({
   ex,
   index,
   onRemove,
-  onUpdate,
+  onAddSet,
+  onRemoveSet,
+  onUpdateSet,
 }: SortableCardProps) {
   const {
     attributes,
@@ -132,50 +140,58 @@ function SortableExerciseCard({
               </Button>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
-              <div>
-                <Label className="text-xs text-muted-foreground mb-1 block">
-                  Sets
-                </Label>
-                <Input
-                  type="number"
-                  min={1}
-                  value={ex.defaultSets ?? ""}
-                  onChange={(e) =>
-                    onUpdate(index, "defaultSets", e.target.value)
-                  }
-                  className="h-8 text-sm"
-                />
-              </div>
-              <div>
-                <Label className="text-xs text-muted-foreground mb-1 block">
-                  Reps
-                </Label>
-                <Input
-                  type="number"
-                  min={1}
-                  value={ex.defaultReps ?? ""}
-                  onChange={(e) =>
-                    onUpdate(index, "defaultReps", e.target.value)
-                  }
-                  className="h-8 text-sm"
-                />
-              </div>
-              <div>
-                <Label className="text-xs text-muted-foreground mb-1 block">
-                  Weight (lbs)
-                </Label>
-                <Input
-                  type="number"
-                  min={0}
-                  value={ex.defaultWeight ?? ""}
-                  placeholder="Optional"
-                  onChange={(e) =>
-                    onUpdate(index, "defaultWeight", e.target.value)
-                  }
-                  className="h-8 text-sm"
-                />
-              </div>
+            <div className="flex flex-col gap-2 mt-2">
+              {ex.sets.map((set, si) => (
+                <div key={si} className="flex items-center gap-2">
+                  <div className="flex-1">
+                    <Label className="text-xs text-muted-foreground mb-1 block">
+                      Reps
+                    </Label>
+                    <Input
+                      type="number"
+                      min={1}
+                      value={set.defaultReps ?? ""}
+                      onChange={(e) =>
+                        onUpdateSet(index, si, "defaultReps", e.target.value)
+                      }
+                      className="h-8 text-sm"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-xs text-muted-foreground mb-1 block">
+                      Weight (lbs)
+                    </Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={set.defaultWeight ?? ""}
+                      placeholder="Optional"
+                      onChange={(e) =>
+                        onUpdateSet(index, si, "defaultWeight", e.target.value)
+                      }
+                      className="h-8 text-sm"
+                    />
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => onRemoveSet(index, si)}
+                    disabled={ex.sets.length === 1}
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10 shrink-0 mt-4"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onAddSet(index)}
+                className="text-muted-foreground hover:text-foreground w-full mt-1"
+              >
+                <Plus className="w-3.5 h-3.5 mr-1" />
+                Add Set
+              </Button>
             </div>
           </div>
         </div>
@@ -198,7 +214,7 @@ const AddExercisesToWorkout = () => {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
 
   useEffect(() => {
@@ -215,10 +231,13 @@ const AddExercisesToWorkout = () => {
             muscleGroup: ex.muscleGroup,
             equipmentType: ex.equipmentType,
             category: ex.category,
-            defaultSets: ex.defaultSets,
-            defaultReps: ex.defaultReps,
-            defaultWeight: ex.defaultWeight,
-          }))
+            sets: [...ex.sets]
+              .sort((a, b) => a.setOrder - b.setOrder)
+              .map((s) => ({
+                defaultReps: s.defaultReps,
+                defaultWeight: s.defaultWeight,
+              })),
+          })),
       );
     });
   }, [id]);
@@ -239,9 +258,11 @@ const AddExercisesToWorkout = () => {
         muscleGroup: exercise.muscleGroup,
         equipmentType: exercise.equipmentType,
         category: exercise.category,
-        defaultSets: 3,
-        defaultReps: 10,
-        defaultWeight: null,
+        sets: [
+          { defaultReps: 10, defaultWeight: null },
+          { defaultReps: 10, defaultWeight: null },
+          { defaultReps: 10, defaultWeight: null },
+        ],
       },
     ]);
   };
@@ -250,17 +271,48 @@ const AddExercisesToWorkout = () => {
     setWorkoutExercises((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const updateField = (
+  const addSet = (index: number) => {
+    setWorkoutExercises((prev) =>
+      prev.map((ex, i) =>
+        i === index
+          ? {
+              ...ex,
+              sets: [...ex.sets, { defaultReps: 10, defaultWeight: null }],
+            }
+          : ex,
+      ),
+    );
+  };
+
+  const removeSet = (index: number, setIndex: number) => {
+    setWorkoutExercises((prev) =>
+      prev.map((ex, i) =>
+        i === index
+          ? { ...ex, sets: ex.sets.filter((_, si) => si !== setIndex) }
+          : ex,
+      ),
+    );
+  };
+
+  const updateSet = (
     index: number,
-    field: "defaultSets" | "defaultReps" | "defaultWeight",
-    value: string
+    setIndex: number,
+    field: "defaultReps" | "defaultWeight",
+    value: string,
   ) => {
     setWorkoutExercises((prev) =>
       prev.map((ex, i) =>
         i === index
-          ? { ...ex, [field]: value === "" ? null : Number(value) }
-          : ex
-      )
+          ? {
+              ...ex,
+              sets: ex.sets.map((s, si) =>
+                si === setIndex
+                  ? { ...s, [field]: value === "" ? null : Number(value) }
+                  : s,
+              ),
+            }
+          : ex,
+      ),
     );
   };
 
@@ -280,9 +332,11 @@ const AddExercisesToWorkout = () => {
     const payload: WorkoutExercisePayload[] = workoutExercises.map((ex, i) => ({
       exerciseId: ex.exerciseId,
       exerciseOrder: i + 1,
-      defaultSets: ex.defaultSets,
-      defaultReps: ex.defaultReps,
-      defaultWeight: ex.defaultWeight,
+      sets: ex.sets.map((s, si) => ({
+        setOrder: si + 1,
+        defaultReps: s.defaultReps ?? 1,
+        defaultWeight: s.defaultWeight,
+      })),
     }));
     const result = await handleSaveWorkoutExercises(id, payload);
     if (result.error) {
@@ -452,7 +506,9 @@ const AddExercisesToWorkout = () => {
                       ex={ex}
                       index={index}
                       onRemove={removeExercise}
-                      onUpdate={updateField}
+                      onAddSet={addSet}
+                      onRemoveSet={removeSet}
+                      onUpdateSet={updateSet}
                     />
                   ))}
                 </div>

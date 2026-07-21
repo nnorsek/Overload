@@ -53,7 +53,7 @@ const Workouts = () => {
   const originalWorkout = useRef<Workout | null>(null);
 
   const visableWorkouts = workouts.filter((w) =>
-    w.name.toLowerCase().includes(search?.toLowerCase())
+    w.name.toLowerCase().includes(search?.toLowerCase()),
   );
 
   const handleDelete = async (id: number) => {
@@ -181,7 +181,17 @@ const Workouts = () => {
                       {ex.exerciseName}
                     </span>
                     <span className="font-medium shrink-0">
-                      {ex.defaultSets} x {ex.defaultReps}
+                      {Array.from(
+                        ex.sets.reduce((map, set) => {
+                          map.set(
+                            set.defaultReps,
+                            (map.get(set.defaultReps) || 0) + 1,
+                          );
+                          return map;
+                        }, new Map<number, number>()),
+                      )
+                        .map(([reps, count]) => `${count} x ${reps}`)
+                        .join(" · ")}
                     </span>
                   </div>
                 ))}
@@ -213,7 +223,7 @@ const Workouts = () => {
                   value={editWorkout.name}
                   onChange={(e) =>
                     setEditWorkout((prev) =>
-                      prev ? { ...prev, name: e.target.value } : prev
+                      prev ? { ...prev, name: e.target.value } : prev,
                     )
                   }
                   placeholder="e.g. Back Day"
@@ -225,7 +235,7 @@ const Workouts = () => {
                   value={editWorkout.description}
                   onChange={(e) =>
                     setEditWorkout((prev) =>
-                      prev ? { ...prev, description: e.target.value } : prev
+                      prev ? { ...prev, description: e.target.value } : prev,
                     )
                   }
                   placeholder="Describe the workout..."
@@ -239,7 +249,7 @@ const Workouts = () => {
                     setEditWorkout((prev) =>
                       prev
                         ? { ...prev, difficultyLevel: val as DifficultyLevel }
-                        : prev
+                        : prev,
                     )
                   }
                 >
@@ -267,7 +277,7 @@ const Workouts = () => {
                     setEditWorkout((prev) =>
                       prev
                         ? { ...prev, estimatedDuration: Number(e.target.value) }
-                        : prev
+                        : prev,
                     )
                   }
                   placeholder="60"

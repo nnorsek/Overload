@@ -5,10 +5,14 @@ import { useApi } from "./useApi";
 export type WorkoutExercisePayload = {
   exerciseId: number;
   exerciseOrder: number;
-  defaultSets: number;
+  sets: WorkoutExerciseSetPayload[]
+};
+
+export type WorkoutExerciseSetPayload = {
+  setOrder: number;
   defaultReps: number;
   defaultWeight: number | null;
-};
+}
 
 const useWorkoutHooks = () => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
