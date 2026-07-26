@@ -58,7 +58,6 @@ public class Trainer {
     // Relationship logic to add a client to a trainer and vice versa
     public void addClient(Client client) {
         clients.add(client);
-        client.setTrainer(this);
     }
 
     @Column(nullable = false, updatable = false)

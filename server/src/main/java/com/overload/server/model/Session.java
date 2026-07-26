@@ -12,19 +12,29 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Setter; 
+import lombok.Setter;
 
+/*
+ * Session is a scheduled training appointment between a Client and a Trainer.
+ * It references a Workout template to define what exercises will be performed.
+ * The actual per-exercise performance is recorded in SessionExercises rows
+ * that link back to this Session.
+ *
+ * Relationships:
+ *   - ManyToOne -> Client   (the client attending this session)
+ *   - ManyToOne -> Trainer  (the trainer running this session)
+ *   - ManyToOne -> Workout  (the workout template being performed; reusable across sessions)
+ *   - OneToMany <- SessionExercises (the actual exercise performance for this session)
+ */
 @Entity
 @Getter
 @Setter
 @Table(name = "sessions")
 public class Session {
-    
+
     @Id
     @GeneratedValue
     private Long sessionId;
@@ -37,9 +47,9 @@ public class Session {
     @JoinColumn(name = "trainer_id", nullable = false)
     private Trainer trainer;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "workout_id", nullable = false)
-    private Workout workoutId;
+    private Workout workout;
 
     @Column(nullable = false)
     @NotNull
@@ -54,8 +64,7 @@ public class Session {
     @NotNull
     private SessionStatus status;
 
-    @Column(nullable = false)
-    @NotBlank
+    @Column
     private String notes;
 
 }
