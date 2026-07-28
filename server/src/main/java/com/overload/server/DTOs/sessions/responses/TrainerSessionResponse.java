@@ -4,8 +4,8 @@ import com.overload.server.enums.SessionStatus;
 
 import java.time.LocalDateTime;
 
-public record TrainerSessionsResponse(
-    long sessionId,
+public record TrainerSessionResponse(
+    Long sessionId,
     String clientFirstName,
     String clientLastName,
     LocalDateTime scheduledStart,

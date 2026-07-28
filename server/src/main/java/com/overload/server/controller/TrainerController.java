@@ -4,12 +4,10 @@ import com.overload.server.DTOs.clients.requests.AssignClientToTrainerRequest;
 import com.overload.server.DTOs.trainers.requests.CreateTrainerRequest;
 import com.overload.server.DTOs.trainers.requests.LoginTrainerRequest;
 import com.overload.server.DTOs.trainers.responses.CreateTrainerResponse;
-import com.overload.server.DTOs.sessions.responses.TrainerSessionsResponse;
+import com.overload.server.DTOs.sessions.responses.TrainerSessionResponse;
 import com.overload.server.DTOs.trainers.responses.LoginTrainerResponse;
 import com.overload.server.service.SessionService;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +45,7 @@ public class TrainerController {
 
     @GetMapping("/sessions/{trainerId}")
     // Use PathVariable for url path params
-    public ResponseEntity<List<TrainerSessionsResponse>> getSessionsByTrainerID(@PathVariable Long trainerId){
+    public ResponseEntity<List<TrainerSessionResponse>> getSessionsByTrainerID(@PathVariable Long trainerId){
         return ResponseEntity.ok(sessionService.getSessions(trainerId));
     }
 

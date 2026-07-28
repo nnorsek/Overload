@@ -2,18 +2,23 @@ package com.overload.server.service;
 
 import java.util.List;
 
-import com.overload.server.DTOs.clients.requests.ClientLoginRequest;
-import com.overload.server.DTOs.clients.requests.CreateClientRequest;
-import com.overload.server.DTOs.clients.responses.*;
-import com.overload.server.utils.JwtUtil;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.overload.server.DTOs.clients.requests.ClientLoginRequest;
+import com.overload.server.DTOs.clients.requests.CreateClientRequest;
+import com.overload.server.DTOs.clients.responses.ClientByIdResponse;
+import com.overload.server.DTOs.clients.responses.ClientLoginResponse;
+import com.overload.server.DTOs.clients.responses.ClientResponse;
+import com.overload.server.DTOs.clients.responses.ClientsByTrainerIdResponse;
+import com.overload.server.DTOs.clients.responses.CreateClientResponse;
 import com.overload.server.model.Client;
 import com.overload.server.repo.ClientRepo;
-import org.springframework.web.server.ResponseStatusException;
+import com.overload.server.utils.JwtUtil;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

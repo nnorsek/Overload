@@ -39,14 +39,17 @@ public class Session {
     @GeneratedValue
     private Long sessionId;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "trainer_id", nullable = false)
     private Trainer trainer;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "workout_id", nullable = false)
     private Workout workout;
