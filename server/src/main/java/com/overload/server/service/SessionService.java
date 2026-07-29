@@ -2,7 +2,9 @@ package com.overload.server.service;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.overload.server.DTOs.sessions.requests.CreateSessionRequest;
 import com.overload.server.DTOs.sessions.responses.TrainerSessionResponse;
@@ -30,12 +32,12 @@ public class SessionService {
     private final WorkoutRepo workoutRepo;
 
     @Transactional
-    public void createSession (CreateSessionRequest req) {
+    public void createSession (CreateSessionRequest req, Long trainerId) {
         Client client = clientRepo.findById(req.clientId())
             .orElseThrow(() -> new EntityNotFoundException("Client not found: " + req.clientId()));
 
-        Trainer trainer = trainerRepo.findById(req.trainerId())
-            .orElseThrow(() -> new EntityNotFoundException("Trainer not found: " + req.trainerId()));
+        Trainer trainer = trainerRepo.findById(trainerId)
+            .orElseThrow(() -> new EntityNotFoundException("Trainer not found: " + trainerId));
 
         Workout workout = workoutRepo.findById(req.workoutId())
             .orElseThrow(() -> new EntityNotFoundException("Workout not found: " + req.workoutId()));
@@ -65,6 +67,24 @@ public class SessionService {
                         session.getStatus(),
                         session.getNotes()
                         )).toList();
+    }
+
+    public void updateSession(Long sessionId, CreateSessionRequest req, Long trainerId) {
+        Session session = sessionRepo.findById(sessionId)
+            .orElseThrow(() -> new EntityNotFoundException("Session not found: " + sessionId));
+
+        if (!session.getTrainer().getTrainerId().equals(trainerId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not own this session");
+        }
+
+        
+        session.setClient(client);
+        session.setTrainer(trainer);
+        session.setWorkout(workout);
+        session.setScheduledStart(req.scheduledStart());
+        session.setScheduledEnd(req.scheduledEnd());
+        session.setStatus(SessionStatus.PENDING);
+        session.setNotes(req.notes());
     }
 
 }
