@@ -16,10 +16,12 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ session }) => {
   return (
     <div
       className="border border-gray-400/80 p-4 rounded-lg hover:bg-gray-200/60 hover:cursor-pointer"
-      onClick={() => navigate(`/session/${session.client.name}/${session.id}`)}
+      onClick={() => navigate(`/session/${session.id}`)}
     >
       <div className="flex justify-between">
-        <p className="font-semibold">{session.client.name}</p>
+        <p className="font-semibold">
+          {session.clients.map((c) => `${c.firstName} ${c.lastName}`).join(", ")}
+        </p>
         <div
           className={`px-5 py-1 rounded-xl font-semibold ${sessionColor(session.status).base}`}
         >

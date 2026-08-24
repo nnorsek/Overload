@@ -1,5 +1,3 @@
-import type { ClientInfo } from "./Client";
-
 export type SessionType =
   | "Personal Training"
   | "Nutrition Consultation"
@@ -19,9 +17,15 @@ export type SessionType =
 
 export type SessionStatus = "Confirmed" | "Cancelled" | "Pending" | "Completed";
 
+export type ClientSummary = {
+  clientId: number;
+  firstName: string;
+  lastName: string;
+};
+
 export type Session = {
   id: number;
-  client: ClientInfo;
+  clients: ClientSummary[];
   duration: number;
   type: SessionType;
   sessionDate: string;

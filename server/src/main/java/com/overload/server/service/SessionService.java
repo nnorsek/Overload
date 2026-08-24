@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.overload.server.DTOs.sessions.requests.CreateSessionRequest;
+import com.overload.server.DTOs.sessions.responses.ClientSummary;
 import com.overload.server.DTOs.sessions.responses.TrainerSessionResponse;
 import com.overload.server.enums.SessionStatus;
 import com.overload.server.model.Client;
@@ -32,43 +33,49 @@ public class SessionService {
     private final WorkoutRepo workoutRepo;
 
     @Transactional
-    public void createSession (CreateSessionRequest req, Long trainerId) {
-        Client client = clientRepo.findById(req.clientId())
-            .orElseThrow(() -> new EntityNotFoundException("Client not found: " + req.clientId()));
+    public void createSession(CreateSessionRequest req, Long trainerId) {
+        List<Client> clients = clientRepo.findAllById(req.clientIds());
+        if (clients.size() != req.clientIds().size()) {
+            throw new EntityNotFoundException("One or more clients not found");
+        }
 
         Trainer trainer = trainerRepo.findById(trainerId)
             .orElseThrow(() -> new EntityNotFoundException("Trainer not found: " + trainerId));
 
         Workout workout = workoutRepo.findById(req.workoutId())
             .orElseThrow(() -> new EntityNotFoundException("Workout not found: " + req.workoutId()));
-        
+
         Session session = new Session();
-        session.setClient(client);
+        session.getClients().addAll(clients);
         session.setTrainer(trainer);
         session.setWorkout(workout);
         session.setScheduledStart(req.scheduledStart());
         session.setScheduledEnd(req.scheduledEnd());
         session.setStatus(SessionStatus.PENDING);
         session.setNotes(req.notes());
-        
+
         sessionRepo.save(session);
     }
 
     @Transactional
-    public List<TrainerSessionResponse> getSessions (Long trainerId) {
+    public List<TrainerSessionResponse> getSessions(Long trainerId) {
         return sessionRepo.findAllByTrainer_TrainerId(trainerId)
                 .stream()
-                .map(session -> new TrainerSessionResponse(
-                        session.getSessionId(),
-                        session.getClient().getFirstName(),
-                        session.getClient().getLastName(),
-                        session.getScheduledStart(),
-                        session.getScheduledEnd(),
-                        session.getStatus(),
-                        session.getNotes()
-                        )).toList();
+                .map(session -> {
+                    List<ClientSummary> clients = session.getClients().stream()
+                            .map(c -> new ClientSummary(c.getClientId(), c.getFirstName(), c.getLastName()))
+                            .toList();
+                    return new TrainerSessionResponse(
+                            session.getSessionId(),
+                            clients,
+                            session.getScheduledStart(),
+                            session.getScheduledEnd(),
+                            session.getStatus(),
+                            session.getNotes());
+                }).toList();
     }
 
+    @Transactional
     public void updateSession(Long sessionId, CreateSessionRequest req, Long trainerId) {
         Session session = sessionRepo.findById(sessionId)
             .orElseThrow(() -> new EntityNotFoundException("Session not found: " + sessionId));
@@ -77,14 +84,52 @@ public class SessionService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not own this session");
         }
 
-        
-        session.setClient(client);
-        session.setTrainer(trainer);
+        Workout workout = workoutRepo.findById(req.workoutId())
+            .orElseThrow(() -> new EntityNotFoundException("Workout not found: " + req.workoutId()));
+
         session.setWorkout(workout);
         session.setScheduledStart(req.scheduledStart());
         session.setScheduledEnd(req.scheduledEnd());
-        session.setStatus(SessionStatus.PENDING);
         session.setNotes(req.notes());
+    }
+
+    @Transactional
+    public void deleteSession(Long sessionId, Long trainerId) {
+        Session session = sessionRepo.findById(sessionId)
+            .orElseThrow(() -> new EntityNotFoundException("Session not found: " + sessionId));
+
+        if (!session.getTrainer().getTrainerId().equals(trainerId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not own this session");
+        }
+
+        sessionRepo.delete(session);
+    }
+
+    @Transactional
+    public void addClientToSession(Long sessionId, Long clientId, Long trainerId) {
+        Session session = sessionRepo.findById(sessionId)
+            .orElseThrow(() -> new EntityNotFoundException("Session not found: " + sessionId));
+
+        if (!session.getTrainer().getTrainerId().equals(trainerId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not own this session");
+        }
+
+        Client client = clientRepo.findById(clientId)
+            .orElseThrow(() -> new EntityNotFoundException("Client not found: " + clientId));
+
+        session.getClients().add(client);
+    }
+
+    @Transactional
+    public void removeClientFromSession(Long sessionId, Long clientId, Long trainerId) {
+        Session session = sessionRepo.findById(sessionId)
+            .orElseThrow(() -> new EntityNotFoundException("Session not found: " + sessionId));
+
+        if (!session.getTrainer().getTrainerId().equals(trainerId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not own this session");
+        }
+
+        session.getClients().removeIf(c -> c.getClientId().equals(clientId));
     }
 
 }

@@ -5,14 +5,14 @@ import { useApi } from "./useApi";
 export type WorkoutExercisePayload = {
   exerciseId: number;
   exerciseOrder: number;
-  sets: WorkoutExerciseSetPayload[]
+  sets: WorkoutExerciseSetPayload[];
 };
 
 export type WorkoutExerciseSetPayload = {
   setOrder: number;
   defaultReps: number;
   defaultWeight: number | null;
-}
+};
 
 const useWorkoutHooks = () => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
@@ -31,7 +31,7 @@ const useWorkoutHooks = () => {
       });
       if (res.ok) setWorkouts(await res.json());
     } catch {
-      // network error
+      return { error: GENERIC_ERROR };
     } finally {
       setLoading(false);
     }

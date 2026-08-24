@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 
 import com.overload.server.enums.SessionStatus;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,6 +14,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -39,10 +44,13 @@ public class Session {
     @GeneratedValue
     private Long sessionId;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
+    @ManyToMany
+    @JoinTable(
+        name = "session_clients",
+        joinColumns = @JoinColumn(name = "session_id"),
+        inverseJoinColumns = @JoinColumn(name = "client_id")
+    )
+    private Set<Client> clients = new HashSet<>();
 
     @NotNull
     @ManyToOne
