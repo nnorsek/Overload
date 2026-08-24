@@ -1,11 +1,10 @@
 package com.overload.server.model;
 
 import java.time.LocalDateTime;
-
-import com.overload.server.enums.SessionStatus;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import com.overload.server.enums.SessionStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +28,7 @@ import lombok.Setter;
  * that link back to this Session.
  *
  * Relationships:
- *   - ManyToOne -> Client   (the client attending this session)
+ *   - ManyToMany -> Client   (the clients attending this session)
  *   - ManyToOne -> Trainer  (the trainer running this session)
  *   - ManyToOne -> Workout  (the workout template being performed; reusable across sessions)
  *   - OneToMany <- SessionExercises (the actual exercise performance for this session)
