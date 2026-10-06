@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Exercise, CreateExercisePayload } from "../types/Exercise";
 import { useApi } from "./useApi";
+import { USE_MOCKS, mockExercises } from "../mocks";
 
 const useExerciseHooks = () => {
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -12,6 +13,10 @@ const useExerciseHooks = () => {
   const reloader = () => setReload((prev) => !prev);
 
   const fetchExercises = async () => {
+    if (USE_MOCKS) {
+      setExercises([...mockExercises]);
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch(`${apiBase}/exercises/all`, { headers: authHeaders });
@@ -31,6 +36,12 @@ const useExerciseHooks = () => {
     id: number,
     payload: Partial<Exercise>
   ): Promise<{ error?: string }> => {
+    if (USE_MOCKS) {
+      const exercise = mockExercises.find((e) => e.exerciseId === id);
+      if (exercise) Object.assign(exercise, payload);
+      reloader();
+      return {};
+    }
     setSubmitting(true);
     try {
       const res = await fetch(`${apiBase}/exercises/${id}`, {
@@ -51,6 +62,12 @@ const useExerciseHooks = () => {
   };
 
   const handleDeleteExercise = async (id: number): Promise<{ error?: string }> => {
+    if (USE_MOCKS) {
+      const index = mockExercises.findIndex((e) => e.exerciseId === id);
+      if (index !== -1) mockExercises.splice(index, 1);
+      reloader();
+      return {};
+    }
     setSubmitting(true);
     try {
       const res = await fetch(`${apiBase}/exercises/${id}`, {
@@ -72,6 +89,17 @@ const useExerciseHooks = () => {
   const handleCreateExercise = async (
     payload: CreateExercisePayload
   ): Promise<{ error?: string }> => {
+    if (USE_MOCKS) {
+      mockExercises.push({
+        ...payload,
+        equipmentType: payload.equipmentType as Exercise["equipmentType"],
+        exerciseId: Math.max(0, ...mockExercises.map((e) => e.exerciseId)) + 1,
+        trainerId: 1,
+        originalExerciseId: null,
+      });
+      reloader();
+      return {};
+    }
     setSubmitting(true);
     try {
       const res = await fetch(`${apiBase}/exercises/create`, {

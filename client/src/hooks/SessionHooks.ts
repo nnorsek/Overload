@@ -2,6 +2,20 @@ import type { Session } from "@/types/Session";
 import { useEffect, useState } from "react";
 import { useApi } from "./useApi";
 import { useAsyncState } from "./useAsyncState";
+import { USE_MOCKS, mockClients, mockSessions } from "../mocks";
+
+const toMockSession = (id: number, payload: CreateSessionPayload): Session => ({
+  id,
+  clients: mockClients
+    .filter((c) => payload.clientIds.includes(c.clientId))
+    .map(({ clientId, firstName, lastName }) => ({ clientId, firstName, lastName })),
+  duration: Math.round(
+    (new Date(payload.scheduledEnd).getTime() - new Date(payload.scheduledStart).getTime()) / 60000
+  ),
+  type: "Personal Training",
+  sessionDate: payload.scheduledStart,
+  status: "Pending",
+});
 
 export type CreateSessionPayload = {
   clientIds: number[];
@@ -20,6 +34,10 @@ export function useSessionHooks() {
   const reloader = () => setReload((prev) => !prev);
 
   useEffect(() => {
+    if (USE_MOCKS) {
+      listState.run(Promise.resolve([...mockSessions]));
+      return;
+    }
     listState.run(
       (async () => {
         const res = await fetch(`${apiBase}/sessions/all`, {
@@ -32,6 +50,12 @@ export function useSessionHooks() {
   }, [reload]);
 
   const createSession = async (payload: CreateSessionPayload) => {
+    if (USE_MOCKS) {
+      const id = Math.max(0, ...mockSessions.map((s) => s.id)) + 1;
+      mockSessions.push(toMockSession(id, payload));
+      reloader();
+      return;
+    }
     await mutationState.run(
       (async () => {
         const res = await fetch(`${apiBase}/sessions`, {
@@ -46,6 +70,14 @@ export function useSessionHooks() {
   };
 
   const editSession = async (id: number, payload: CreateSessionPayload) => {
+    if (USE_MOCKS) {
+      const index = mockSessions.findIndex((s) => s.id === id);
+      if (index !== -1) {
+        mockSessions[index] = { ...toMockSession(id, payload), status: mockSessions[index].status };
+      }
+      reloader();
+      return;
+    }
     await mutationState.run(
       (async () => {
         const res = await fetch(`${apiBase}/sessions/${id}`, {
@@ -60,6 +92,12 @@ export function useSessionHooks() {
   };
 
   const deleteSession = async (id: number) => {
+    if (USE_MOCKS) {
+      const index = mockSessions.findIndex((s) => s.id === id);
+      if (index !== -1) mockSessions.splice(index, 1);
+      reloader();
+      return;
+    }
     await mutationState.run(
       (async () => {
         const res = await fetch(`${apiBase}/sessions/${id}`, {
@@ -73,6 +111,15 @@ export function useSessionHooks() {
   };
 
   const addClientToSession = async (sessionId: number, clientId: number) => {
+    if (USE_MOCKS) {
+      const session = mockSessions.find((s) => s.id === sessionId);
+      const client = mockClients.find((c) => c.clientId === clientId);
+      if (session && client && !session.clients.some((c) => c.clientId === clientId)) {
+        session.clients.push({ clientId, firstName: client.firstName, lastName: client.lastName });
+      }
+      reloader();
+      return;
+    }
     await mutationState.run(
       (async () => {
         const res = await fetch(`${apiBase}/sessions/${sessionId}/clients`, {
@@ -87,6 +134,12 @@ export function useSessionHooks() {
   };
 
   const removeClientFromSession = async (sessionId: number, clientId: number) => {
+    if (USE_MOCKS) {
+      const session = mockSessions.find((s) => s.id === sessionId);
+      if (session) session.clients = session.clients.filter((c) => c.clientId !== clientId);
+      reloader();
+      return;
+    }
     await mutationState.run(
       (async () => {
         const res = await fetch(

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Client } from "../types/Client";
 import { useApi } from "./useApi";
+import { USE_MOCKS, mockClients } from "../mocks";
 
 const useClientHooks = () => {
 
@@ -14,6 +15,10 @@ const useClientHooks = () => {
     const reloader = () => setReload((prev) => !prev);
 
     const fetchAllClients = async () => {
+        if (USE_MOCKS) {
+            setClients(mockClients);
+            return;
+        }
         setLoading(true);
         try {
             const res = await fetch(`${apiBase}/client/all/${user?.id}`, {
@@ -36,6 +41,10 @@ const useClientHooks = () => {
     }, [reload]);
 
     const fetchClientById = async (id: number) => {
+        if (USE_MOCKS) {
+            setClient(mockClients.find((c) => c.clientId === id) ?? null);
+            return;
+        }
         setLoading(true);
         try {
             const res = await fetch(`${apiBase}/clients/${id}`, {

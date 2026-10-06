@@ -5,6 +5,7 @@ import { faClock, faCheck, faStar } from "@fortawesome/free-solid-svg-icons";
 import InputForm from "../components/InputForm";
 import type { DisplayRole } from "../types/StartUp";
 import { useAuth } from "../context/AuthContext";
+import { USE_MOCKS, mockUser } from "../mocks";
 
 type LoginForm = {
   role: DisplayRole;
@@ -52,6 +53,11 @@ const Login = () => {
   };
 
   const SubmitLogin = async () => {
+    if (USE_MOCKS) {
+      login(mockUser);
+      navigate("/");
+      return;
+    }
     const { role, ...payload } = loginForm;
     try {
       const res = await fetch(`http://localhost:8080/${loginForm.role}/login`, {

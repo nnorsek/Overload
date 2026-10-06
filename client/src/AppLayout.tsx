@@ -4,11 +4,13 @@ import { SidebarProvider, SidebarInset } from "./components/ui/sidebar";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
+import { USE_MOCKS } from "./mocks";
 
 export const AppLayout = () => {
   const { user } = useAuth();
   console.log("user", user);
-  if (!user) return <Navigate to="/login" replace />;
+  // Login is not enforced while running on mock data.
+  if (!user && !USE_MOCKS) return <Navigate to="/login" replace />;
 
   return (
     <TooltipProvider>

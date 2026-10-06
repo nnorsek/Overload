@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
-type AuthUser = {
+export type AuthUser = {
   token: string;
   role: "ROLE_TRAINER" | "ROLE_CLIENT";
   email: string;

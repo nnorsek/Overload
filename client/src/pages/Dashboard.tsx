@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import ClientCard from "../components/ClientCard";
 import SessionsCard from "../components/SessionsCard";
-import { exampleSession } from "../../mock_data";
+import { mockSessions } from "../mocks";
 import type { Client } from "../types/Client";
 import type { Session } from "../types/Session";
 import { useClientHooks } from "../hooks/ClientHooks";
@@ -45,7 +45,7 @@ const Dashboard = () => {
                   <h1 className="font-semibold text-3xl">Sessions</h1>
                   <p className="text-gray-500">View Today's Sessions</p>
                   <div className="flex flex-col gap-y-5">
-                    {exampleSession.map((session: Session, idx: number) => (
+                    {mockSessions.map((session: Session, idx: number) => (
                       <SessionsCard key={idx} session={session} />
                     ))}
                   </div>

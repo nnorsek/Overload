@@ -1,0 +1,43 @@
+import type { Client } from "@/types/Client";
+
+export const mockClients: Client[] = [
+  {
+    clientId: 1,
+    firstName: "Alice",
+    lastName: "Johnson",
+    dateOfBirth: "1998-04-12",
+    gender: "FEMALE",
+    startingWeight: 160,
+    currentWeight: 145,
+    height: 65,
+    goal: "Lose weight",
+    photoUrl: "",
+    startedAt: "2026-01-15T00:00:00Z",
+  },
+  {
+    clientId: 2,
+    firstName: "Bob",
+    lastName: "Smith",
+    dateOfBirth: "1991-09-03",
+    gender: "MALE",
+    startingWeight: 175,
+    currentWeight: 180,
+    height: 70,
+    goal: "Gain muscle",
+    photoUrl: "",
+    startedAt: "2025-11-10T00:00:00Z",
+  },
+  {
+    clientId: 3,
+    firstName: "Carmen",
+    lastName: "Lee",
+    dateOfBirth: "2002-01-27",
+    gender: "FEMALE",
+    startingWeight: 140,
+    currentWeight: 130,
+    height: 63,
+    goal: "Maintain weight",
+    photoUrl: "",
+    startedAt: "2026-02-01T00:00:00Z",
+  },
+];
