@@ -15,12 +15,24 @@ vi.mock("../useApi", () => ({
   }),
 }));
 
+// Shape returned by GET /trainer/sessions
 const mockSessions = [
+  {
+    sessionId: 1,
+    clients: [{ clientId: 1, firstName: "John", lastName: "Doe" }],
+    scheduledStart: "2026-09-01T10:00:00",
+    scheduledEnd: "2026-09-01T11:00:00",
+    status: "CONFIRMED",
+    notes: null,
+  },
+];
+
+// The same session after the hook converts it for the UI
+const expectedSessions = [
   {
     id: 1,
     clients: [{ clientId: 1, firstName: "John", lastName: "Doe" }],
     duration: 60,
-    type: "Personal Training",
     sessionDate: "2026-09-01T10:00:00",
     status: "Confirmed",
   },
@@ -47,13 +59,38 @@ describe("useSessionHooks", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(makeResponse(mockSessions)));
   });
 
-  it("fetches sessions on mount", async () => {
+  it("fetches sessions on mount from /trainer/sessions", async () => {
     const { result } = renderHook(() => useSessionHooks());
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
-    expect(result.current.sessions).toEqual(mockSessions);
+    expect(fetch).toHaveBeenCalledWith(
+      "http://localhost:8080/trainer/sessions",
+      expect.anything()
+    );
+    expect(result.current.sessions).toEqual(expectedSessions);
     expect(result.current.listError).toBeNull();
+  });
+
+  it("converts each server status to its display label", async () => {
+    const statuses = ["CONFIRMED", "PENDING", "CANCELLED", "COMPLETED"];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        makeResponse(statuses.map((status, i) => ({ ...mockSessions[0], sessionId: i, status })))
+      )
+    );
+
+    const { result } = renderHook(() => useSessionHooks());
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    expect(result.current.sessions.map((s) => s.status)).toEqual([
+      "Confirmed",
+      "Pending",
+      "Cancelled",
+      "Completed",
+    ]);
   });
 
   it("sets listError on fetch failure", async () => {

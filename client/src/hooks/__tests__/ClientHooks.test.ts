@@ -74,7 +74,7 @@ describe("useClientHooks", () => {
     await waitFor(() => expect(result.current.loading).toBe(false));
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "http://localhost:8080/client/all/1",
+      "http://localhost:8080/client/all",
       expect.objectContaining({ headers: { "Content-Type": "application/json" } })
     );
   });
@@ -133,7 +133,7 @@ describe("useClientHooks", () => {
     });
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "http://localhost:8080/clients/1",
+      "http://localhost:8080/client/1",
       expect.objectContaining({ headers: { "Content-Type": "application/json" } })
     );
     expect(result.current.client).toEqual(mockClient);

@@ -1,18 +1,33 @@
-import type { Session } from "@/types/Session";
+import type { ServerSession, Session, SessionStatus } from "@/types/Session";
 import { useEffect, useState } from "react";
 import { useApi } from "./useApi";
 import { useAsyncState } from "./useAsyncState";
 import { USE_MOCKS, mockClients, mockSessions } from "../mocks";
+
+const STATUS_LABELS: Record<ServerSession["status"], SessionStatus> = {
+  CONFIRMED: "Confirmed",
+  CANCELLED: "Cancelled",
+  PENDING: "Pending",
+  COMPLETED: "Completed",
+};
+
+const minutesBetween = (start: string, end: string) =>
+  Math.round((new Date(end).getTime() - new Date(start).getTime()) / 60000);
+
+const toSession = (s: ServerSession): Session => ({
+  id: s.sessionId,
+  clients: s.clients,
+  duration: minutesBetween(s.scheduledStart, s.scheduledEnd),
+  sessionDate: s.scheduledStart,
+  status: STATUS_LABELS[s.status],
+});
 
 const toMockSession = (id: number, payload: CreateSessionPayload): Session => ({
   id,
   clients: mockClients
     .filter((c) => payload.clientIds.includes(c.clientId))
     .map(({ clientId, firstName, lastName }) => ({ clientId, firstName, lastName })),
-  duration: Math.round(
-    (new Date(payload.scheduledEnd).getTime() - new Date(payload.scheduledStart).getTime()) / 60000
-  ),
-  type: "Personal Training",
+  duration: minutesBetween(payload.scheduledStart, payload.scheduledEnd),
   sessionDate: payload.scheduledStart,
   status: "Pending",
 });
@@ -40,11 +55,12 @@ export function useSessionHooks() {
     }
     listState.run(
       (async () => {
-        const res = await fetch(`${apiBase}/sessions/all`, {
+        const res = await fetch(`${apiBase}/trainer/sessions`, {
           headers: authHeaders,
         });
         await throwIfNotOK(res);
-        return res.json();
+        const sessions: ServerSession[] = await res.json();
+        return sessions.map(toSession);
       })()
     ).catch(() => {});
   }, [reload]);

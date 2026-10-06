@@ -27,7 +27,16 @@ export type Session = {
   id: number;
   clients: ClientSummary[];
   duration: number;
-  type: SessionType;
   sessionDate: string;
   status: SessionStatus;
+};
+
+// Shape returned by GET /trainer/sessions
+export type ServerSession = {
+  sessionId: number;
+  clients: ClientSummary[];
+  scheduledStart: string;
+  scheduledEnd: string;
+  status: "CONFIRMED" | "CANCELLED" | "PENDING" | "COMPLETED";
+  notes: string | null;
 };

@@ -10,7 +10,7 @@ const useClientHooks = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [reload, setReload] = useState(false);
-    const { apiBase, authHeaders, user, GENERIC_ERROR } = useApi();
+    const { apiBase, authHeaders, GENERIC_ERROR } = useApi();
 
     const reloader = () => setReload((prev) => !prev);
 
@@ -21,7 +21,7 @@ const useClientHooks = () => {
         }
         setLoading(true);
         try {
-            const res = await fetch(`${apiBase}/client/all/${user?.id}`, {
+            const res = await fetch(`${apiBase}/client/all`, {
                 headers: authHeaders,
             });
             if (res.ok) {
@@ -47,7 +47,7 @@ const useClientHooks = () => {
         }
         setLoading(true);
         try {
-            const res = await fetch(`${apiBase}/clients/${id}`, {
+            const res = await fetch(`${apiBase}/client/${id}`, {
                 headers: authHeaders,
             });
             if (res.ok) {

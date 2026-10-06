@@ -28,7 +28,6 @@ const SessionsCard: React.FC<SessionsCardProps> = ({ session }) => {
           {session.status}
         </div>
       </div>
-      <p className="text-sm text-gray-700">{session.type}</p>
       <div className="flex text-xs gap-x-2 text-gray-700 mt-1">
         <p>
           <FontAwesomeIcon icon={faClock} /> {formatTime(session.sessionDate)}
