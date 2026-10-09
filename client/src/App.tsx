@@ -1,4 +1,5 @@
 import "./App.css";
+import CreateSession from "@/pages/CreateSession.tsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import { AppLayout } from "./AppLayout";
@@ -26,6 +27,7 @@ function App() {
             element={<ClientDetails />}
           />
           <Route path="/sessions" element={<Sessions />} />
+          <Route path="sessions/create" element={<CreateSession /> } />
           <Route path="/exercises" element={<Exercises />} />
           <Route path="/exercises/create" element={<CreateExercise />} />
           <Route path="/workouts" element={<Workouts />} />

@@ -20,7 +20,7 @@ export default function Sessions() {
 
   return (
     <Wrapper>
-      <h1 className="text-3xl bold py-5 font-bold">Sessions</h1>
+      <h1 className="text-xl bold py-5 font-bold">Sessions</h1>
       <Card>
         <ul>
           {sessions.map((session) => (

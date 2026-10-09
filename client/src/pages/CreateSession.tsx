@@ -1,3 +1,5 @@
+import {CalendarWithTime} from "@/components/CalendarWithTime.tsx";
+import { CheckIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateFormPage from "../components/CreateFormPage";
@@ -73,7 +75,8 @@ export default function CreateSession() {
     >
       <div className="flex flex-col gap-1.5">
         <Label>Clients</Label>
-        <div className="flex flex-col gap-2 max-h-48 overflow-y-auto rounded-lg border border-border p-2">
+        <p className="ml-2 text-xs text-muted-foreground">Select your clients for this session.</p>
+        <div className="bg-white flex flex-col gap-2 max-h-48 overflow-y-auto rounded-lg border border-border p-2">
           {clients.length === 0 ? (
             <p className="text-sm text-muted-foreground px-2 py-1">No clients found</p>
           ) : (
@@ -84,27 +87,28 @@ export default function CreateSession() {
                   key={client.clientId}
                   type="button"
                   onClick={() => toggleClient(client.clientId)}
-                  className={`flex items-center justify-between rounded-md px-3 py-2 text-sm text-left transition-colors ${
+                  className={`hover:cursor-pointer flex items-center justify-between rounded-md px-3 py-2 text-sm text-left transition-colors ${
                     selected
                       ? "bg-blue-500 text-white"
-                      : "hover:bg-muted"
+                      : "hover:bg-gray-100" // TODO: Hover class should be a tailwind utility
                   }`}
                 >
                   <span>
                     {client.firstName} {client.lastName}
                   </span>
-                  {selected && <span className="text-xs font-medium">✓</span>}
+                  {selected && <span className="text-xs font-medium"><CheckIcon/></span>}
                 </button>
               );
             })
           )}
         </div>
-        {form.clientIds.length > 0 && (
+        {form.clientIds.length > 0 && ( // TODO: The number selected is a bad font and appears under the other text
           <p className="text-xs text-muted-foreground">
             {form.clientIds.length} client{form.clientIds.length > 1 ? "s" : ""} selected
           </p>
         )}
       </div>
+
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="workout">Workout</Label>
@@ -131,6 +135,7 @@ export default function CreateSession() {
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="scheduledStart">Start</Label>
+        <CalendarWithTime/>
         <Input
           id="scheduledStart"
           type="datetime-local"
@@ -141,6 +146,7 @@ export default function CreateSession() {
         />
       </div>
 
+      {/*TODO: Create a calendar pop up*/}
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="scheduledEnd">End</Label>
         <Input

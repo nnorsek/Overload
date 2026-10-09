@@ -24,7 +24,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
   const weightDisplayMetric = showInKg ? "kg" : "lbs";
 
   return (
-    <div className="border rounded-xl border-gray-400/80 p-3 pl-5">
+    <div className="border rounded-xl border-gray-400/80 p-3 pl-5 border-t-3 border-t-blue-500 hover:cursor-pointer hover:bg-gray-100" onClick={() => navigate(`/clients/details/${client.client_id}`)}>
       <div className="flex items-center">
         <img
           src={img}

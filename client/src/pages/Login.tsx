@@ -5,7 +5,7 @@ import { faClock, faCheck, faStar } from "@fortawesome/free-solid-svg-icons";
 import InputForm from "../components/InputForm";
 import type { DisplayRole } from "../types/StartUp";
 import { useAuth } from "../context/AuthContext";
-import { USE_MOCKS, mockUser } from "../mocks";
+import { USE_MOCKS, mockUser } from "@/mocks";
 
 type LoginForm = {
   role: DisplayRole;
@@ -14,7 +14,7 @@ type LoginForm = {
 };
 
 type LoginResponse = {
-  role: string;
+  role: "ROLE_CLIENT" | "ROLE_TRAINER";
   email: string;
   token: string;
   id: string;
@@ -48,10 +48,6 @@ const Login = () => {
     setLoginForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLoginForm((prev) => ({ ...prev, role: e.target.value as DisplayRole }));
-  };
-
   const SubmitLogin = async () => {
     if (USE_MOCKS) {
       login(mockUser);
@@ -60,7 +56,7 @@ const Login = () => {
     }
     const { role, ...payload } = loginForm;
     try {
-      const res = await fetch(`http://localhost:8080/${loginForm.role}/login`, {
+      const res = await fetch(`http://localhost:8080/${role}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -116,7 +112,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() =>
-                  setLoginForm((prev) => ({ ...prev, role: "client" }))
+                    setLoginForm((prev) => ({ ...prev, role: "client" }))
                 }
                 className={`relative z-10 px-6 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 hover:cursor-pointer
                                 ${

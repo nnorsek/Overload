@@ -22,10 +22,9 @@ const Dashboard = () => {
 
   return (
     <Wrapper>
-        <h1 className="text-3xl bold py-5 font-bold">Dashboard</h1>
+        <h1 className="text-2xl bold font-bold">Dashboard</h1>
         <p className="text-gray-500 pt-2">
-          Placeholder description tag Placeholder description tag Placeholder
-          description tag Placeholder description tag
+            Track your clients and today's training sessions at a glance
         </p>
         <div className="mt-5">
           <div className="flex gap-x-20">
@@ -33,17 +32,19 @@ const Dashboard = () => {
               <div className="">No clients</div>
             ) : (
               <>
-                <div className="flex flex-col gap-y-5 flex-2">
-                  <h1 className="font-semibold text-3xl">Clients</h1>
-                  <p className="text-gray-500">
+                <div className="flex flex-col flex-2">
+                  <h1 className="font-semibold text-xl">Clients</h1>
+                  <p className="text-gray-500 pt-2">
                     View Client Details and History
                   </p>
+                    <section className="flex flex-col gap-y-5 mt-8">
                   {clients.map((client: Client) => (
                     <ClientCard key={client.clientId} client={client} />
                   ))}
+                    </section>
                 </div>
                 <div className="flex-1 flex flex-col gap-y-5">
-                  <h1 className="font-semibold text-3xl">Sessions</h1>
+                  <h1 className="font-semibold text-xl">Sessions</h1>
                   <p className="text-gray-500">View Today's Sessions</p>
                   <div className="flex flex-col gap-y-5">
                     {sessions.map((session: Session, idx: number) => (
